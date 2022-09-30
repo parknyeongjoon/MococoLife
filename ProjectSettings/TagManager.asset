@@ -8,11 +8,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
+  - Terrain
+  - Item
   - 
   - 
   - 
@@ -41,12 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: BG
+  - name: Sea
     uniqueID: 2636516929
     locked: 0
-  - name: FG
+  - name: Ground
     uniqueID: 315970581
     locked: 0
   - name: Terrain
     uniqueID: 502086917
+    locked: 0
+  - name: Player
+    uniqueID: 267185011
     locked: 0
