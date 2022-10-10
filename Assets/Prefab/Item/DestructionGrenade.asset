@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be103e57f9c1b084c99c92f975f319ae, type: 3}
   m_Name: DestructionGrenade
   m_EditorClassIdentifier: 
-  maxCount: 0
+  maxCount: 3
   needWood: 0
   needStone: 0
   dmg_Type: 5
-  dmg: 0
+  dmg: 1

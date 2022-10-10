@@ -8,7 +8,7 @@ public enum Dmg_Type { None, UnBreakable, Damage, Stagger, Hit, Destruction }
 
 public interface IDamagable
 {
-    public void Damage(Dmg_Type dmg_Type, float dmg);
+    void Damage(Dmg_Type dmg_Type, float dmg);
 }
 
 #endregion
