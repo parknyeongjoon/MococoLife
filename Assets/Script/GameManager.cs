@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Camera")]
+    public bool isCameraMove;
+    public float cameraSpeed;
+
+    [Header("Field")]
+    public int tileCount;
+
+    static GameManager instance;
+    public static GameManager Instance
     {
-        
+        get
+        {
+            if (!instance)
+            {
+                return null;
+            }
+            return instance;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
-        
+        instance = this;
+        DontDestroyOnLoad(this);
     }
 }
