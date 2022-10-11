@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
     GameManager gameManager;
 
     IEnumerator Start()
@@ -19,12 +18,14 @@ public class CameraMove : MonoBehaviour
     IEnumerator MoveCamera()
     {
         gameManager.isCameraMove = true;
-        Vector3 moveV = new Vector3(moveSpeed, 0, 0);
+        Vector3 moveV = new Vector3(gameManager.cameraSpeed, 0, 0);
+        WaitForFixedUpdate cameraPosUpdate = new();
 
         while (gameManager.isCameraMove)
         {
+            if(transform.position.x >= 30 * (gameManager.tileCount - 1)) { break; }
             transform.position += moveV;
-            yield return null;
+            yield return cameraPosUpdate;
         }
     }
 }

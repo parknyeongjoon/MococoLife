@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Camera")]
     public bool isCameraMove;
+    public float cameraSpeed;
+
+    [Header("Field")]
+    public int tileCount;
 
     static GameManager instance;
     public static GameManager Instance

@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Pun;
 
-public class Item : MonoBehaviourPun
+public class Item : MonoBehaviour
 {
     [SerializeField] ItemData itemData;
 
