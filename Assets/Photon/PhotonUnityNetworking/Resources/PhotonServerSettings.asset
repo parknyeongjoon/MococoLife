@@ -39,6 +39,9 @@ MonoBehaviour:
   - GetMococo
   - OpenCreatePanel
   - CloseCreatePanel
+  - SetCreatingPanel
+  - SetNeedPanel
+  - testIngredientPlus
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
