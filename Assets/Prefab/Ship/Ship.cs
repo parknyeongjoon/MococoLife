@@ -32,6 +32,18 @@ public class Ship : MonoBehaviourPun
             PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
         }
     }
+
+    void OnMouseDown()
+    {
+        if (create_State == Create_State.idle)
+        {
+            createPanel.SetActive(true);
+        }
+        else if (create_State == Create_State.finish)
+        {
+            RPCPickUp();
+        }
+    }
     //지우기
 
     [Header("CreatePanel")]
@@ -43,7 +55,8 @@ public class Ship : MonoBehaviourPun
     [SerializeField] GameObject creatingPanel;
     [SerializeField] Image creatingItemImg, creatingP;
 
-    bool isCreate = false;
+    enum Create_State { idle, create, finish };
+    Create_State create_State = Create_State.idle;
     ItemData creatingItem;
     int curWood, curStone;
 
@@ -62,20 +75,17 @@ public class Ship : MonoBehaviourPun
         //지우기
     }
 
-    void OnMouseDown()
-    {
-        if (isCreate == false)
-        {
-            createPanel.SetActive(true);
-        }
-    }
-
     public void RPCSetNeedPanel(string code)
     {
-        if (isCreate == false)
+        if (create_State == Create_State.idle)
         {
             PV.RPC("SetNeedPanel", RpcTarget.AllViaServer, code);
         }
+    }
+
+    public void RPCPickUp()
+    {
+        PV.RPC("PickUp", RpcTarget.AllViaServer);
     }
 
     public void CloseCreatePanel()
@@ -83,10 +93,11 @@ public class Ship : MonoBehaviourPun
         createPanel.SetActive(false);
     }
 
+    #region PunRPC
     [PunRPC]
     void SetNeedPanel(string code)
     {
-        isCreate = true;
+        create_State = Create_State.create;
         CloseCreatePanel();
         creatingItem = itemDic[code];
         curWood = 0; curStone = 0;
@@ -107,7 +118,7 @@ public class Ship : MonoBehaviourPun
     IEnumerator CreatingTimer()
     {
         float cur_Time = 0;
-        creatingP.gameObject.SetActive(true);
+        creatingP.color = Color.red;
 
         while (cur_Time <= creatingItem.needTime)
         {
@@ -116,6 +127,16 @@ public class Ship : MonoBehaviourPun
             yield return null;
         }
 
-        creatingP.gameObject.SetActive(false);
+        creatingP.color = Color.green;
+        create_State = Create_State.finish;
     }
+
+    [PunRPC]
+    void PickUp()
+    {
+        create_State = Create_State.idle;
+        creatingItem = null;
+        creatingPanel.SetActive(false);
+    }
+    #endregion
 }

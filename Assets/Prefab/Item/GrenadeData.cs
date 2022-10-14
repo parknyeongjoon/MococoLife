@@ -6,7 +6,7 @@ using UnityEngine;
 public class GrenadeData : ItemData
 {
     [SerializeField] protected Dmg_Type dmg_Type;
-    [SerializeField] protected int dmg;
+    [SerializeField] protected float dmg;
 
     public override void Effect(Vector2Int effectPos)
     {

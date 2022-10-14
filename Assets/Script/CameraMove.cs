@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMove : MonoBehaviour
+public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
 {
     GameManager gameManager;
 
@@ -12,13 +12,13 @@ public class CameraMove : MonoBehaviour
 
         gameManager = GameManager.Instance;
 
-        StartCoroutine(MoveCamera());
+        StartCoroutine(MoveCamera(gameManager.cameraSpeed));
     }
 
-    IEnumerator MoveCamera()
+    IEnumerator MoveCamera(float cameraSpeed)
     {
         gameManager.isCameraMove = true;
-        Vector3 moveV = new Vector3(gameManager.cameraSpeed, 0, 0);
+        Vector3 moveV = new Vector3(cameraSpeed, 0, 0);
         WaitForFixedUpdate cameraPosUpdate = new();
 
         while (gameManager.isCameraMove)
