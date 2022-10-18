@@ -23,7 +23,7 @@ public class LoadingManager : MonoBehaviourPun
 
     private void Update()
     {
-        if (PhotonNetwork.PlayerList.Length < 4)
+        if (PhotonNetwork.PlayerList.Length < 1)
         {
             if (timeCount <= 1.5f) timeCount += Time.deltaTime;
             if (timeCount <= 0.5f)
@@ -46,7 +46,7 @@ public class LoadingManager : MonoBehaviourPun
         }
         else
         {
-            PhotonNetwork.LoadLevel("Stage");
+            PhotonNetwork.LoadLevel("BossTest");
         }
 
         if (PhotonNetwork.PlayerList.Length != playerCount)
