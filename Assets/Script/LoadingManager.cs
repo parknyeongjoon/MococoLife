@@ -9,6 +9,7 @@ public class LoadingManager : MonoBehaviourPun
 {
     private float timeCount;
     private int playerCount;
+    private bool isLoading;
 
     public Text playerText;
     public Text loadingText;
@@ -16,6 +17,7 @@ public class LoadingManager : MonoBehaviourPun
 
     private void Start()
     {
+        isLoading = false;
         timeCount = 0f;
         playerCount = 1;
         playerText.text = "1 / 4";
@@ -46,13 +48,22 @@ public class LoadingManager : MonoBehaviourPun
         }
         else
         {
-            PhotonNetwork.LoadLevel("BossTest");
+            LoadScene();
         }
 
         if (PhotonNetwork.PlayerList.Length != playerCount)
         {
             playerCount = PhotonNetwork.PlayerList.Length;
             playerText.text = playerCount.ToString() + " / 4";
+        }
+    }
+
+    private void LoadScene()
+    {
+        if (!isLoading)
+        {
+            isLoading = true;
+            PhotonNetwork.LoadLevel("BossTest");
         }
     }
 }

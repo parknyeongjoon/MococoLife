@@ -6,13 +6,11 @@ using Photon.Realtime;
 
 public class Valtan : Boss
 {
-    private PhotonView pv;
     private int armor;
 
     private void Start()
     {
         gameManager = GameManager.Instance;
-        pv = GetComponent<PhotonView>();
     }
 
     public void GetDestroyed(int destroy)
