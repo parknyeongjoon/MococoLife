@@ -41,6 +41,6 @@ public abstract class Boss: MonoBehaviourPun
             target = Random.Range(0, 4);
         }
     }
-    public abstract void DetermineNextPattern();
-    public abstract void BehavePattern(int type);
+    public abstract int DetermineNextPattern();
+    public abstract void BehavePattern(int pattern);
 }
