@@ -2,30 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMove : MonoBehaviour
+public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
 {
     GameManager gameManager;
 
     IEnumerator Start()
     {
         yield return new WaitUntil(() => GameManager.Instance != null);
-
         gameManager = GameManager.Instance;
 
-        StartCoroutine(MoveCamera());
+        yield return new WaitUntil(() => gameManager.isGameReady);
+
+        StartCoroutine(MoveCamera(gameManager.gameSpeed));
     }
 
-    IEnumerator MoveCamera()
+    IEnumerator MoveCamera(float cameraSpeed)
     {
-        gameManager.isCameraMove = true;
-        Vector3 moveV = new Vector3(gameManager.cameraSpeed, 0, 0);
-        WaitForFixedUpdate cameraPosUpdate = new();
+        gameManager.isPause = false;
+        Vector3 moveV = new Vector3(cameraSpeed, 0, 0);
+        WaitWhile isCameraMove = new WaitWhile(() => gameManager.isPause);
+        float destiny = (gameManager.tileCount - 1) * 30;
 
-        while (gameManager.isCameraMove)
+        while (transform.position.x <= destiny)
         {
-            if(transform.position.x >= 30 * (gameManager.tileCount - 1)) { break; }
-            transform.position += moveV;
-            yield return cameraPosUpdate;
+            transform.position += moveV * Time.deltaTime;
+            yield return isCameraMove;
         }
     }
 }

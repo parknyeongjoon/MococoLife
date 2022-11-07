@@ -2,6 +2,8 @@
 
 public enum Dmg_Type { None, UnBreakable, Damage, Stagger, Hit, Destruction }
 
+public enum Boss { Baltan }
+
 #endregion
 
 #region interface
