@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ItemData", menuName = "ScriptableObject/Item/ItemData")]
+[CreateAssetMenu(fileName = "ItemData", menuName = "SO/Item/ItemData")]
 public class ItemData : ScriptableObject
 {
     public Sprite itemImg;

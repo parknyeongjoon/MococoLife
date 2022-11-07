@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &7121939279918771228
+--- !u!1001 &1372636479656380283
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -9,27 +9,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2448987941183985909, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_Name
-      value: BlackEgg
+      value: RedEgg
       objectReference: {fileID: 0}
     - target: {fileID: 2817065288843685149, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_Color.b
-      value: 0.111605525
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2817065288843685149, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_Color.g
-      value: 0.111605525
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2817065288843685149, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_Color.r
-      value: 0.11320752
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3212295298928092162, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: hp
-      value: 5
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3212295298928092162, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: dmg_Type
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8266241095160045465, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_RootOrder

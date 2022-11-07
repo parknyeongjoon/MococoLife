@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GrenadeData", menuName = "ScriptableObject/Item/GrenadeData")]
+[CreateAssetMenu(fileName = "GrenadeData", menuName = "SO/Item/GrenadeData")]
 public class GrenadeData : ItemData
 {
     [SerializeField] protected Dmg_Type dmg_Type;
