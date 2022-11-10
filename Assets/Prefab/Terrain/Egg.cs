@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Egg : MonoBehaviourPun, IDamagable
+public class Egg : Terrain
 {
-    [SerializeField] Dmg_Type dmg_Type;
-    [SerializeField] float hp;
 
-    public void Damage(Dmg_Type _dmg_Type, float dmg)
+    public override void Damage(Dmg_Type _dmg_Type, float dmg)
     {
         if(dmg_Type == _dmg_Type)
         {
             hp -= dmg;
             if(hp <= 0)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);//동기화 되나 확인해보기
+                //깨질 때 보상넣기
             }
         }
     }

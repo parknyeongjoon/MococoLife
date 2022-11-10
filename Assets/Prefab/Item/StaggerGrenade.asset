@@ -18,5 +18,5 @@ MonoBehaviour:
   needWood: 2
   needStone: 2
   needTime: 3
-  dmg_Type: 3
+  dmg_Type: 6
   dmg: 1

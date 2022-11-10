@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db165bf3f9b224f419c85969ea754100, type: 3}
   m_Name: FrameGrenadeData
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 0}
-  code: 
-  maxCount: 0
-  needWood: 0
-  needStone: 0
-  needTime: 0
-  dmg_Type: 0
-  dmg: 0
-  dmg_Count: 0
+  itemImg: {fileID: 21300000, guid: bc13cc982811d2341bd4bd8913f846c9, type: 3}
+  code: BI_03
+  maxCount: 3
+  needWood: 3
+  needStone: 3
+  needTime: 2
+  dmg_Type: 7
+  dmg: 1
+  dmg_Count: 5
+  dmg_Interval: 0.5

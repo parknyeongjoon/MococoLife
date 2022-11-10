@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Terrain : MonoBehaviour
+public class Terrain : MonoBehaviourPun, IDamagable
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] protected Dmg_Type dmg_Type;
+    [SerializeField] protected float hp;
 
-    // Update is called once per frame
-    void Update()
+    public virtual void Damage(Dmg_Type _dmg_Type, float dmg)
     {
-        
+        if (dmg_Type == _dmg_Type)
+        {
+            hp -= dmg;
+            if (hp <= 0)
+            {
+                gameObject.SetActive(false);//동기화 되나 확인해보기
+            }
+        }
     }
 }

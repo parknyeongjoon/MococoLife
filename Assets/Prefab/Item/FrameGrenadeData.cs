@@ -6,6 +6,7 @@ using UnityEngine;
 public class FrameGrenadeData : GrenadeData
 {
     [SerializeField] int dmg_Count;
+    [SerializeField] float dmg_Interval;
 
     public override void Effect(Vector2Int effectPos)
     {
@@ -14,16 +15,21 @@ public class FrameGrenadeData : GrenadeData
 
         for (int i = 0; i < tS; i++)
         {
-            FrameGrenadeEffect(targets[i]);
+            targets[i].GetComponent<MonoBehaviour>().StartCoroutine(FrameGrenadeEffect(targets[i]));
         }
     }
 
-    IEnumerator FrameGrenadeEffect(Collider2D target)//2중for문에 getcomponent 너무 낭비인듯..
+    IEnumerator FrameGrenadeEffect(Collider2D target)
     {
-        for(int i = 0; i < dmg_Count; i++)
+        IDamagable damagable = target.GetComponent<IDamagable>();
+
+        if (damagable != null)
         {
-            target.GetComponent<IDamagable>().Damage(dmg_Type, dmg);
+            for (int i = 0; i < dmg_Count; i++)
+            {
+                damagable.Damage(dmg_Type, dmg);
+                yield return new WaitForSeconds(dmg_Interval);
+            }
         }
-        yield return new WaitForSeconds(0.1f);
     }
 }

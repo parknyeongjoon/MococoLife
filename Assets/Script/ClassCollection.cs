@@ -1,6 +1,6 @@
 #region enum
 
-public enum Dmg_Type { None, UnBreakable, Damage, Stagger, Hit, Destruction }
+public enum Dmg_Type { None, Hammer, Axe, Pickaxe, UnBreakable, Damage, Stagger, Hit, Destruction }
 
 public enum Boss { Baltan }
 

@@ -29,7 +29,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3212295298928092162, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: dmg_Type
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8266241095160045465, guid: d8df049598750784dae4992fcc813f58, type: 3}
       propertyPath: m_RootOrder
