@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GrenadeData", menuName = "SO/Item/GrenadeData")]
-public class GrenadeData : ItemData
+public class GrenadeData : BattleItemData
 {
     [SerializeField] protected Dmg_Type dmg_Type;
     [SerializeField] protected float dmg;

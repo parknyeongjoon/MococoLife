@@ -8,6 +8,11 @@ public class Terrain : MonoBehaviourPun, IDamagable
     [SerializeField] protected Dmg_Type dmg_Type;
     [SerializeField] protected float hp;
 
+    void Start()
+    {
+        
+    }
+
     public virtual void Damage(Dmg_Type _dmg_Type, float dmg)
     {
         if (dmg_Type == _dmg_Type)

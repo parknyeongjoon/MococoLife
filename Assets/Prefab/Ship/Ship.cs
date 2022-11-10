@@ -25,9 +25,9 @@ public class Ship : MonoBehaviourPun
     {
         curWood++;
         curStone++;
-        needWoodText.text = curWood.ToString() + " / " + creatingItem.needWood.ToString();
-        needStoneText.text = curStone.ToString() + " / " + creatingItem.needStone.ToString();
-        if (curWood >= creatingItem.needWood && curStone >= creatingItem.needStone)
+        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
+        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
+        if (curWood >= ((BattleItemData)creatingItem).needWood && curStone >= ((BattleItemData)creatingItem).needStone)
         {
             PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
         }
@@ -101,8 +101,8 @@ public class Ship : MonoBehaviourPun
         CloseCreatePanel();
         creatingItem = itemDic[code];
         curWood = 0; curStone = 0;
-        needWoodText.text = curWood.ToString() + " / " + creatingItem.needWood.ToString();
-        needStoneText.text = curStone.ToString() + " / " + creatingItem.needStone.ToString();
+        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
+        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
         needPanel.SetActive(true);
     }
 
@@ -120,10 +120,10 @@ public class Ship : MonoBehaviourPun
         float cur_Time = 0;
         creatingP.color = Color.red;
 
-        while (cur_Time <= creatingItem.needTime)
+        while (cur_Time <= ((BattleItemData)creatingItem).needTime)
         {
             cur_Time += Time.deltaTime;
-            creatingP.fillAmount = cur_Time / creatingItem.needTime;
+            creatingP.fillAmount = cur_Time / ((BattleItemData)creatingItem).needTime;
             yield return null;
         }
 
