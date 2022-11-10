@@ -29,12 +29,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public float gameSpeed;
     public int difficulty;
-    public int tileCount;
 
     [Header("Data")]
     public testPlayerMove[] players = new testPlayerMove[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
-    public AreaSO areas;
 
     //Ready
     public bool isGameReady;
@@ -50,7 +48,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();//옮기기
-        StartCoroutine(SetGame());
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)//Scene이 호출될 때 실행되는 함수
@@ -58,42 +55,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log(scene.name);
         Debug.Log(mode);
     }
-
-    IEnumerator SetGame()
-    {
-        yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        RPCSetGameArea();
-    }
-
-    #region Tile
-
-    public void RPCSetGameArea()
-    {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            int[] tiles = new int[tileCount];
-
-            for (int i = 0; i < tileCount; i++)
-            {
-                tiles[i] = Random.Range(0, areas.bossAreas.Count);
-            }
-
-            PV.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
-        }
-    }
-
-    [PunRPC]
-    void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
-    {
-        for (int i = 0; i < tileCount; i++)
-        {
-            Instantiate(areas.bossAreas[tiles[i]], new Vector3(30 * i, 0, 0), Quaternion.identity);
-        }
-
-        GameObject.Find("RightBoundary").transform.position = new Vector3(30 * tileCount - 15, 0, 0);
-    }
-
-    #endregion
 
     #region NetworkManage
 

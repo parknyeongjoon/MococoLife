@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ProductTerrain : Terrain
 {
-    [SerializeField] GameObject product;//부산물
+    PoolManager poolManager;
+
+    [SerializeField] ItemData productData;//생성물
     [SerializeField] int productCount;
     int remainProduct;
     float productHP;
@@ -13,6 +15,7 @@ public class ProductTerrain : Terrain
     {
         remainProduct = productCount - 1;
         productHP = hp / productCount * remainProduct;
+        poolManager = PoolManager.Instance;
     }
 
     public override void Damage(Dmg_Type _dmg_Type, float dmg)
@@ -25,6 +28,7 @@ public class ProductTerrain : Terrain
                 //product 생산
                 remainProduct -= 1;
                 productHP = hp / productCount * remainProduct;
+                SpawnProduct();
 
                 if (hp <= 0)
                 {
@@ -32,5 +36,10 @@ public class ProductTerrain : Terrain
                 }
             }
         }
+    }
+
+    void SpawnProduct()//생성할 위치 계산해서 생성물 생성
+    {
+        poolManager.Get(productData.code, transform.position - new Vector3(-1, 0, 0));
     }
 }

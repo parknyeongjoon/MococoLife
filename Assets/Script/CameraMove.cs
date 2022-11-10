@@ -11,8 +11,7 @@ public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
         yield return new WaitUntil(() => GameManager.Instance != null);
         gameManager = GameManager.Instance;
 
-        yield return new WaitUntil(() => gameManager.isGameReady);
-
+        yield return new WaitUntil(() => gameManager.isGameReady && TileManager.Instance != null);
         StartCoroutine(MoveCamera(gameManager.gameSpeed));
     }
 
@@ -21,7 +20,7 @@ public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
         gameManager.isPause = false;
         Vector3 moveV = new Vector3(cameraSpeed, 0, 0);
         WaitWhile isCameraMove = new WaitWhile(() => gameManager.isPause);
-        float destiny = (gameManager.tileCount - 1) * 30;
+        float destiny = (TileManager.Instance.tileCount - 1) * 30;
 
         while (transform.position.x <= destiny)
         {

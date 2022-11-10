@@ -7,11 +7,9 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     public Sprite itemImg;
+    public GameObject prefab;
     public string code;
     public int maxCount;
-    public int needWood;
-    public int needStone;
-    public float needTime;
 
     public virtual void Effect(Vector2Int effectPos)
     {
