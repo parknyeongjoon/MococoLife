@@ -18,13 +18,16 @@ public class TileManager : MonoBehaviourPun
         }
     }
 
-    PhotonView PV;
-
     public AreaSO areas;
-    [SerializeField] GameObject rightBoundary;
+    public GameObject rightBoundary;
 
     TileInfo[][] tileInfos;
     public int tileCount;
+
+    IEnumerator Start()
+    {
+        yield return SetGame();
+    }
 
     IEnumerator SetGame()
     {
@@ -43,18 +46,7 @@ public class TileManager : MonoBehaviourPun
                 tiles[i] = Random.Range(0, areas.bossAreas.Count);
             }
 
-            PV.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
+            GameManager.Instance.PV.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
         }
-    }
-
-    [PunRPC]
-    void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
-    {
-        for (int i = 0; i < tileCount; i++)
-        {
-            Instantiate(areas.bossAreas[tiles[i]], new Vector3(30 * i, 0, 0), Quaternion.identity);
-        }
-
-        GameObject.Find("RightBoundary").transform.position = new Vector3(30 * tileCount - 15, 0, 0);
     }
 }

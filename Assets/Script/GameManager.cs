@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    PhotonView PV;
+    public PhotonView PV;
 
     [Header("Game")]
     public bool isPause;
@@ -55,6 +55,25 @@ public class GameManager : MonoBehaviourPunCallbacks
         Debug.Log(scene.name);
         Debug.Log(mode);
     }
+
+    #region Tiles
+
+    [PunRPC]
+    void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
+    {
+        Debug.Log("1");
+        TileManager tileManager = TileManager.Instance;
+        Debug.Log("2");
+
+        for (int i = 0; i < tileManager.tileCount; i++)
+        {
+            Instantiate(tileManager.areas.bossAreas[tiles[i]], new Vector3(30 * i, 0, 0), Quaternion.identity);
+        }
+        Debug.Log("3");
+        tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.tileCount - 15, 0, 0);
+    }
+
+    #endregion
 
     #region NetworkManage
 
