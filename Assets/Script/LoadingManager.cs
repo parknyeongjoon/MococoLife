@@ -16,14 +16,14 @@ public class LoadingManager : MonoBehaviourPun
 
     private void Start()
     {
+        photonView.RPC("UpdatePlayerText", RpcTarget.AllViaServer);
+
         timeCount = 0f;
-        playerCount = 1;
-        playerText.text = "1 / 4";
     }
 
     private void Update()
     {
-        if (PhotonNetwork.PlayerList.Length < 4)
+        if (PhotonNetwork.PlayerList.Length < PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             if (timeCount <= 1.5f) timeCount += Time.deltaTime;
             if (timeCount <= 0.5f)
@@ -46,13 +46,22 @@ public class LoadingManager : MonoBehaviourPun
         }
         else
         {
+            MoveToStage();
+        }
+    }
+
+    public void MoveToStage()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
             PhotonNetwork.LoadLevel("Stage");
         }
+    }
 
-        if (PhotonNetwork.PlayerList.Length != playerCount)
-        {
-            playerCount = PhotonNetwork.PlayerList.Length;
-            playerText.text = playerCount.ToString() + " / 4";
-        }
+    [PunRPC]
+    void UpdatePlayerText()
+    {
+        playerCount = PhotonNetwork.PlayerList.Length;
+        playerText.text = playerCount.ToString() + " / 4";
     }
 }

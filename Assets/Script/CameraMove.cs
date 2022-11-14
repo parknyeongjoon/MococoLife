@@ -11,7 +11,7 @@ public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
         yield return new WaitUntil(() => GameManager.Instance != null);
         gameManager = GameManager.Instance;
 
-        yield return new WaitUntil(() => gameManager.isGameReady && TileManager.Instance != null);
+        yield return new WaitUntil(() => gameManager.isGameReady[0] && TileManager.Instance != null);//바꾸기
         StartCoroutine(MoveCamera(gameManager.gameSpeed));
     }
 
