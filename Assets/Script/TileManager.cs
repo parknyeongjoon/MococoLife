@@ -24,29 +24,20 @@ public class TileManager : MonoBehaviourPun
     TileInfo[][] tileInfos;
     public int tileCount;
 
-    IEnumerator Start()
+    void Awake()
     {
-        yield return SetGame();
+        instance = this;
     }
 
-    IEnumerator SetGame()
+    public int[] AreaInitialize()
     {
-        yield return new WaitUntil(() => PhotonNetwork.InRoom);
-        RPCSetGameArea();
-    }
+        int[] tiles = new int[tileCount];
 
-    public void RPCSetGameArea()
-    {
-        if (PhotonNetwork.IsMasterClient)
+        for (int i = 0; i < tileCount; i++)
         {
-            int[] tiles = new int[tileCount];
-
-            for (int i = 0; i < tileCount; i++)
-            {
-                tiles[i] = Random.Range(0, areas.bossAreas.Count);
-            }
-
-            GameManager.Instance.PV.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
+            tiles[i] = Random.Range(0, areas.bossAreas.Count);
         }
+
+        return tiles;
     }
 }

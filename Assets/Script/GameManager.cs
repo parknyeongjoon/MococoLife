@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public PhotonView PV;
-
     [Header("Game")]
     public bool isPause;
 
@@ -31,7 +29,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int difficulty;
 
     [Header("Data")]
-    //public testPlayerMove[] players = new testPlayerMove[4];
+    public int myPlayerNum;
+    public PlayerMove[] players = new PlayerMove[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
 
     //Ready
@@ -41,17 +40,32 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         instance = this;
         DontDestroyOnLoad(this);
-        PV = photonView;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)//Scene이 호출될 때 실행되는 함수
     {
-        Debug.Log(scene.name);
-        Debug.Log(mode);
+        if (scene.name == "Stage")
+        {
+            Debug.Log("Stage 씬 시작");
+            StartCoroutine(StageInitialize());
+        }
     }
 
     #region Tiles
+
+    IEnumerator StageInitialize()
+    {
+        yield return new WaitUntil(() => TileManager.Instance != null);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //GameArea 제작
+            int[] tiles = TileManager.Instance.AreaInitialize();
+            photonView.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
+        }
+        //플레이어 생성
+        PhotonNetwork.Instantiate("Player", new Vector3(7, 3 * myPlayerNum, 0), Quaternion.identity);
+    }
 
     [PunRPC]
     void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
@@ -60,7 +74,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         for (int i = 0; i < tileManager.tileCount; i++)
         {
-            Instantiate(tileManager.areas.bossAreas[tiles[i]], new Vector3(30 * i, 0, 0), Quaternion.identity);
+            GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
+            temp.transform.position += new Vector3(30 * i, 0, 0);
         }
         tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.tileCount - 15, 0, 0);
     }

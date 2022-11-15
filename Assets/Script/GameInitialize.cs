@@ -8,8 +8,9 @@ public class GameInitialize : MonoBehaviour
     GameManager gameManager;
     [SerializeField] List<ItemData> itemList;
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return new WaitUntil(() => GameManager.Instance != null);
         gameManager = GameManager.Instance;
 
         for (int i = 0; i < itemList.Count; i++)
