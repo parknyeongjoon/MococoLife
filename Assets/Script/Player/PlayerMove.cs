@@ -6,116 +6,155 @@ using Photon.Pun;
 public class PlayerMove : MonoBehaviourPun
 {
     PhotonView PV;
-    GameObject io;
+    TileManager tileManager;
 
-    private enum State { Idle, Dash, Attack, Dead };
-    private enum Hand { Hammer, Mine, Axe, Item };
+    float hp = 100;
+    State state;
+    Slot hand = new Slot();
+    Vector3 moveDir;
 
-    private float hp = 100;
-    private Vector3 mousePos;
-    private ProductTerrain to;
+    Slot[] inventory = new Slot[4];
+
+    [SerializeField] CircleCollider2D toolCollider;
 
     void Start()
     {
         PV = photonView;
-    }
-
-    void Dash()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.position += new Vector3(0, 0.01f, 0);
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.position += new Vector3(-0.01f, 0, 0);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.position += new Vector3(0, -0.01f, 0);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.position += new Vector3(0.01f, 0, 0);
-        }
-    }
-
-    void OnTriggerStay2D(Collider2D collision)//충돌체 오브젝트에 스크립트로 빼기
-    {
-        if (collision.CompareTag("Tree"))
-        {
-            Debug.Log("Meet Tree");
-            io = collision.gameObject;
-        }
-        else if (collision.CompareTag("Stone"))
-        {
-            Debug.Log("You Can Mining");
-            io = collision.gameObject;
-        }
+        tileManager = TileManager.Instance;
     }
 
     void Update()
     {
         if (PV.IsMine)
         {
-            if (Input.GetKey(KeyCode.W))
+            Move();
+
+            if (state == State.Idle && Input.GetKey(KeyCode.Space))
             {
-                transform.position += new Vector3(0, 2, 0) * Time.deltaTime;
+                StartCoroutine(Dash());
             }
-            if (Input.GetKey(KeyCode.A))
+
+            if (state == State.Idle && Input.GetKey(KeyCode.E))
             {
-                transform.position += new Vector3(-2, 0, 0) * Time.deltaTime;
+                Interactive();
             }
-            if (Input.GetKey(KeyCode.S))
+        }
+    }
+    #region Action
+
+    void Move()
+    {
+
+        if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
+        {
+            moveDir.y = 0;
+        }
+        else if (Input.GetKey(KeyCode.W))
+        {
+            moveDir.y = 2;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            moveDir.y = -2;
+        }
+        else
+        {
+            moveDir.y = 0;
+        }
+
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.D))
+        {
+            moveDir.x = 0;
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            moveDir.x = -2;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            moveDir.x = 2;
+        }
+        else
+        {
+            moveDir.x = 0;
+        }
+
+        if (state == State.Idle && moveDir != Vector3.zero)
+        {
+            transform.position += moveDir * Time.deltaTime;
+            toolCollider.offset = new Vector2(moveDir.x, moveDir.y);
+        }
+    }
+
+    IEnumerator Dash()
+    {
+        state = State.Dash;
+
+        float time = 0.0f;
+
+        while (time <= 0.2f)
+        {
+            transform.position += moveDir * 3 * Time.deltaTime;
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        state = State.Idle;
+    }
+
+    void Interactive()
+    {
+        if(hand.itemData.Item_Type != Item_Type.BattleItem)//손에 있는 게 배템이 아니라면
+        {
+            int pX = (int)transform.position.x;
+            int pY = (int)transform.position.y;
+
+            Slot tileSlot = tileManager.tileInfos[pX][pY].tileSlot;
+
+            if (tileSlot.itemData != null)//바닥에 아이템이 있다면 손에 있는 것과 바꾸기
             {
-                transform.position += new Vector3(0, -2, 0) * Time.deltaTime;
+                Slot temp = tileSlot;
+                tileSlot = hand;
+                hand = temp;
+                ///캐릭터 손과 타일 스프라이트 변경
             }
-            if (Input.GetKey(KeyCode.D))
+            else if(tileSlot.itemData == hand.itemData)//바닥에 있는 아이템과 손에 들고 있는 아이템이 같다면
             {
-                transform.position += new Vector3(2, 0, 0) * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                if (io != null)
+                //나무나 돌이라면 겹치기
+                if (hand.itemData.code == "I_00" || hand.itemData.code == "I_01")//나무(01)나 돌(01)이라면
                 {
-                    Debug.Log("Tree To Wood");
-                    to = io.GetComponent<ProductTerrain>();
-                    to.Damage(Dmg_Type.None, 30);
-                    //io = io.getscript
+                    if (hand.itemCount + tileSlot.itemCount > hand.itemData.maxCount)//최대 들 수 있는 개수보다 많다면
+                    {
+                        hand.itemCount = hand.itemData.maxCount;
+                        tileSlot.itemCount = hand.itemCount + tileSlot.itemCount - hand.itemData.maxCount;
+                        ///캐릭터 손과 타일 스프라이트 변경
+                    }
+                    else
+                    {
+                        hand.itemCount = hand.itemCount + tileSlot.itemCount;
+                        tileSlot.itemData = null;
+                        tileSlot.itemCount = 0;
+                    }
                 }
             }
-            if (Input.GetKey(KeyCode.Space))
+            else//바닥에 아이템이 없다면 그냥 내려놓기
             {
-                Dash();
+                tileSlot = hand;
+                hand.itemData = null;
+                hand.itemCount = 0;
+                ///캐릭터 손과 타일 스프라이트 변경
             }
-            //if()   
         }
-        /*
-        Hand가 ax, Mine일때 쓰는 콜라이더
-        Terrain 값을 interface를 불러서 사용
-        Hand에서 Terrain 관련 있을 시 데미지 적용.
-        if(Hand == AX){
-            벌목
-            if(Input.GetMouseButton(0)&&나무 object){
-
-
-        }
-        }
-        if(Hand == MINE){
-            if(Input.GetMouseButton(0)&&광석 object)
-
-            채광
-        }
-        if(Hand == ITEM){
-            if(Input.GetMouseButton(0)){
-            mousePos = Input.mousePosition;
-            effect
-        }
-            배템(시정 빼고)
-        }
-        if(Hand == NULL){
-        //바닥의 템을 줍는 콜라이더
-        }
-        */
     }
+
+    #endregion
+
+    #region Item
+
+    void UseItem(int index, Vector2Int effectPos)
+    {
+        inventory[index].itemData.Effect(effectPos);
+    }
+
+    #endregion
 }

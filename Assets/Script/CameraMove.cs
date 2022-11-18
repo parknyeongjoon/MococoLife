@@ -20,7 +20,7 @@ public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
     {
         gameManager.isPause = false;
         WaitWhile cameraWaitWhile = new WaitWhile(() => gameManager.isPause || !isCameraMove);
-        float destiny = (TileManager.Instance.tileCount - 1) * 30;
+        float destiny = (TileManager.Instance.areaCount - 1) * 30;
 
         while (transform.position.x <= destiny)
         {

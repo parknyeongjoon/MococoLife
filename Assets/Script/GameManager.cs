@@ -72,12 +72,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         TileManager tileManager = TileManager.Instance;
 
-        for (int i = 0; i < tileManager.tileCount; i++)
+        for (int i = 0; i < tileManager.areaCount; i++)
         {
             GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
             temp.transform.position += new Vector3(30 * i, 0, 0);
         }
-        tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.tileCount - 15, 0, 0);
+        tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.areaCount - 15, 0, 0);
     }
 
     #endregion

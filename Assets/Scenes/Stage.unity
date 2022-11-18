@@ -460,6 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 357959543f6c9d34d94f7c330d447e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCameraMove: 0
 --- !u!1001 &1551795937
 PrefabInstance:
   m_ObjectHideFlags: 0

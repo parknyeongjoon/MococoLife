@@ -9,6 +9,7 @@ public class ItemData : ScriptableObject
     public Sprite itemImg;
     public GameObject prefab;
     public string code;
+    public Item_Type Item_Type;
     public int maxCount;
 
     public virtual void Effect(Vector2Int effectPos)
