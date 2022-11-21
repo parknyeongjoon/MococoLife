@@ -33,7 +33,7 @@ public class PoolManager : MonoBehaviour
         for(int i = 0; i < pS; i++)
         {
             pools.Add(prefabDatas[i].code, new List<GameObject>());
-            pools[prefabDatas[i].code].Add(prefabDatas[i].prefab);
+            //pools[prefabDatas[i].code].Add(prefabDatas[i].prefab);
         }
     }
 

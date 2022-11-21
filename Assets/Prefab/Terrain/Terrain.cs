@@ -14,8 +14,11 @@ public class Terrain : MonoBehaviourPun, IDamagable
         int tX = (int)transform.position.x;
         int tY = (int)transform.position.y;
 
+        Debug.Log(tX);
+        Debug.Log(tY);
+
         tileManager = TileManager.Instance;
-        tileManager.tileInfos[tX][tY].isTerrain = true;
+        //tileManager.tileInfos[tX][tY].isTerrain = true;
     }
 
     public virtual void Damage(Dmg_Type _dmg_Type, float dmg)

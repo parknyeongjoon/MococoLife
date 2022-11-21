@@ -1,5 +1,7 @@
 using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TileManager : MonoBehaviourPun
 {
@@ -16,16 +18,30 @@ public class TileManager : MonoBehaviourPun
         }
     }
 
+    GameManager gameManager;
+
     public AreaSO areas;
     public GameObject rightBoundary;
 
     public int areaCount;
     public TileInfo[][] tileInfos;
+    public Tilemap terrainTileMap;
 
     void Awake()
     {
-        instance = this;
+        gameManager = GameManager.Instance;
+
         tileInfos = new TileInfo[30 * areaCount][];
+        for (int i = 0; i < 30 * areaCount; i++)
+        {
+            tileInfos[i] = new TileInfo[14];
+            for(int j = 0; j < 14; j++)
+            {
+                tileInfos[i][j] = new TileInfo();
+            }
+        }
+
+        instance = this;
     }
 
     public int[] AreaInitialize()

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a5c0c1f51eb28b4e9bef21707e8f96f, type: 3}
-  m_Name: Stone
+  m_Name: Axe
   m_EditorClassIdentifier: 
-  itemImg: {fileID: -132287597, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
-  tileImg: {fileID: 11400000, guid: 79daf4ae589a96b4bb67ec55f47b4607, type: 2}
-  code: I_01
+  itemImg: {fileID: 756315983, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  tileImg: {fileID: 11400000, guid: 3c01bccb0fb93e043ae4e0241188f93c, type: 2}
+  code: T_01
   Item_Type: 0
-  maxCount: 5
+  maxCount: 1

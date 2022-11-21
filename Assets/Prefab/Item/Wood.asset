@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c0c1f51eb28b4e9bef21707e8f96f, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 21300000, guid: baf44b2e5da762c47857beb122e91c80, type: 3}
-  prefab: {fileID: 7894534518979097869, guid: bacea30714574b8499b62f796679d4f5, type: 3}
+  itemImg: {fileID: 841341045, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  tileImg: {fileID: 11400000, guid: 98dd70d5dc9fb5d41b0dbd845538e3b7, type: 2}
   code: I_00
-  maxCount: 3
+  Item_Type: 0
+  maxCount: 5

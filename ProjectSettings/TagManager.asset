@@ -5,7 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Tree
-  - Stone
+  - Axe
+  - Pickaxe
+  - Rock
   layers:
   - Default
   - TransparentFX
@@ -13,8 +15,8 @@ TagManager:
   - Player
   - Water
   - UI
-  - Terrain
-  - Item
+  - Tile
+  - 
   - 
   - 
   - 
