@@ -13,7 +13,7 @@ public class ItemData : ScriptableObject
     public Item_Type Item_Type;
     public int maxCount;
 
-    public virtual void Effect(Vector2Int effectPos)
+    public virtual void Effect(Vector2 effectPos)
     {
 
     }

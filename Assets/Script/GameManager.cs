@@ -82,6 +82,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         ChangeTile(2, 3, "T_01", 1);
 
+        ChangeTile(2, 5, "T_02", 1);
+
         tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.areaCount - 15, 0, 0);
     }
 
@@ -89,19 +91,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void ChangeTile(int x, int y, string _to, int count)///_to를 null로 받는 건 너무 위험한가
     {
-        if (_to == "")
+        if (_to == null)
         {
             tileManager.tileInfos[x][y].tileSlot.itemData = null;
             tileManager.tileInfos[x][y].tileSlot.itemCount = 0;
             Vector3Int temp = tileManager.terrainTileMap.WorldToCell(new Vector3Int(x, y));//월드에서 타일 좌표로 변환
             tileManager.terrainTileMap.SetTile(temp, null);//지우기
         }
-        else
+        else if (itemDic.ContainsKey(_to))
         {
             tileManager.tileInfos[x][y].tileSlot.itemData = itemDic[_to];
             tileManager.tileInfos[x][y].tileSlot.itemCount = count;
-            Vector3Int temp = tileManager.terrainTileMap.WorldToCell(new Vector3Int(x % 30, y));//월드에서 타일 좌표로 변환
+            Vector3Int temp = tileManager.terrainTileMap.WorldToCell(new Vector3Int(x, y));//월드에서 타일 좌표로 변환
             tileManager.terrainTileMap.SetTile(temp, itemDic[_to].tileImg);//특정 아이템 타일로 그려주기
+        }
+        else
+        {
+            Debug.Log("itemDic에 없는 아이템");
         }
 
     }

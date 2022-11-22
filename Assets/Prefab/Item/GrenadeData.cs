@@ -8,7 +8,7 @@ public class GrenadeData : BattleItemData
     [SerializeField] protected Dmg_Type dmg_Type;
     [SerializeField] protected float dmg;
 
-    public override void Effect(Vector2Int effectPos)
+    public override void Effect(Vector2 effectPos)
     {
         Collider2D[] targets = FindTarget(effectPos);
 
@@ -23,7 +23,7 @@ public class GrenadeData : BattleItemData
         }
     }
 
-    protected Collider2D[] FindTarget(Vector2Int effectPos)
+    protected Collider2D[] FindTarget(Vector2 effectPos)
     {
         return Physics2D.OverlapBoxAll(effectPos, new Vector2(0.5f, 0.5f), 0, 1 << LayerMask.NameToLayer("Terrain"));
     }

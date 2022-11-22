@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8370657146039837149}
   - component: {fileID: 385477165700315323}
   - component: {fileID: 5369946571365324644}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Tree
   m_TagString: Tree
   m_Icon: {fileID: 0}
@@ -99,9 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dmg_Type: 2
-  hp: 20
+  hp: 5
   productData: {fileID: 11400000, guid: a54b2f15051691f429847bc5a2c0c7b7, type: 2}
-  productCount: 3
+  productCount: 5
 --- !u!61 &5369946571365324644
 BoxCollider2D:
   m_ObjectHideFlags: 0

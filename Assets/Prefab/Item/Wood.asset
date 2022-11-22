@@ -16,4 +16,4 @@ MonoBehaviour:
   tileImg: {fileID: 11400000, guid: 98dd70d5dc9fb5d41b0dbd845538e3b7, type: 2}
   code: I_00
   Item_Type: 0
-  maxCount: 5
+  maxCount: 3

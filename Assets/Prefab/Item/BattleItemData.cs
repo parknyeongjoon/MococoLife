@@ -9,7 +9,7 @@ public class BattleItemData : ItemData
     public int needStone;
     public float needTime;
 
-    public override void Effect(Vector2Int effectPos)
+    public override void Effect(Vector2 effectPos)
     {
         
     }
