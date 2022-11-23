@@ -11,7 +11,6 @@ public class ItemData : ScriptableObject
     public TileBase tileImg;
     public string code;
     public Item_Type Item_Type;
-    public int maxCount;
 
     public virtual void Effect(Vector2 effectPos)
     {

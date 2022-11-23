@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be103e57f9c1b084c99c92f975f319ae, type: 3}
   m_Name: DestructionGrenade
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 21300000, guid: 7b5e4aca4b354a543a066d87b9063d3f, type: 3}
+  itemImg: {fileID: 309595063, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  tileImg: {fileID: 0}
   code: BI_02
-  maxCount: 3
+  Item_Type: 1
   needWood: 2
   needStone: 2
   needTime: 3

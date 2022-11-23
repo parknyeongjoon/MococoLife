@@ -20,22 +20,11 @@ public class PlayerInfo : MonoBehaviourPun
         gameManager = GameManager.Instance;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     [PunRPC]
-    public void SetHandImg(int index, string code)
+    public void SetHand(int index, string code, int count)
     {
-        if (code == null)
-        {
-            gameManager.players[index].handImg.sprite = null;
-        }
-        else
-        {
-            gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
-        }
+        hand.itemData = gameManager.itemDic[code];
+        hand.itemCount = count;
+        gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
     }
 }

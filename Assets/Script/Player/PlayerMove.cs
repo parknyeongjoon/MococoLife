@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.EventSystems;
 
 public class PlayerMove : MonoBehaviourPun
 {
@@ -37,9 +38,16 @@ public class PlayerMove : MonoBehaviourPun
             {
                 Interactive();
             }
-            else if (Input.GetMouseButtonDown(0))
+            else if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)//UI가 아닌 곳을 좌클릭했을 때
             {
-                info.hand.itemData.Effect(transform.position + effectPos);
+                if(info.hand.itemData.Item_Type == Item_Type.Tool)
+                {
+                    info.hand.itemData.Effect(transform.position + effectPos);
+                }
+                else if (info.hand.itemData.Item_Type == Item_Type.BattleItem)
+                {
+                    //배템 사용 + 아이템 개수 줄이기
+                }
             }
         }
     }
@@ -103,7 +111,6 @@ public class PlayerMove : MonoBehaviourPun
         info.state = State.Idle;
     }
 
-    [PunRPC]
     void Interactive()//다른 거 들고 있을 때(아무것도 없을 때) 나무나 목재 들 때 체크해주기
     {
         int pX = (int)transform.position.x;
@@ -111,7 +118,30 @@ public class PlayerMove : MonoBehaviourPun
 
         Slot tileSlot = tileManager.tileInfos[pX][pY].tileSlot;
 
-        if (info.hand.itemData == null || info.hand.itemData.Item_Type == Item_Type.BattleItem)//손에 들고 있는 게 없거나 배템이라면
+        if(tileSlot.itemData == null && info.hand.itemData.Item_Type != Item_Type.BattleItem)//빈칸이고 손에 든 게 배틀아이템이 아니라면
+        {
+            gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.hand.itemData.code, info.hand.itemCount);//아이템 집어넣고
+            info.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.myPlayerNum, "T_00", 0);//손은 맨손으로
+        }
+        else if(tileSlot.itemData != null)//바닥에 아이템이 있다면
+        {
+            if (info.hand.itemData.code == "T_00" || info.hand.itemData.Item_Type == Item_Type.BattleItem)//빈 손이거나 배템이라면 줍기
+            {
+                info.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.myPlayerNum, tileSlot.itemData.code, tileSlot.itemCount);//줍고
+                gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, null, 0);//바닥을 깨끗하게
+
+            }
+            else if (info.hand.itemData.Item_Type == Item_Type.Ingredient)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        /*
+        if (info.hand.itemData.Item_Type == Item_Type.BattleItem)//손에 들고 있는 게 없거나 배템이라면
         {
             if (tileSlot.itemData != null)//바닥에 아이템이 있다면 손에 들기
             {
@@ -128,7 +158,7 @@ public class PlayerMove : MonoBehaviourPun
         }
         else//손에 들고 있는 게 있고
         {
-            if (tileSlot.itemData == info.hand.itemData)//바닥에 있는 아이템과 손에 들고 있는 아이템이 같다면
+            if (tileSlot.itemData == info.hand.itemData)//나무나 목재라면 최대개수 체크하기
             {
                 if (info.hand.itemCount + tileSlot.itemCount > info.hand.itemData.maxCount)//최대 들 수 있는 개수보다 많다면 최대한만 들기
                 {
@@ -151,6 +181,7 @@ public class PlayerMove : MonoBehaviourPun
                     info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, info.hand.itemData.code);
                 }
             }
+            if (false) { }
             else if (tileSlot.itemData != null)//바닥에 아이템이 있다면
             {
                 Slot temp = new Slot();
@@ -179,6 +210,12 @@ public class PlayerMove : MonoBehaviourPun
                 info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, null);
             }
         }
+        */
+    }
+
+    void SwapHandTile(Slot tileSlot, Slot handSlot, int X, int Y)
+    {
+
     }
 
     #endregion

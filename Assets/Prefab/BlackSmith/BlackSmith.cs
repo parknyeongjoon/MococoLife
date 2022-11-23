@@ -5,34 +5,12 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine.UI;
 
-public class Ship : MonoBehaviourPun
+public class BlackSmith : MonoBehaviourPun
 {
     PhotonView PV;
+    GameManager gameManager;
 
-    //지우기
-    [SerializeField] List<ItemData> itemList;//gameManager로 옮기기
-    Dictionary<string, ItemData> itemDic = new();//gameManager로 옮기기
-
-    public void RPCtestIngredientPlus()
-    {
-        if (PV.IsMine)
-        {
-            PV.RPC("testIngredientPlus", RpcTarget.AllViaServer);
-        }
-    }
-    [PunRPC]
-    void testIngredientPlus()
-    {
-        curWood++;
-        curStone++;
-        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
-        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
-        if (curWood >= ((BattleItemData)creatingItem).needWood && curStone >= ((BattleItemData)creatingItem).needStone)
-        {
-            PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
-        }
-    }
-
+    //
     void OnMouseDown()
     {
         if (create_State == Create_State.idle)
@@ -63,23 +41,50 @@ public class Ship : MonoBehaviourPun
     void Start()
     {
         PV = photonView;
+        gameManager = GameManager.Instance;
+
         createPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
         needPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
         creatingPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
-
-        //지우기
-        for (int i = 0; i < itemList.Count; i++)
-        {
-            itemDic.Add(itemList[i].code, itemList[i]);
-        }
-        //지우기
     }
 
-    public void RPCSetNeedPanel(string code)
+    public void RPCSetNeedPanel(string code)///지금은 인스펙터 창에서 하는데 itemData 넣어서 가능하게 하기
     {
         if (create_State == Create_State.idle)
         {
             PV.RPC("SetNeedPanel", RpcTarget.AllViaServer, code);
+        }
+    }
+
+    [PunRPC]
+    void SetNeedPanel(string code)
+    {
+        create_State = Create_State.create;
+        CloseCreatePanel();
+        creatingItem = gameManager.itemDic[code];
+        curWood = 0; curStone = 0;
+        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
+        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
+        needPanel.SetActive(true);
+    }
+
+    [PunRPC]
+    void PlusIngredient(string code, int count)
+    {
+        if (code == "I_00")//나무
+        {
+            curWood++;
+            needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
+        }
+        else if (code == "I_01")//돌
+        {
+            curStone++;
+            needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
+
+        }
+        if (curWood >= ((BattleItemData)creatingItem).needWood && curStone >= ((BattleItemData)creatingItem).needStone)
+        {
+            PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
         }
     }
 
@@ -91,19 +96,6 @@ public class Ship : MonoBehaviourPun
     public void CloseCreatePanel()
     {
         createPanel.SetActive(false);
-    }
-
-    #region PunRPC
-    [PunRPC]
-    void SetNeedPanel(string code)
-    {
-        create_State = Create_State.create;
-        CloseCreatePanel();
-        creatingItem = itemDic[code];
-        curWood = 0; curStone = 0;
-        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
-        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
-        needPanel.SetActive(true);
     }
 
     [PunRPC]
@@ -138,5 +130,4 @@ public class Ship : MonoBehaviourPun
         creatingItem = null;
         creatingPanel.SetActive(false);
     }
-    #endregion
 }

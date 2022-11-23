@@ -27,6 +27,6 @@ public class ProductTerrain : Terrain
         int tY = (int)transform.position.y;
 
         //tileManager.tileInfos[tX][tY].isTerrain = false;
-        GameManager.Instance.photonView.RPC("ChangeTile", Photon.Pun.RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
+        GameManager.Instance.photonView.RPC("SetTileItem", Photon.Pun.RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
     }
 }

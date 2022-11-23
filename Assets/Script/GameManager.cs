@@ -1,11 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Photon.Pun;
-using UnityEngine.Tilemaps;
-using Photon.Realtime;
 
+/*
+ * Sword effect 만들기
+ * 캐릭터 interactive 다시 손보기
+ * BlackSmith 재료 넣는 기능 넣기
+ */
 public class GameManager : MonoBehaviourPunCallbacks
 {
     static GameManager instance;
@@ -32,7 +35,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int difficulty;
 
     [Header("Data")]
-    public int myPlayerNum;
+    public int myPlayerNum;///get으로 나중에 바꿔주기(손상되었을 때 일어날 오류가 클 거 같음), 로비에서 사람이 나가질 거 대비하기
     public PlayerInfo[] players = new PlayerInfo[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
 
@@ -80,18 +83,18 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
             temp.transform.position += new Vector3(30 * i, 0, 0);
         }
-        ChangeTile(2, 3, "T_01", 1);
+        SetTileItem(2, 3, "T_01", 1);
 
-        ChangeTile(2, 5, "T_02", 1);
+        SetTileItem(2, 5, "T_02", 1);
 
         tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.areaCount - 15, 0, 0);
     }
 
     //tileBase 쓰는 법 찾기
     [PunRPC]
-    public void ChangeTile(int x, int y, string _to, int count)///_to를 null로 받는 건 너무 위험한가
+    public void SetTileItem(int x, int y, string _to, int count)///_to를 null로 받는 건 너무 위험한가
     {
-        if (_to == null)
+        if (_to == "T_00" || _to == null)
         {
             tileManager.tileInfos[x][y].tileSlot.itemData = null;
             tileManager.tileInfos[x][y].tileSlot.itemCount = 0;
