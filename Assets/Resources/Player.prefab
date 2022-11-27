@@ -158,8 +158,10 @@ GameObject:
   - component: {fileID: 9105171412229398793}
   - component: {fileID: 9105171412229398791}
   - component: {fileID: 9105171412229398789}
+  - component: {fileID: 6472221371309480167}
   - component: {fileID: 5682909422636599042}
   - component: {fileID: -1146606305755210950}
+  - component: {fileID: -2456109709928854290}
   - component: {fileID: 4049425027954537499}
   - component: {fileID: -9088937522415761824}
   m_Layer: 3
@@ -275,6 +277,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &6472221371309480167
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105171412229398794}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a4975ef3d24d810469281f89806d4c30, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &5682909422636599042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,6 +317,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: -1146606305755210950}
+  - {fileID: -2456109709928854290}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -314,6 +337,33 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &-2456109709928854290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105171412229398794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 9
+    SynchronizeType: 0
+    Name: roll
+  - Type: 4
+    SynchronizeType: 2
+    Name: isMove
+  - Type: 4
+    SynchronizeType: 0
+    Name: isMirror
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!114 &4049425027954537499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,4 +406,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: {fileID: 4049425027954537499}
   toolCollider: {fileID: 8761067107015221304}
-  animator: {fileID: 0}
+  animator: {fileID: 6472221371309480167}

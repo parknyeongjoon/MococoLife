@@ -31,7 +31,7 @@ public class PlayerMove : MonoBehaviourPun
             Move();
             SetToolOffset();
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && moveDir != Vector3.zero)
             {
                 StartCoroutine(Dash());
             }
@@ -80,10 +80,12 @@ public class PlayerMove : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
+            animator.SetBool("isMirror", true);
         }
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
+            animator.SetBool("isMirror", false);
         }
         else
         {
@@ -93,6 +95,11 @@ public class PlayerMove : MonoBehaviourPun
         if (info.state == State.Idle && moveDir != Vector3.zero)
         {
             transform.position += moveDir * 2 * Time.deltaTime;
+            animator.SetBool("isMove", true);
+        }
+        else if(moveDir == Vector3.zero)
+        {
+            animator.SetBool("isMove", false);
         }
     }
 
@@ -101,6 +108,7 @@ public class PlayerMove : MonoBehaviourPun
         info.state = State.Dash;
 
         float time = 0.0f;
+        PV.RPC("DashAnim", RpcTarget.AllViaServer);
 
         while (time <= 0.1f)
         {
@@ -223,7 +231,10 @@ public class PlayerMove : MonoBehaviourPun
 
     #region Animation
 
-
+    [PunRPC] void DashAnim()//이 캐릭터의 roll만 돌아가도록 설정
+    {
+        animator.SetTrigger("roll");
+    }
 
     #endregion
 
