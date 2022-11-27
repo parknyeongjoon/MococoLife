@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviourPun
 
     [SerializeField] PlayerInfo info;
     [SerializeField] Collider2D toolCollider;
+    [SerializeField] Animator animator;
 
     Vector3 moveDir;
     Vector3 effectPos;
