@@ -10,20 +10,6 @@ public class BlackSmith : MonoBehaviourPun
     PhotonView PV;
     GameManager gameManager;
 
-    //
-    void OnMouseDown()
-    {
-        if (create_State == Create_State.idle)
-        {
-            createPanel.SetActive(true);
-        }
-        else if (create_State == Create_State.finish)
-        {
-            RPCPickUp();
-        }
-    }
-    //지우기
-
     [Header("CreatePanel")]
     [SerializeField] GameObject createPanel;
     [Header("NeedPanel")]
@@ -33,24 +19,31 @@ public class BlackSmith : MonoBehaviourPun
     [SerializeField] GameObject creatingPanel;
     [SerializeField] Image creatingItemImg, creatingP;
 
-    enum Create_State { idle, create, finish };
     Create_State create_State = Create_State.idle;
-    ItemData creatingItem;
+    BattleItemData creatingItem;
     int curWood, curStone;
+
+    public Create_State Create_State { get => create_State; }
+    public BattleItemData CreatingItem { get => creatingItem; }
 
     void Start()
     {
         PV = photonView;
         gameManager = GameManager.Instance;
 
-        createPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
-        needPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
-        creatingPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 1.5f, 0));
+        createPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        needPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        creatingPanel.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+    }
+
+    public void SetCreatePanel()
+    {
+        createPanel.SetActive(true);
     }
 
     public void RPCSetNeedPanel(string code)///지금은 인스펙터 창에서 하는데 itemData 넣어서 가능하게 하기
     {
-        if (create_State == Create_State.idle)
+        if (Create_State == Create_State.idle)
         {
             PV.RPC("SetNeedPanel", RpcTarget.AllViaServer, code);
         }
@@ -61,36 +54,50 @@ public class BlackSmith : MonoBehaviourPun
     {
         create_State = Create_State.create;
         CloseCreatePanel();
-        creatingItem = gameManager.itemDic[code];
+        creatingItem = (BattleItemData)gameManager.itemDic[code];
         curWood = 0; curStone = 0;
-        needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
-        needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
+        needWoodText.text = curWood.ToString() + " / " + CreatingItem.needWood.ToString();
+        needStoneText.text = curStone.ToString() + " / " + CreatingItem.needStone.ToString();
         needPanel.SetActive(true);
     }
 
-    [PunRPC]
-    void PlusIngredient(string code, int count)
+    public int PlusIngredient(string code, int count)
     {
+        int result = 0;
         if (code == "I_00")//나무
         {
-            curWood++;
-            needWoodText.text = curWood.ToString() + " / " + ((BattleItemData)creatingItem).needWood.ToString();
+            if (curWood + count >= CreatingItem.needWood)
+            {
+                result = CreatingItem.needWood - curWood;
+                curWood = CreatingItem.needWood;
+            }
+            else { curWood += count; result = count; }
         }
         else if (code == "I_01")//돌
         {
-            curStone++;
-            needStoneText.text = curStone.ToString() + " / " + ((BattleItemData)creatingItem).needStone.ToString();
-
+            if (curStone + count >= CreatingItem.needStone)
+            {
+                result = CreatingItem.needStone - curStone;
+                curStone = CreatingItem.needStone;
+            }
+            else { curStone += count; result = count; }
         }
-        if (curWood >= ((BattleItemData)creatingItem).needWood && curStone >= ((BattleItemData)creatingItem).needStone)
+        photonView.RPC("RPCPlusIngredient", RpcTarget.AllViaServer, curWood, curStone);
+        return result;
+    }
+
+    [PunRPC]
+    void RPCPlusIngredient(int _wood, int _stone)
+    {
+        curWood = _wood; curStone = _stone;
+
+        needWoodText.text = curWood.ToString() + " / " + CreatingItem.needWood.ToString();
+        needStoneText.text = curStone.ToString() + " / " + CreatingItem.needStone.ToString();
+
+        if (curWood >= CreatingItem.needWood && curStone >= CreatingItem.needStone)
         {
             PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
         }
-    }
-
-    public void RPCPickUp()
-    {
-        PV.RPC("PickUp", RpcTarget.AllViaServer);
     }
 
     public void CloseCreatePanel()
@@ -102,7 +109,7 @@ public class BlackSmith : MonoBehaviourPun
     void SetCreatingPanel()
     {
         needPanel.SetActive(false);
-        creatingItemImg.sprite = creatingItem.itemImg;
+        creatingItemImg.sprite = CreatingItem.itemImg;
         creatingPanel.SetActive(true);
         StartCoroutine(CreatingTimer());
     }
@@ -112,10 +119,10 @@ public class BlackSmith : MonoBehaviourPun
         float cur_Time = 0;
         creatingP.color = Color.red;
 
-        while (cur_Time <= ((BattleItemData)creatingItem).needTime)
+        while (cur_Time <= CreatingItem.needTime)
         {
             cur_Time += Time.deltaTime;
-            creatingP.fillAmount = cur_Time / ((BattleItemData)creatingItem).needTime;
+            creatingP.fillAmount = cur_Time / CreatingItem.needTime;
             yield return null;
         }
 

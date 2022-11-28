@@ -22,9 +22,9 @@ public class LoadingManager : MonoBehaviourPun
     {
         gameManager = GameManager.Instance;
 
-        gameManager.myPlayerNum = PhotonNetwork.PlayerList.Length - 1;//겹치지 않게 체크하는 거 추가해주기
+        gameManager.SetMyPlayerNum(PhotonNetwork.PlayerList.Length - 1);//겹치지 않게 체크하는 거 추가해주기
 
-        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.myPlayerNum);
+        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
     }
 
     private void Update()
@@ -51,7 +51,7 @@ public class LoadingManager : MonoBehaviourPun
 
     public void ReadyBtn()
     {
-        photonView.RPC("Ready", RpcTarget.AllBufferedViaServer, gameManager.myPlayerNum);
+        photonView.RPC("Ready", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
     }
 
     [PunRPC]

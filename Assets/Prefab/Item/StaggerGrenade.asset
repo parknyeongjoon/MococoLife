@@ -16,8 +16,9 @@ MonoBehaviour:
   tileImg: {fileID: 0}
   code: BI_01
   Item_Type: 1
-  needWood: 2
+  needWood: 3
   needStone: 2
   needTime: 3
+  maxCount: 0
   dmg_Type: 6
   dmg: 1

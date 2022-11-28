@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.EventSystems;
-
+///ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ Dictionary<Keycode, Action> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Âµï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½êµµ ï¿½ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 public class PlayerMove : MonoBehaviourPun
 {
     PhotonView PV;
@@ -11,11 +11,14 @@ public class PlayerMove : MonoBehaviourPun
     GameManager gameManager;
 
     [SerializeField] PlayerInfo info;
-    [SerializeField] Collider2D toolCollider;
     [SerializeField] Animator animator;
+    [SerializeField] Collider2D bodyCollider, toolCollider;
 
     Vector3 moveDir;
     Vector3 effectPos;
+    Vector3 mousePos;
+
+    int inventory_Index;
 
     void Start()
     {
@@ -26,7 +29,7 @@ public class PlayerMove : MonoBehaviourPun
 
     void Update()
     {
-        if (PV.IsMine && info.state == State.Idle)
+        if (PV.IsMine && info.State == State.Idle)
         {
             Move();
             SetToolOffset();
@@ -39,15 +42,118 @@ public class PlayerMove : MonoBehaviourPun
             {
                 Interactive();
             }
-            else if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)//UI°¡ ¾Æ´Ñ °÷À» ÁÂÅ¬¸¯ÇßÀ» ¶§
+            else if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)//UIï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
             {
-                if(info.hand.itemData.Item_Type == Item_Type.Tool)
+                if (info.Hand.itemData.Item_Type == Item_Type.Tool)
                 {
-                    info.hand.itemData.Effect(transform.position + effectPos);
+                    info.Hand.itemData.Effect(transform.position + effectPos);
                 }
-                else if (info.hand.itemData.Item_Type == Item_Type.BattleItem)
+                else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
                 {
-                    //¹èÅÛ »ç¿ë + ¾ÆÀÌÅÛ °³¼ö ÁÙÀÌ±â
+                    UseItem(inventory_Index);
+                    
+                }
+                else if (info.Hand.itemData.Item_Type == Item_Type.Ingredient)
+                {
+                    Collider2D isSmith = Physics2D.OverlapPoint(mousePos, 1 << LayerMask.NameToLayer("BlackSmith"));
+
+                    if (Physics2D.IsTouchingLayers(bodyCollider, 1 << LayerMask.NameToLayer("BlackSmith")) && isSmith)//BlackSmithï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+                    {
+                        BlackSmith smith = isSmith.GetComponentInParent<BlackSmith>();
+                        if (smith.Create_State == Create_State.create)
+                        {
+                            int result = smith.PlusIngredient(info.Hand.itemData.code, info.Hand.itemCount);
+                            info.SetHand(gameManager.MyPlayerNum, info.Hand.itemData.code, info.Hand.itemCount - result);
+                        }
+                    }
+                }
+            }
+            else if (Input.GetMouseButtonDown(1) && EventSystem.current.IsPointerOverGameObject() == false)//UIï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+            {
+                Collider2D isSmith = Physics2D.OverlapPoint(mousePos, 1 << LayerMask.NameToLayer("BlackSmith"));
+                if (Physics2D.IsTouchingLayers(bodyCollider, 1 << LayerMask.NameToLayer("BlackSmith")) && isSmith)//BlackSmithï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+                {
+                    BlackSmith smith = isSmith.GetComponentInParent<BlackSmith>();
+                    if (smith.Create_State == Create_State.idle) { smith.SetCreatePanel(); }//idle ï¿½ï¿½ï¿½Â¶ï¿½ï¿½ createPanel ï¿½ï¿½ï¿½ï¿½
+                    else if (smith.Create_State == Create_State.finish)//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¼ï¿½ï¿½Æ´Ù¸ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ö±ï¿½
+                    {
+                        GetItem(smith);
+                    }
+                }
+            }
+            //ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if(info.Inventory[0].itemData != null)
+                {
+                    inventory_Index = 0;
+                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
+                    int[] result = CheckAround(pX, pY);
+                    if(result == null)
+                    {
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                    }
+                    else
+                    {
+                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[0].itemData.code, info.Inventory[0].itemCount);//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+                    }
+                }
+
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                if (info.Inventory[1].itemData != null)
+                {
+                    inventory_Index = 1;
+                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
+                    int[] result = CheckAround(pX, pY);
+                    if (result == null)
+                    {
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                    }
+                    else
+                    {
+                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[1].itemData.code, info.Inventory[1].itemCount);//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ï¿½
+                    }
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                if (info.Inventory[2].itemData != null)
+                {
+                    inventory_Index = 2;
+                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
+                    int[] result = CheckAround(pX, pY);
+                    if (result == null)
+                    {
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                    }
+                    else
+                    {
+                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[2].itemData.code, info.Inventory[2].itemCount);//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ï¿½
+
+                    }
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                if (info.Inventory[3].itemData != null)
+                {
+                    inventory_Index = 3;
+                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
+                    int[] result = CheckAround(pX, pY);
+                    if(result == null)
+                    {
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
+                    }
+                    else
+                    {
+                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[3].itemData.code, info.Inventory[3].itemCount);//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ûµï¿½ï¿½
+                    }
                 }
             }
         }
@@ -92,7 +198,7 @@ public class PlayerMove : MonoBehaviourPun
             moveDir.x = 0;
         }
 
-        if (info.state == State.Idle && moveDir != Vector3.zero)
+        if (info.State == State.Idle && moveDir != Vector3.zero)
         {
             transform.position += moveDir * 2 * Time.deltaTime;
             animator.SetBool("isMove", true);
@@ -105,125 +211,115 @@ public class PlayerMove : MonoBehaviourPun
 
     IEnumerator Dash()
     {
-        info.state = State.Dash;
+        info.State = State.Dash;
 
         float time = 0.0f;
         PV.RPC("DashAnim", RpcTarget.AllViaServer);
 
-        while (time <= 0.1f)
+        while (time <= 0.05f)
         {
-            transform.position += moveDir * 10 * Time.deltaTime;
+            transform.position += moveDir * 15 * Time.deltaTime;
             time += Time.deltaTime;
             yield return null;
         }
 
-        info.state = State.Idle;
+        info.State = State.Idle;
     }
 
-    void Interactive()//´Ù¸¥ °Å µé°í ÀÖÀ» ¶§(¾Æ¹«°Íµµ ¾øÀ» ¶§) ³ª¹«³ª ¸ñÀç µé ¶§ Ã¼Å©ÇØÁÖ±â
+    void Interactive()
     {
         int pX = (int)transform.position.x;
         int pY = (int)transform.position.y;
 
         Slot tileSlot = tileManager.tileInfos[pX][pY].tileSlot;
 
-        if(tileSlot.itemData == null && info.hand.itemData.Item_Type != Item_Type.BattleItem)//ºóÄ­ÀÌ°í ¼Õ¿¡ µç °Ô ¹èÆ²¾ÆÀÌÅÛÀÌ ¾Æ´Ï¶ó¸é
+        if (tileSlot.itemData == null)//ï¿½ï¿½Ä­ï¿½Ì¸ï¿½
         {
-            gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.hand.itemData.code, info.hand.itemCount);//¾ÆÀÌÅÛ Áý¾î³Ö°í
-            info.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.myPlayerNum, "T_00", 0);//¼ÕÀº ¸Ç¼ÕÀ¸·Î
+            gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);//ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ï¿½
         }
-        else if(tileSlot.itemData != null)//¹Ù´Ú¿¡ ¾ÆÀÌÅÛÀÌ ÀÖ´Ù¸é
+        else if (tileSlot.itemData.Item_Type == Item_Type.Ingredient)//ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½á°¡ ï¿½Ö°ï¿½
         {
-            if (info.hand.itemData.code == "T_00" || info.hand.itemData.Item_Type == Item_Type.BattleItem)//ºó ¼ÕÀÌ°Å³ª ¹èÅÛÀÌ¶ó¸é ÁÝ±â
+            if (tileSlot.itemData == info.Hand.itemData)//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½
             {
-                info.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.myPlayerNum, tileSlot.itemData.code, tileSlot.itemCount);//ÁÝ°í
-                gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, null, 0);//¹Ù´ÚÀ» ±ú²ýÇÏ°Ô
-
+                gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, tileSlot.itemCount + info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½
+                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);//ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ï¿½
             }
-            else if (info.hand.itemData.Item_Type == Item_Type.Ingredient)
+            else if (tileSlot.itemCount > ((Ingredient)tileSlot.itemData).maxCount)//ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Öºï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î°ï¿½ ï¿½ï¿½ï¿½
             {
-
-            }
-            else
-            {
-
-            }
-        }
-        /*
-        if (info.hand.itemData.Item_Type == Item_Type.BattleItem)//¼Õ¿¡ µé°í ÀÖ´Â °Ô ¾ø°Å³ª ¹èÅÛÀÌ¶ó¸é
-        {
-            if (tileSlot.itemData != null)//¹Ù´Ú¿¡ ¾ÆÀÌÅÛÀÌ ÀÖ´Ù¸é ¼Õ¿¡ µé±â
-            {
-                info.hand.itemData = tileSlot.itemData;
-                info.hand.itemCount = tileSlot.itemCount;
-
-                tileSlot.itemData = null;
-                tileSlot.itemCount = 0;
-                //¼Õ°ú Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                //Å¸ÀÏ Á¤º¸ º¯°æ, Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                gameManager.photonView.RPC("ChangeTile", RpcTarget.AllViaServer, pX, pY, null, 0);
-                info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, info.hand.itemData.code);
-            }
-        }
-        else//¼Õ¿¡ µé°í ÀÖ´Â °Ô ÀÖ°í
-        {
-            if (tileSlot.itemData == info.hand.itemData)//³ª¹«³ª ¸ñÀç¶ó¸é ÃÖ´ë°³¼ö Ã¼Å©ÇÏ±â
-            {
-                if (info.hand.itemCount + tileSlot.itemCount > info.hand.itemData.maxCount)//ÃÖ´ë µé ¼ö ÀÖ´Â °³¼öº¸´Ù ¸¹´Ù¸é ÃÖ´ëÇÑ¸¸ µé±â
+                int[] result = CheckAround(pX, pY);
+                if(result == null)//ï¿½Öºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
                 {
-                    info.hand.itemCount = info.hand.itemData.maxCount;
-                    tileSlot.itemCount = info.hand.itemCount + tileSlot.itemCount - info.hand.itemData.maxCount;
-                    //¼Õ°ú Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                    //Å¸ÀÏ Á¤º¸ º¯°æ, Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                    gameManager.photonView.RPC("ChangeTile", RpcTarget.AllViaServer, pX, pY, tileSlot.itemData.code, tileSlot.itemCount);
-                    info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, info.hand.itemData.code);
+                    Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½");
+                }
+                else//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+                {
+                    gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, result[0], result[1], info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, tileSlot.itemData.code, tileSlot.itemCount - ((Ingredient)tileSlot.itemData).maxCount);//Å¸ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½
+                    PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, tileSlot.itemData.code, ((Ingredient)tileSlot.itemData).maxCount);//ï¿½Õ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+                }
+            }
+            else//ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ï¿ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½á°¡ ï¿½ï¿½ï¿½Ù¸ï¿½
+            {
+                Slot temp = new Slot(); temp.itemData = tileSlot.itemData; temp.itemCount = tileSlot.itemCount;//ï¿½ï¿½ï¿½Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+                gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, temp.itemData.code, temp.itemCount);//ï¿½Ý±ï¿½
+            }
+        }
+        else if (tileSlot.itemData != null)//ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½á°¡ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
+        {
+            Slot temp = new Slot(); temp.itemData = tileSlot.itemData; temp.itemCount = tileSlot.itemCount;//ï¿½ï¿½ï¿½Ò¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+            gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, temp.itemData.code, temp.itemCount);//ï¿½Ý±ï¿½
+        }
+
+    }
+
+    void GetItem(BlackSmith smith)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ false
+    {
+        for (int i = 0; i < info.Inventory.Length; i++)
+        {
+            if (info.Inventory[i].itemData == smith.CreatingItem)//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ Ã¼Å©ï¿½Ï±ï¿½
+            {
+                if (info.Inventory[i].itemCount >= smith.CreatingItem.maxCount)
+                {
+                    Debug.Log("ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+                    return;
                 }
                 else
                 {
-                    info.hand.itemCount = info.hand.itemCount + tileSlot.itemCount;
-                    tileSlot.itemData = null;
-                    tileSlot.itemCount = 0;
-                    //¼Õ°ú Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                    //Å¸ÀÏ Á¤º¸ º¯°æ, Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                    ///°³¼ö¿¡ µû¶ó ÀÌ¹ÌÁö ´Ù¸£°Ô º¯°æÇÏ±â
-                    gameManager.photonView.RPC("ChangeTile", RpcTarget.AllViaServer, pX, pY, null, 0);
-                    info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, info.hand.itemData.code);
+                    info.Inventory[i].itemCount++;
+                    smith.photonView.RPC("PickUp", RpcTarget.AllViaServer);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ PickUpï¿½ï¿½ï¿½ï¿½
+                    return;
                 }
             }
-            if (false) { }
-            else if (tileSlot.itemData != null)//¹Ù´Ú¿¡ ¾ÆÀÌÅÛÀÌ ÀÖ´Ù¸é
+        }
+        for (int i = 0; i < info.Inventory.Length; i++)//ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ Ä­ Ã¼Å©ï¿½Ï±ï¿½
+        {
+            if (info.Inventory[i].itemData == null)
             {
-                Slot temp = new Slot();
-                temp.itemData = tileSlot.itemData;
-                temp.itemCount = tileSlot.itemCount;
-
-                tileSlot.itemData = info.hand.itemData;
-                tileSlot.itemCount = info.hand.itemCount;
-
-                info.hand = temp;
-                //¼Õ°ú Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                //Å¸ÀÏ Á¤º¸ º¯°æ, Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                gameManager.photonView.RPC("ChangeTile", RpcTarget.AllViaServer, pX, pY, tileSlot.itemData.code, tileSlot.itemCount);
-                info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, info.hand.itemData.code);
-            }
-            else//¹Ù´Ú¿¡ ¾ÆÀÌÅÛÀÌ ¾ø´Ù¸é ±×³É ³»·Á³õ±â
-            {
-                tileSlot.itemData = info.hand.itemData;
-                tileSlot.itemCount = info.hand.itemCount;
-
-                info.hand.itemData = null;
-                info.hand.itemCount = 0;
-                //¼Õ°ú Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                //Å¸ÀÏ Á¤º¸ º¯°æ, Å¸ÀÏ ÀÌ¹ÌÁö º¯°æ
-                gameManager.photonView.RPC("ChangeTile", RpcTarget.AllViaServer, pX, pY, tileSlot.itemData.code, tileSlot.itemCount);
-                info.photonView.RPC("SetHandImg", RpcTarget.AllViaServer, gameManager.myPlayerNum, null);
+                info.Inventory[i].itemData = smith.CreatingItem;
+                info.Inventory[i].itemCount = 1;
+                smith.photonView.RPC("PickUp", RpcTarget.AllViaServer);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ PickUpï¿½ï¿½ï¿½ï¿½
+                return;
             }
         }
-        */
+        Debug.Log("ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½");
+        return;
     }
-
-    void SwapHandTile(Slot tileSlot, Slot handSlot, int X, int Y)
+    
+    void UseItem(int index)
     {
+        if(info.Inventory[index].itemCount > 0)
+        {
+            info.Inventory[index].itemData.Effect(transform.position + effectPos);
+            info.Inventory[index].itemCount--;
+            if(info.Inventory[index].itemCount <= 0)
+            {
+                info.Inventory[index].itemData = null;
+                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
+            }
+        }
 
     }
 
@@ -231,19 +327,36 @@ public class PlayerMove : MonoBehaviourPun
 
     #region Animation
 
-    [PunRPC] void DashAnim()//ÀÌ Ä³¸¯ÅÍÀÇ roll¸¸ µ¹¾Æ°¡µµ·Ï ¼³Á¤
+    [PunRPC] void DashAnim()//ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ rollï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         animator.SetTrigger("roll");
     }
 
     #endregion
 
-    Vector3 mousePos;
-
     void SetToolOffset()
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        effectPos = new Vector3(mousePos.x - transform.position.x, mousePos.y - transform.position.y, 0).normalized * 0.3f;
-        toolCollider.offset = effectPos;
+        effectPos = new Vector3(mousePos.x - transform.position.x, mousePos.y - transform.position.y, 0).normalized;
+        toolCollider.offset = effectPos * 0.33f;
+    }
+
+    int[] CheckAround(int x, int y)
+    {
+        int[] result = new int[2];
+
+        for(int tX = -1; tX <= 1; tX++)
+        {
+            for(int tY = -1; tY <= 1; tY++)
+            {
+                if(tileManager.tileInfos[x + tX][y + tY].tileSlot.itemData == null)
+                {
+                    result[0] = x + tX; result[1] = y + tY;
+                    return result;
+                }
+            }
+        }
+
+        return null;
     }
 }

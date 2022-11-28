@@ -5,5 +5,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Ingredient", menuName = "SO/Item/Ingredient")]
 public class Ingredient : ItemData
 {
-    public int max_Count;
+    public int maxCount;
 }

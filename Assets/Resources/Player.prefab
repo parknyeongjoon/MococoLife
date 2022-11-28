@@ -130,7 +130,7 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.3}
   serializedVersion: 2
   m_Radius: 0.01
 --- !u!114 &2448943883448636883
@@ -377,8 +377,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMove: {fileID: -9088937522415761824}
-  hp: 100
-  state: 0
   hand:
     itemData: {fileID: 11400000, guid: 3f32e66c0cb06c245a1d24b19c9c2e6f, type: 2}
     itemCount: 0
@@ -405,5 +403,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: {fileID: 4049425027954537499}
+  bodyCollider: {fileID: 9105171412229398791}
   toolCollider: {fileID: 8761067107015221304}
   animator: {fileID: 6472221371309480167}

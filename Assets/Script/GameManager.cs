@@ -6,8 +6,10 @@ using UnityEngine.SceneManagement;
 
 /*
  * Sword effect 만들기
- * 캐릭터 interactive 다시 손보기
- * BlackSmith 재료 넣는 기능 넣기
+ * 캐릭터 interactive 다시 손보기(해결)
+ * BlackSmith 재료 넣는 기능 넣기(해결)
+ * overlapPoint 쓰는 애들 physics2D.isTouchingLayers 써도 될 듯?
+ * players 받아올 방법 생각하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -23,6 +25,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             return instance;
         }
     }
+
+    public int MyPlayerNum { get => myPlayerNum; }
+    public void SetMyPlayerNum(int index) { myPlayerNum = index; }
+
     [Header("Manager")]
     TileManager tileManager;
 
@@ -35,7 +41,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int difficulty;
 
     [Header("Data")]
-    public int myPlayerNum;///get으로 나중에 바꿔주기(손상되었을 때 일어날 오류가 클 거 같음), 로비에서 사람이 나가질 거 대비하기
+    private int myPlayerNum;///get으로 나중에 바꿔주기(손상되었을 때 일어날 오류가 클 거 같음), 로비에서 사람이 나가질 거 대비하기
     public PlayerInfo[] players = new PlayerInfo[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
 
@@ -71,12 +77,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             photonView.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
         }
         //플레이어 생성
-        GameObject myPlayer = PhotonNetwork.Instantiate("Player", new Vector3(4, 3 * myPlayerNum, 0), Quaternion.identity);
-        players[myPlayerNum] = myPlayer.GetComponent<PlayerInfo>();
+        PhotonNetwork.Instantiate("Player", new Vector3(4, 3 * MyPlayerNum, 0), Quaternion.identity);
     }
 
-    [PunRPC]
-    void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
+    [PunRPC] void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
     {
         for (int i = 0; i < tileManager.areaCount; i++)
         {
@@ -87,14 +91,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         SetTileItem(2, 5, "T_02", 1);
 
-        tileManager.rightBoundary.transform.position = new Vector3(30 * tileManager.areaCount - 15, 0, 0);
+        tileManager.rightBoundary.transform.position += new Vector3(30 * tileManager.areaCount, 0, 0);
     }
 
     //tileBase 쓰는 법 찾기
-    [PunRPC]
-    public void SetTileItem(int x, int y, string _to, int count)///_to를 null로 받는 건 너무 위험한가
+    [PunRPC] public void SetTileItem(int x, int y, string _to, int count)
     {
-        if (_to == "T_00" || _to == null)
+        if (_to == "T_00" || itemDic[_to].Item_Type == Item_Type.BattleItem)//플레이어가 맨손이었거나 배템을 들고있었다면
         {
             tileManager.tileInfos[x][y].tileSlot.itemData = null;
             tileManager.tileInfos[x][y].tileSlot.itemCount = 0;

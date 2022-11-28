@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dmg_Type: 2
   hp: 5
-  productData: {fileID: 11400000, guid: a54b2f15051691f429847bc5a2c0c7b7, type: 2}
+  productData: {fileID: 11400000, guid: c87d411e9984d694889b7c380b92fb03, type: 2}
   productCount: 5
 --- !u!61 &5369946571365324644
 BoxCollider2D:
