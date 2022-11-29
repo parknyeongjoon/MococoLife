@@ -403,6 +403,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: {fileID: 4049425027954537499}
+  animator: {fileID: 6472221371309480167}
   bodyCollider: {fileID: 9105171412229398791}
   toolCollider: {fileID: 8761067107015221304}
-  animator: {fileID: 6472221371309480167}

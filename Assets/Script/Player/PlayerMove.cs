@@ -192,6 +192,7 @@ public class PlayerMove : MonoBehaviourPun
         {
             moveDir.x = 1;
             animator.SetBool("isMirror", false);
+
         }
         else
         {
@@ -317,7 +318,7 @@ public class PlayerMove : MonoBehaviourPun
             if(info.Inventory[index].itemCount <= 0)
             {
                 info.Inventory[index].itemData = null;
-                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
+                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);//아이템을 다 썼으니 맨손으로 설정
             }
         }
 

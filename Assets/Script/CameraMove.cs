@@ -1,31 +1,66 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class CameraMove : MonoBehaviour//카메라로 오토 스크롤을 해주는 함수
+public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 {
-    GameManager gameManager;
-    public bool isCameraMove;
+    [SerializeField] float cameraSpeed;
+    bool[] isCameraMove = new bool[4];
 
-    IEnumerator Start()
+    void OnTriggerEnter2D(Collider2D collision)
     {
-        yield return new WaitUntil(() => GameManager.Instance != null);
-        gameManager = GameManager.Instance;
-
-        yield return new WaitUntil(() => gameManager.isGameReady[0] && TileManager.Instance != null);//바꾸기
-        StartCoroutine(MoveCamera(gameManager.gameSpeed));
+        if (collision.CompareTag("Player"))
+        {
+            if (collision.GetComponent<PhotonView>().IsMine)
+            {
+                photonView.RPC("SetCameraMove", RpcTarget.MasterClient, GameManager.Instance.MyPlayerNum, true);
+            }
+        }
     }
 
-    IEnumerator MoveCamera(float cameraSpeed)//실행을 일시정지를 풀거나 카메라가 움직여야할 떄 실행해주기?
+    void OnTriggerExit2D(Collider2D collision)
     {
-        gameManager.isPause = false;
-        WaitWhile cameraWaitWhile = new WaitWhile(() => gameManager.isPause || !isCameraMove);
-        float destiny = (TileManager.Instance.areaCount - 1) * 30;
+        if (collision.CompareTag("Player"))
+        {
+            if (collision.GetComponent<PhotonView>().IsMine)
+            {
+                photonView.RPC("SetCameraMove", RpcTarget.MasterClient, GameManager.Instance.MyPlayerNum, false);
+            }
+        }
+    }
+
+    [PunRPC]
+    void SetCameraMove(int index, bool isMove)
+    {
+        isCameraMove[index] = isMove;
+
+        if (isMove)
+        {
+            int count = 0;
+            for (int i = 0; i < 4; i++)
+            {
+                if (isCameraMove[i])
+                {
+                    count++;
+                    if (count >= PhotonNetwork.CurrentRoom.PlayerCount)
+                    {
+                        StartCoroutine(MoveCamera());
+                    }
+                }
+            }
+        }
+    }
+
+    IEnumerator MoveCamera()//플레이어 모두가 맵의 가장 오른쪽에 있을 때 맵 이동
+    {
+        Vector3 cameraSpeedV = new Vector3(cameraSpeed, 0, 0);
+        float destiny = transform.position.x + 30;
 
         while (transform.position.x <= destiny)
         {
-            transform.position += new Vector3(cameraSpeed, 0, 0) * Time.deltaTime;
-            yield return cameraWaitWhile;
+            transform.position += cameraSpeedV * Time.deltaTime;
+            yield return null;
         }
     }
 }

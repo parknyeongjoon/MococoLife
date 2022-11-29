@@ -19,12 +19,14 @@ public class PlayerInfo : MonoBehaviourPun
     public float Hp { get; set; }
     public Slot[] Inventory { get => inventory; set => inventory = value; }
 
-    // Start is called before the first frame update
     void Start()
     {
         gameManager = GameManager.Instance;
 
-        photonView.RPC("SetPlayers", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
+        if (photonView.IsMine)
+        {
+            photonView.RPC("SetPlayers", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
+        }
         hand.itemData = gameManager.itemDic["T_00"];
     }
 
@@ -35,10 +37,7 @@ public class PlayerInfo : MonoBehaviourPun
 
     [PunRPC] public void SetHand(int index, string code, int count)
     {
-        if(gameManager.itemDic[code].Item_Type == Item_Type.Ingredient && count == 0)
-        {
-            code = "T_00";
-        }
+        Debug.Log(index);
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
         gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;

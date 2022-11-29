@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
  * BlackSmith 재료 넣는 기능 넣기(해결)
  * overlapPoint 쓰는 애들 physics2D.isTouchingLayers 써도 될 듯?
  * players 받아올 방법 생각하기
+ * 캐릭터 flipX 동기화하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -26,9 +27,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public int MyPlayerNum { get => myPlayerNum; }
-    public void SetMyPlayerNum(int index) { myPlayerNum = index; }
-
     [Header("Manager")]
     TileManager tileManager;
 
@@ -41,9 +39,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int difficulty;
 
     [Header("Data")]
-    private int myPlayerNum;///get으로 나중에 바꿔주기(손상되었을 때 일어날 오류가 클 거 같음), 로비에서 사람이 나가질 거 대비하기
+    [SerializeField] private int myPlayerNum;///로비에서 사람이 나가질 거 대비하기
     public PlayerInfo[] players = new PlayerInfo[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
+
+    public int MyPlayerNum { get => myPlayerNum; }
+
+    public void SetMyPlayerNum(int index) { myPlayerNum = index; }
 
     //Ready
     public bool[] isGameReady = new bool[4];
