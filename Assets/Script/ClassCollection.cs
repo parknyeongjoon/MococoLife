@@ -1,6 +1,6 @@
 #region enum
 //player
-public enum State { Idle, Dash, Attack, Stun, Dead };
+public enum State { Idle, Dash, Attack, Action, Stun, Dead };
 //BlackSmith
 public enum Create_State { idle, create, finish };
 

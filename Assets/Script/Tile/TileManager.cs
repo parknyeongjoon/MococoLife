@@ -24,6 +24,7 @@ public class TileManager : MonoBehaviourPun
     public GameObject rightBoundary;
 
     public int areaCount;
+    public bool[] isAreaVisited = { false, };
     public TileInfo[][] tileInfos;
     public Tilemap terrainTileMap;
 
@@ -40,6 +41,8 @@ public class TileManager : MonoBehaviourPun
                 tileInfos[i][j] = new TileInfo();
             }
         }
+
+        isAreaVisited = new bool[areaCount];
 
         instance = this;
     }

@@ -358,9 +358,6 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 2
     Name: isMove
-  - Type: 4
-    SynchronizeType: 0
-    Name: isMirror
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -406,3 +403,4 @@ MonoBehaviour:
   animator: {fileID: 6472221371309480167}
   bodyCollider: {fileID: 9105171412229398791}
   toolCollider: {fileID: 8761067107015221304}
+  spriteRenderer: {fileID: 9105171412229398793}

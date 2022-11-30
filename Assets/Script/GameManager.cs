@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public int difficulty;
 
     [Header("Data")]
-    [SerializeField] private int myPlayerNum;///로비에서 사람이 나가질 거 대비하기
+    private int myPlayerNum;///로비에서 사람이 나가질 거 대비하기
     public PlayerInfo[] players = new PlayerInfo[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
 
@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (scene.name == "Stage")
         {
-            Debug.Log("Stage 씬 시작");
             StartCoroutine(StageInitialize());
         }
     }
@@ -72,6 +71,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         yield return new WaitUntil(() => TileManager.Instance != null);
         tileManager = TileManager.Instance;
+
         if (PhotonNetwork.IsMasterClient)
         {
             //GameArea 제작
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             photonView.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
         }
         //플레이어 생성
-        PhotonNetwork.Instantiate("Player", new Vector3(4, 3 * MyPlayerNum, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(4, 3 * MyPlayerNum + 1, 0), Quaternion.identity);
     }
 
     [PunRPC] void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
@@ -96,7 +96,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         tileManager.rightBoundary.transform.position += new Vector3(30 * tileManager.areaCount, 0, 0);
     }
 
-    //tileBase 쓰는 법 찾기
     [PunRPC] public void SetTileItem(int x, int y, string _to, int count)
     {
         if (_to == "T_00" || itemDic[_to].Item_Type == Item_Type.BattleItem)//플레이어가 맨손이었거나 배템을 들고있었다면

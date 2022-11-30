@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerInfo : MonoBehaviourPun
+public class PlayerInfo : MonoBehaviourPun, IDamagable
 {
     GameManager gameManager;
     public PlayerMove playerMove;
@@ -37,9 +37,13 @@ public class PlayerInfo : MonoBehaviourPun
 
     [PunRPC] public void SetHand(int index, string code, int count)
     {
-        Debug.Log(index);
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
         gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
+    }
+
+    public void Damage(Dmg_Type dmg_Type, float dmg)
+    {
+
     }
 }

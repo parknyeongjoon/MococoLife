@@ -13,6 +13,7 @@ public class PlayerMove : MonoBehaviourPun
     [SerializeField] PlayerInfo info;
     [SerializeField] Animator animator;
     [SerializeField] Collider2D bodyCollider, toolCollider;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     Vector3 moveDir;
     Vector3 effectPos;
@@ -158,6 +159,7 @@ public class PlayerMove : MonoBehaviourPun
             }
         }
     }
+
     #region Action
 
     void Move()
@@ -186,13 +188,18 @@ public class PlayerMove : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
-            animator.SetBool("isMirror", true);
+            if(spriteRenderer.flipX == false)
+            {
+                PV.RPC("Flip", RpcTarget.All);
+            }
         }
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
-            animator.SetBool("isMirror", false);
-
+            if(spriteRenderer.flipX == true)
+            {
+                PV.RPC("Flip", RpcTarget.All);
+            }
         }
         else
         {
@@ -331,6 +338,11 @@ public class PlayerMove : MonoBehaviourPun
     [PunRPC] void DashAnim()//�� ĳ������ roll�� ���ư����� ����
     {
         animator.SetTrigger("roll");
+    }
+
+    [PunRPC] void Flip()
+    {
+        spriteRenderer.flipX = !spriteRenderer.flipX;
     }
 
     #endregion

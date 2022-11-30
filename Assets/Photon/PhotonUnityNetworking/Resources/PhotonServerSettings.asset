@@ -60,6 +60,9 @@ MonoBehaviour:
   - SetPlayers
   - SetCameraMoveTrue
   - SetCameraMove
+  - ObjectActive
+  - Flip
+  - DestroyArea
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

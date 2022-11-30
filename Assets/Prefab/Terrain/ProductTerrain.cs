@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class ProductTerrain : Terrain
 {
@@ -16,9 +17,14 @@ public class ProductTerrain : Terrain
             {
                 //product 생산
                 SpawnProduct();
-                gameObject.SetActive(false);//동기화 되나 확인해보기
+                photonView.RPC("ObjectActive", RpcTarget.AllViaServer, false);
             }
         }
+    }
+
+    [PunRPC] void ObjectActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
     }
 
     void SpawnProduct()//생성할 위치 계산해서 생성물 생성
@@ -26,7 +32,6 @@ public class ProductTerrain : Terrain
         int tX = (int)transform.position.x;
         int tY = (int)transform.position.y;
 
-        //tileManager.tileInfos[tX][tY].isTerrain = false;
         GameManager.Instance.photonView.RPC("SetTileItem", Photon.Pun.RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
     }
 }

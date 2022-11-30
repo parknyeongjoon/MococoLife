@@ -18,7 +18,7 @@ public class Terrain : MonoBehaviourPun, IDamagable
         //tileManager.tileInfos[tX][tY].isTerrain = true;
     }
 
-    public virtual void Damage(Dmg_Type _dmg_Type, float dmg)
+    public virtual void Damage(Dmg_Type _dmg_Type, float dmg)///æÍµµ RPC∑Œ πŸ≤„¡‡æﬂ«‘
     {
         if (dmg_Type == _dmg_Type)
         {
