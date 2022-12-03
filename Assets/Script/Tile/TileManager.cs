@@ -58,4 +58,9 @@ public class TileManager : MonoBehaviourPun
 
         return tiles;
     }
+
+    public void DestroyArea(int areaIndex)//area ÆÄ±«
+    {
+
+    }
 }

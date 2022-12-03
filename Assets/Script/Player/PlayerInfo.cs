@@ -8,10 +8,10 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
     GameManager gameManager;
     public PlayerMove playerMove;
 
-    float hp = 100;
+    [SerializeField] float hp = 100;
     State state;
-    [SerializeField] Slot hand = new Slot();//시리얼 지우기
-    [SerializeField] Slot[] inventory = new Slot[4];//시리얼 지우기
+    Slot hand = new Slot();
+    Slot[] inventory = new Slot[4];
     public SpriteRenderer handImg;
 
     public State State { get => state; set => state = value; }/// 이거도 보안 목적으로 set을 없애고 싶은데 방법 찾기
@@ -19,7 +19,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
     public float Hp { get; set; }
     public Slot[] Inventory { get => inventory; set => inventory = value; }
 
-    void Start()
+    void Awake()
     {
         gameManager = GameManager.Instance;
 
@@ -44,6 +44,9 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
 
     public void Damage(Dmg_Type dmg_Type, float dmg)
     {
-
+        if(dmg_Type == Dmg_Type.Damage)
+        {
+            hp -= dmg;
+        }
     }
 }

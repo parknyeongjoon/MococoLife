@@ -6,10 +6,12 @@ using Photon.Pun;
 
 public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 {
+    GameManager gameManager;
+
     [SerializeField] Image timerFG;
 
     [SerializeField] float cameraSpeed;
-    [SerializeField] bool canMove = true;//카메라가 움직일 수 있는가
+    bool canMove = true;//카메라가 움직일 수 있는가
 
     bool[] leftCameraMove = new bool[4];
     bool[] rightCameraMove = new bool[4];
@@ -18,9 +20,14 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     float[] areaTime;
     readonly float areaMaxTime = 10.0f;
 
+    IDamagable PDamage;
+
     void Start()
     {
+        gameManager = GameManager.Instance;
+
         areaTime = new float[TileManager.Instance.areaCount];
+
         TileManager.Instance.isAreaVisited[0] = true;
         StartCoroutine(StartAreaTimer(0));
     }
@@ -28,6 +35,10 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     void Update()
     {
         timerFG.fillAmount = areaTime[areaCount] / areaMaxTime;
+        if(areaTime[areaCount] <= 0)//현재 area의 타이머가 다 됐다면 피 닳게 하기
+        {
+            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, 0.01f);
+        }
     }
 
     [PunRPC]
@@ -124,12 +135,6 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
             yield return null;
         }
 
-        photonView.RPC("DestroyArea", RpcTarget.AllViaServer, areaIndex);//시간이 초과되면 area 파괴하기
-    }
-
-    [PunRPC]
-    void DestroyArea(int areaIndex)//area 파괴
-    {
-
+        TileManager.Instance.DestroyArea(areaIndex);//시간이 초과되면 area 파괴하기
     }
 }

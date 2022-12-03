@@ -374,18 +374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMove: {fileID: -9088937522415761824}
-  hand:
-    itemData: {fileID: 11400000, guid: 3f32e66c0cb06c245a1d24b19c9c2e6f, type: 2}
-    itemCount: 0
-  inventory:
-  - itemData: {fileID: 0}
-    itemCount: 0
-  - itemData: {fileID: 0}
-    itemCount: 0
-  - itemData: {fileID: 0}
-    itemCount: 0
-  - itemData: {fileID: 0}
-    itemCount: 0
+  hp: 100
   handImg: {fileID: 6334292266584513179}
 --- !u!114 &-9088937522415761824
 MonoBehaviour:
