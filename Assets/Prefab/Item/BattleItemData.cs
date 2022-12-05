@@ -10,7 +10,7 @@ public class BattleItemData : ItemData
     public float needTime;
     public int maxCount;
 
-    public override void Effect(Vector2 effectPos)
+    public override void Effect(Vector3 effectPos)
     {
         
     }

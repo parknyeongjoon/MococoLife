@@ -20,7 +20,7 @@ public class BlackSmith : MonoBehaviourPun
     [SerializeField] Image creatingItemImg, creatingP;
 
     Create_State create_State = Create_State.idle;
-    BattleItemData creatingItem;
+    [SerializeField] BattleItemData creatingItem;
     int curWood, curStone;
 
     public Create_State Create_State { get => create_State; }

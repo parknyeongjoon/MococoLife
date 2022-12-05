@@ -17,14 +17,8 @@ public class ProductTerrain : Terrain
             {
                 //product 생산
                 SpawnProduct();
-                photonView.RPC("ObjectActive", RpcTarget.AllViaServer, false);
             }
         }
-    }
-
-    [PunRPC] void ObjectActive(bool isActive)
-    {
-        gameObject.SetActive(isActive);
     }
 
     void SpawnProduct()//생성할 위치 계산해서 생성물 생성
@@ -33,5 +27,6 @@ public class ProductTerrain : Terrain
         int tY = (int)transform.position.y;
 
         GameManager.Instance.photonView.RPC("SetTileItem", Photon.Pun.RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
+        transform.position = new Vector3(-30, 0, 0);
     }
 }

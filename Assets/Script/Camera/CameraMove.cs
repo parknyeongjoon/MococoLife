@@ -9,6 +9,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     GameManager gameManager;
 
     [SerializeField] Image timerFG;
+    GameObject PLeftMoveIcon, PRightMoveIcon;
 
     [SerializeField] float cameraSpeed;
     bool canMove = true;//카메라가 움직일 수 있는가
@@ -18,18 +19,24 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
     int areaCount = 0;
     float[] areaTime;
-    readonly float areaMaxTime = 10.0f;
+    readonly float areaMaxTime = 30.0f;
 
-    IDamagable PDamage;
-
-    void Start()
+    IEnumerator Start()
     {
         gameManager = GameManager.Instance;
 
         areaTime = new float[TileManager.Instance.areaCount];
+        for(int i = 0; i < TileManager.Instance.areaCount; i++)
+        {
+            areaTime[i] = areaMaxTime;
+        }
+
+        yield return new WaitUntil(() => gameManager.players[gameManager.MyPlayerNum] != null);
+        PLeftMoveIcon = gameManager.players[gameManager.MyPlayerNum].transform.Find("LeftMoveIcon").gameObject;
+        PRightMoveIcon = gameManager.players[gameManager.MyPlayerNum].transform.Find("RightMoveIcon").gameObject;
 
         TileManager.Instance.isAreaVisited[0] = true;
-        StartCoroutine(StartAreaTimer(0));
+        StartCoroutine(StartAreaTimer(0));//게임 시작 함수를 만들고 그 안에 포함시키기
     }
 
     void Update()
@@ -41,8 +48,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         }
     }
 
-    [PunRPC]
-    void SetCameraMove(int index, bool isMove, bool isRight)
+    [PunRPC] void SetCameraMove(int index, bool isMove, bool isRight)
     {
         if (isRight)//오른쪽으로 가는 거라면
         {
@@ -83,6 +89,26 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
                     }
                 }
             }
+        }
+    }
+
+    [PunRPC] void SetMoveIcon(bool isMove, bool isRight)
+    {
+        if (isMove)//움직이려고 하면 아이콘 활성화
+        {
+            if (isRight)
+            {
+                PRightMoveIcon.SetActive(true);
+            }
+            else
+            {
+                PLeftMoveIcon.SetActive(true);
+            }
+        }
+        else//안 움직이려고 하면 아이콘 비활성화
+        {
+            PLeftMoveIcon.SetActive(false);
+            PRightMoveIcon.SetActive(false);
         }
     }
 
@@ -127,8 +153,6 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
     IEnumerator StartAreaTimer(int areaIndex)
     {
-        areaTime[areaIndex] = areaMaxTime;
-
         while (areaTime[areaIndex] > 0)
         {
             areaTime[areaIndex] -= Time.deltaTime;

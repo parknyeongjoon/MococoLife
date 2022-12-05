@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.EventSystems;
-///����Ű�� Dictionary<Keycode, Action> ���� ��� ����� �ִµ� ����ϰ� ���굵 �� ȿ�����̰� ������ ��
+///키 입력 Dictionary<Keycode, Action>으로 넣어두고 실행하는 거 알아보기(최적화 및 가독성)
+///대시 쿨타임, 액션 스테이트 만들기
+///getItem이랑 useInventory는 다른데로 넘기기?
 public class PlayerMove : MonoBehaviourPun
 {
     PhotonView PV;
@@ -21,6 +23,8 @@ public class PlayerMove : MonoBehaviourPun
 
     int inventory_Index;
 
+    float dashCool;
+
     void Start()
     {
         PV = photonView;
@@ -35,7 +39,7 @@ public class PlayerMove : MonoBehaviourPun
             Move();
             SetToolOffset();
 
-            if (Input.GetKeyDown(KeyCode.Space) && moveDir != Vector3.zero)
+            if (Input.GetKeyDown(KeyCode.Space) && moveDir != Vector3.zero && dashCool <= 0)
             {
                 StartCoroutine(Dash());
             }
@@ -47,12 +51,11 @@ public class PlayerMove : MonoBehaviourPun
             {
                 if (info.Hand.itemData.Item_Type == Item_Type.Tool)
                 {
-                    info.Hand.itemData.Effect(transform.position + effectPos);
+                    StartCoroutine(UseItem(info.Hand.itemData, transform.position + effectPos));
                 }
                 else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
                 {
-                    UseItem(inventory_Index);
-                    
+                    UseInventory(inventory_Index);
                 }
                 else if (info.Hand.itemData.Item_Type == Item_Type.Ingredient)
                 {
@@ -85,76 +88,45 @@ public class PlayerMove : MonoBehaviourPun
             //�κ��丮���� ������ �����ϱ�
             else if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                if(info.Inventory[0].itemData != null)
-                {
-                    inventory_Index = 0;
-                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
-                    int[] result = CheckAround(pX, pY);
-                    if(result == null)
-                    {
-                        Debug.Log("���� ���� ����");
-                    }
-                    else
-                    {
-                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//������ ��������
-                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[0].itemData.code, info.Inventory[0].itemCount);//�տ��� ���� ���
-                    }
-                }
-
+                SetItem(0);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                if (info.Inventory[1].itemData != null)
-                {
-                    inventory_Index = 1;
-                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
-                    int[] result = CheckAround(pX, pY);
-                    if (result == null)
-                    {
-                        Debug.Log("���� ���� ����");
-                    }
-                    else
-                    {
-                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//������ ��������
-                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[1].itemData.code, info.Inventory[1].itemCount);//�տ��� ���۵��
-                    }
-                }
+                SetItem(1);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                if (info.Inventory[2].itemData != null)
-                {
-                    inventory_Index = 2;
-                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
-                    int[] result = CheckAround(pX, pY);
-                    if (result == null)
-                    {
-                        Debug.Log("���� ���� ����");
-                    }
-                    else
-                    {
-                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//������ ��������
-                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[2].itemData.code, info.Inventory[2].itemCount);//�տ��� ���۵��
-
-                    }
-                }
+                SetItem(2);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                if (info.Inventory[3].itemData != null)
+                SetItem(3);
+            }
+        }
+    }
+
+    void SetItem(int index)
+    {
+        if(info.Inventory[index].itemData != null)
+        {
+            if(info.Hand.itemData.code == "T_00" || info.Hand.itemData.Item_Type == Item_Type.BattleItem)
+            {
+                inventory_Index = index;
+                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[index].itemData.code, info.Inventory[index].itemCount);
+            }
+            else
+            {
+                int pX = (int)transform.position.x, pY = (int)transform.position.y;
+                int[] result = CheckAround(pX, pY);
+                if (result == null)
                 {
-                    inventory_Index = 3;
-                    int pX = (int)transform.position.x, pY = (int)transform.position.y;
-                    int[] result = CheckAround(pX, pY);
-                    if(result == null)
-                    {
-                        Debug.Log("���� ���� ����");
-                    }
-                    else
-                    {
-                        gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, pX, pY, info.Hand.itemData.code, info.Hand.itemCount);//������ ��������
-                        PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[3].itemData.code, info.Inventory[3].itemCount);//�տ��� ���۵��
-                    }
+                    Debug.Log("주변 공간 없음");
+                }
+                else
+                {
+                    inventory_Index = index;
+                    gameManager.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, result[0], result[1], info.Hand.itemData.code, info.Hand.itemCount);//������ ��������
+                    PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Inventory[index].itemData.code, info.Inventory[index].itemCount);//�տ��� ���۵��
                 }
             }
         }
@@ -188,7 +160,7 @@ public class PlayerMove : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
-            if(spriteRenderer.flipX == false)
+            if (spriteRenderer.flipX == false)
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -196,7 +168,7 @@ public class PlayerMove : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
-            if(spriteRenderer.flipX == true)
+            if (spriteRenderer.flipX == true)
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -211,7 +183,7 @@ public class PlayerMove : MonoBehaviourPun
             transform.position += moveDir * 2 * Time.deltaTime;
             animator.SetBool("isMove", true);
         }
-        else if(moveDir == Vector3.zero)
+        else if (moveDir == Vector3.zero)
         {
             animator.SetBool("isMove", false);
         }
@@ -222,7 +194,7 @@ public class PlayerMove : MonoBehaviourPun
         info.State = State.Dash;
 
         float time = 0.0f;
-        PV.RPC("DashAnim", RpcTarget.AllViaServer);
+        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "roll");
 
         while (time <= 0.05f)
         {
@@ -232,6 +204,14 @@ public class PlayerMove : MonoBehaviourPun
         }
 
         info.State = State.Idle;
+
+        dashCool = 3.0f;
+
+        while(dashCool > 0)
+        {
+            dashCool -= Time.deltaTime;
+            yield return null;
+        }
     }
 
     void Interactive()
@@ -256,7 +236,7 @@ public class PlayerMove : MonoBehaviourPun
             else if (tileSlot.itemCount > ((Ingredient)tileSlot.itemData).maxCount)//�ִ� ���� ���� ���ٸ� �ֺ��� �տ� ��� �ִ� ������ ���ΰ� ���
             {
                 int[] result = CheckAround(pX, pY);
-                if(result == null)//�ֺ��� ���� ���� ���ٸ�
+                if (result == null)//�ֺ��� ���� ���� ���ٸ�
                 {
                     Debug.Log("���� ���� �����ϴ�");
                 }
@@ -315,14 +295,14 @@ public class PlayerMove : MonoBehaviourPun
         Debug.Log("�� ĭ�� �����ϴ�");
         return;
     }
-    
-    void UseItem(int index)
+
+    void UseInventory(int index)
     {
-        if(info.Inventory[index].itemCount > 0)
+        if (info.Inventory[index].itemCount > 0)
         {
-            info.Inventory[index].itemData.Effect(transform.position + effectPos);
+            StartCoroutine(UseItem(info.Inventory[index].itemData, transform.position + effectPos));
             info.Inventory[index].itemCount--;
-            if(info.Inventory[index].itemCount <= 0)
+            if (info.Inventory[index].itemCount <= 0)
             {
                 info.Inventory[index].itemData = null;
                 PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);//아이템을 다 썼으니 맨손으로 설정
@@ -331,16 +311,26 @@ public class PlayerMove : MonoBehaviourPun
 
     }
 
+    IEnumerator UseItem(ItemData useItem, Vector3 usePos)
+    {
+        info.State = State.Action;
+        useItem.Effect(usePos);
+        yield return new WaitForSeconds(0.2f);//아이템 데이터에 선딜후딜 저장?
+        info.State = State.Idle;
+    }
+
     #endregion
 
     #region Animation
 
-    [PunRPC] void DashAnim()//�� ĳ������ roll�� ���ư����� ����
+    [PunRPC]
+    void AnimTrigger(string trigger)//�� ĳ������ roll�� ���ư����� ����
     {
-        animator.SetTrigger("roll");
+        animator.SetTrigger(trigger);
     }
 
-    [PunRPC] void Flip()
+    [PunRPC]
+    void Flip()
     {
         spriteRenderer.flipX = !spriteRenderer.flipX;
     }
@@ -351,18 +341,20 @@ public class PlayerMove : MonoBehaviourPun
     {
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         effectPos = new Vector3(mousePos.x - transform.position.x, mousePos.y - transform.position.y, 0).normalized;
-        toolCollider.offset = effectPos * 0.33f;
+        toolCollider.offset = effectPos;
     }
 
     int[] CheckAround(int x, int y)
     {
         int[] result = new int[2];
 
-        for(int tX = -1; tX <= 1; tX++)
+        for (int tX = -1; tX <= 1; tX++)
         {
-            for(int tY = -1; tY <= 1; tY++)
+            if (x + tX < 0 || x + tX >= tileManager.areaCount * 30) { continue; }
+            for (int tY = -1; tY <= 1; tY++)
             {
-                if(tileManager.tileInfos[x + tX][y + tY].tileSlot.itemData == null)
+                if (y + tY < 0 || y + tY >= 14) { continue; }
+                if (tileManager.tileInfos[x + tX][y + tY].tileSlot.itemData == null)
                 {
                     result[0] = x + tX; result[1] = y + tY;
                     return result;

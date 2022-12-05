@@ -14,6 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boss: 0
   bossAreas:
-  - {fileID: 58375993313441308, guid: a00f228afc755cf4f9cdf1f29fd06590, type: 3}
   - {fileID: 8438180719445432426, guid: a869a88518de59b49b82b99d28e09536, type: 3}
-  - {fileID: 8438180719445432426, guid: 7f4b58502c78db6468cae4c0bc162ca9, type: 3}

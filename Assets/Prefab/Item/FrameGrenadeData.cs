@@ -8,7 +8,7 @@ public class FrameGrenadeData : GrenadeData
     [SerializeField] int dmg_Count;
     [SerializeField] float dmg_Interval;
 
-    public override void Effect(Vector2 effectPos)
+    public override void Effect(Vector3 effectPos)
     {
         Collider2D[] targets = FindTarget(effectPos);
         int tS = targets.Length;

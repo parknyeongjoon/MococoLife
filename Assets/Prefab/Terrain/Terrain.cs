@@ -7,7 +7,10 @@ public class Terrain : MonoBehaviourPun, IDamagable
 {
     [SerializeField] protected Dmg_Type dmg_Type;
     [SerializeField] protected float hp;
+    [SerializeField] GameObject interactiveIcon;
     protected TileManager tileManager;
+
+    public GameObject InteractiveIcon { get => interactiveIcon; }
 
     void Start()
     {

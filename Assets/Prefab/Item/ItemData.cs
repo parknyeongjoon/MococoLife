@@ -12,7 +12,7 @@ public class ItemData : ScriptableObject
     public string code;
     public Item_Type Item_Type;
 
-    public virtual void Effect(Vector2 effectPos)
+    public virtual void Effect(Vector3 effectPos)
     {
 
     }

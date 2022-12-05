@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Axe", menuName = "SO/Item/Axe")]
 public class Axe : ItemData
 {
-    public override void Effect(Vector2 effectPos)
+    public override void Effect(Vector3 effectPos)
     {
         Collider2D[] targets = Physics2D.OverlapPointAll(effectPos, 1 << LayerMask.NameToLayer("Terrain"));
         foreach (Collider2D target in targets)

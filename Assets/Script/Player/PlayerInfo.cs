@@ -9,6 +9,8 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
     public PlayerMove playerMove;
 
     [SerializeField] float hp = 100;
+    public bool canAtk;
+
     State state;
     Slot hand = new Slot();
     Slot[] inventory = new Slot[4];
@@ -28,6 +30,10 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
             photonView.RPC("SetPlayers", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
         }
         hand.itemData = gameManager.itemDic["T_00"];
+        for(int i = 0; i < 4; i++)
+        {
+            inventory[i] = new Slot();
+        }
     }
 
     [PunRPC] void SetPlayers(int index)
@@ -40,6 +46,13 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
         gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
+    }
+
+    public IEnumerator EatFood()
+    {
+        canAtk = true;
+        yield return new WaitForSeconds(3.0f);
+        canAtk = false;
     }
 
     public void Damage(Dmg_Type dmg_Type, float dmg)
