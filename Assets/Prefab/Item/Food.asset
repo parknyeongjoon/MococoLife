@@ -9,17 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be103e57f9c1b084c99c92f975f319ae, type: 3}
-  m_Name: DestructionGrenade
+  m_Script: {fileID: 11500000, guid: e1e7e61265ac81f4f9e9b14a49fb82d3, type: 3}
+  m_Name: Food
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 309595063, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  itemImg: {fileID: -1956143337, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
   tileImg: {fileID: 0}
-  code: BI_02
-  Item_Type: 1
-  delay: 0.2
-  needWood: 2
-  needStone: 2
-  needTime: 3
+  code: BI_00
+  Item_Type: 3
+  needWood: 4
+  needStone: 4
+  needTime: 10
   maxCount: 0
-  dmg_Type: 8
-  dmg: 1
+  foodTime: 5

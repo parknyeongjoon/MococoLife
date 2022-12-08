@@ -15,7 +15,7 @@ public class CameraMoveTrigger : MonoBehaviour
             if (collision.GetComponent<PhotonView>().IsMine)
             {
                 cameraMove.photonView.RPC("SetCameraMove", RpcTarget.MasterClient, GameManager.Instance.MyPlayerNum, true, isRight);
-                cameraMove.photonView.RPC("SetMoveIcon", RpcTarget.AllViaServer, true, isRight);
+                cameraMove.photonView.RPC("SetMoveIcon", RpcTarget.AllViaServer, GameManager.Instance.MyPlayerNum, true, isRight);
             }
         }
     }
@@ -27,7 +27,7 @@ public class CameraMoveTrigger : MonoBehaviour
             if (collision.GetComponent<PhotonView>().IsMine)
             {
                 cameraMove.photonView.RPC("SetCameraMove", RpcTarget.MasterClient, GameManager.Instance.MyPlayerNum, false, isRight);
-                cameraMove.photonView.RPC("SetMoveIcon", RpcTarget.AllViaServer, false, isRight);
+                cameraMove.photonView.RPC("SetMoveIcon", RpcTarget.AllViaServer, GameManager.Instance.MyPlayerNum, false, isRight);
             }
         }
     }

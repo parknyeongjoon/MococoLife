@@ -1,0 +1,344 @@
+fileFormatVersion: 2
+guid: b41310f6c4b464244bfa7a3bc81d1b0f
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 3
+        width: 15
+        height: 21
+      alignment: 9
+      pivot: {x: 0.6, y: 0.42857143}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76e6c5728192ee44d9bbcd74ca652289
+      internalID: -250440642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_1
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 3
+        width: 19
+        height: 22
+      alignment: 9
+      pivot: {x: 0.68421054, y: 0.4090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67677f7795c6a39479bdae9d7c9222d6
+      internalID: -58786373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_2
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 3
+        width: 25
+        height: 20
+      alignment: 9
+      pivot: {x: 0.76, y: 0.45}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34a25cafb572aaf4484bd4649c5b373a
+      internalID: -1054490463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 3
+        width: 27
+        height: 18
+      alignment: 9
+      pivot: {x: 0.8148148, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c8cb941cea65f94cbd2801ba2741e9d
+      internalID: 899364471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 3
+        width: 26
+        height: 18
+      alignment: 9
+      pivot: {x: 0.84615386, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1b854601a1ab1a49bba3a10bd3624fe
+      internalID: -1665785779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_5
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 3
+        width: 39
+        height: 25
+      alignment: 9
+      pivot: {x: 0.51282054, y: 0.36}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d974fdde0565e4a41b636f885f595b5a
+      internalID: -1010314975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_6
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 3
+        width: 44
+        height: 19
+      alignment: 9
+      pivot: {x: 0.20454547, y: 0.47368422}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2b2698f76cff4142a29bf6d9633da06
+      internalID: -1213868742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_7
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 3
+        width: 42
+        height: 22
+      alignment: 9
+      pivot: {x: 0.21428572, y: 0.4090909}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 361059b0036987e43a7cfedda377e842
+      internalID: 148671090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_9
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 3
+        width: 47
+        height: 24
+      alignment: 9
+      pivot: {x: 0.14893617, y: 0.375}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b46b8d1476673a469c94041b51d9bc7
+      internalID: 255139092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_basecharacter_axe_strip10_10
+      rect:
+        serializedVersion: 2
+        x: 593
+        y: 3
+        width: 23
+        height: 18
+      alignment: 9
+      pivot: {x: 0.30434784, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcaa8a60b142f7d4fa4c05d597cc8308
+      internalID: -1520774574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      spr_basecharacter_axe_strip10_3: 899364471
+      spr_basecharacter_axe_strip10_4: -1665785779
+      spr_basecharacter_axe_strip10_1: -58786373
+      spr_basecharacter_axe_strip10_8: 402977873
+      spr_basecharacter_axe_strip10_0: -250440642
+      spr_basecharacter_axe_strip10_7: 148671090
+      spr_basecharacter_axe_strip10_6: -1213868742
+      spr_basecharacter_axe_strip10_5: -1010314975
+      spr_basecharacter_axe_strip10_10: -1520774574
+      spr_basecharacter_axe_strip10_2: -1054490463
+      spr_basecharacter_axe_strip10_9: 255139092
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

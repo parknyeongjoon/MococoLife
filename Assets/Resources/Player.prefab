@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 267185011
   m_SortingLayer: 5
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1497463641, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -81,9 +81,9 @@ SpriteRenderer:
   m_Size: {x: 0.875, y: 0.875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!1 &3115087823413748588
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,9 +423,9 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.7, y: 1}
-  m_Direction: 0
+  m_Offset: {x: 0, y: -0.375}
+  m_Size: {x: 0.7, y: 0.35}
+  m_Direction: 1
 --- !u!50 &9105171412229398789
 Rigidbody2D:
   serializedVersion: 4
@@ -528,6 +528,15 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 2
     Name: isMove
+  - Type: 9
+    SynchronizeType: 0
+    Name: atk
+  - Type: 9
+    SynchronizeType: 0
+    Name: axe
+  - Type: 9
+    SynchronizeType: 0
+    Name: pickaxe
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -545,6 +554,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMove: {fileID: -9088937522415761824}
   hp: 100
+  canAtkTime: 0
+  hand:
+    itemData: {fileID: 0}
+    itemCount: 0
+  LAreaMoveIcon: {fileID: 3115087823413748588}
+  RAreaMoveIcon: {fileID: 7345858849286229301}
   handImg: {fileID: 6334292266584513179}
 --- !u!114 &-9088937522415761824
 MonoBehaviour:

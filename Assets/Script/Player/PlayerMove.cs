@@ -4,8 +4,8 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.EventSystems;
 ///키 입력 Dictionary<Keycode, Action>으로 넣어두고 실행하는 거 알아보기(최적화 및 가독성)
-///대시 쿨타임, 액션 스테이트 만들기
-///getItem이랑 useInventory는 다른데로 넘기기?
+///useInventory는 다른데로 넘기기?
+///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문)
 public class PlayerMove : MonoBehaviourPun
 {
     PhotonView PV;
@@ -51,7 +51,7 @@ public class PlayerMove : MonoBehaviourPun
             {
                 if (info.Hand.itemData.Item_Type == Item_Type.Tool)
                 {
-                    StartCoroutine(UseItem(info.Hand.itemData, transform.position + effectPos));
+                    UseItem(info.Hand.itemData, transform.position + effectPos);
                 }
                 else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
                 {
@@ -67,7 +67,14 @@ public class PlayerMove : MonoBehaviourPun
                         if (smith.Create_State == Create_State.create)
                         {
                             int result = smith.PlusIngredient(info.Hand.itemData.code, info.Hand.itemCount);
-                            info.SetHand(gameManager.MyPlayerNum, info.Hand.itemData.code, info.Hand.itemCount - result);
+                            if(info.Hand.itemCount - result <= 0)
+                            {
+                                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
+                            }
+                            else
+                            {
+                                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Hand.itemData.code, info.Hand.itemCount - result);
+                            }
                         }
                     }
                 }
@@ -81,7 +88,7 @@ public class PlayerMove : MonoBehaviourPun
                     if (smith.Create_State == Create_State.idle) { smith.SetCreatePanel(); }//idle ���¶�� createPanel ����
                     else if (smith.Create_State == Create_State.finish)//���� ������ �ϼ��ƴٸ� �κ��丮�� �ֱ�
                     {
-                        GetItem(smith);
+                        smith.GetItem();
                     }
                 }
             }
@@ -205,7 +212,7 @@ public class PlayerMove : MonoBehaviourPun
 
         info.State = State.Idle;
 
-        dashCool = 3.0f;
+        dashCool = 1.0f;
 
         while(dashCool > 0)
         {
@@ -263,44 +270,11 @@ public class PlayerMove : MonoBehaviourPun
 
     }
 
-    void GetItem(BlackSmith smith)//������� true �� ������� false
-    {
-        for (int i = 0; i < info.Inventory.Length; i++)
-        {
-            if (info.Inventory[i].itemData == smith.CreatingItem)//�κ��丮�� ��ġ�� �������� �ִٸ� üũ�ϱ�
-            {
-                if (info.Inventory[i].itemCount >= smith.CreatingItem.maxCount)
-                {
-                    Debug.Log("�� �̻� ���� �� �����ϴ�.");
-                    return;
-                }
-                else
-                {
-                    info.Inventory[i].itemCount++;
-                    smith.photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
-                    return;
-                }
-            }
-        }
-        for (int i = 0; i < info.Inventory.Length; i++)//�κ��丮�� ��ġ�� �������� ���ٸ� �� ĭ üũ�ϱ�
-        {
-            if (info.Inventory[i].itemData == null)
-            {
-                info.Inventory[i].itemData = smith.CreatingItem;
-                info.Inventory[i].itemCount = 1;
-                smith.photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
-                return;
-            }
-        }
-        Debug.Log("�� ĭ�� �����ϴ�");
-        return;
-    }
-
     void UseInventory(int index)
     {
         if (info.Inventory[index].itemCount > 0)
         {
-            StartCoroutine(UseItem(info.Inventory[index].itemData, transform.position + effectPos));
+            UseItem(info.Inventory[index].itemData, transform.position + effectPos);
             info.Inventory[index].itemCount--;
             if (info.Inventory[index].itemCount <= 0)
             {
@@ -308,29 +282,23 @@ public class PlayerMove : MonoBehaviourPun
                 PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);//아이템을 다 썼으니 맨손으로 설정
             }
         }
-
     }
 
-    IEnumerator UseItem(ItemData useItem, Vector3 usePos)
+    void UseItem(ItemData useItem, Vector3 usePos)
     {
-        info.State = State.Action;
-        useItem.Effect(usePos);
-        yield return new WaitForSeconds(0.2f);//아이템 데이터에 선딜후딜 저장?
-        info.State = State.Idle;
+        StartCoroutine(useItem.Effect(info, usePos));
     }
 
     #endregion
 
     #region Animation
 
-    [PunRPC]
-    void AnimTrigger(string trigger)//�� ĳ������ roll�� ���ư����� ����
+    [PunRPC] void AnimTrigger(string trigger)//animtaion trigger 실행하기 - photonanimationview에서 하기에는 최적화 이슈
     {
         animator.SetTrigger(trigger);
     }
 
-    [PunRPC]
-    void Flip()
+    [PunRPC] void Flip()///포톤 변수 동기화하기?
     {
         spriteRenderer.flipX = !spriteRenderer.flipX;
     }

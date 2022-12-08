@@ -89,9 +89,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
             temp.transform.position += new Vector3(30 * i, 0, 0);
         }
-        SetTileItem(2, 3, "T_01", 1);
+        SetTileItem(2, 3, "T_01", 0);
 
-        SetTileItem(2, 5, "T_02", 1);
+        SetTileItem(2, 5, "T_02", 0);
 
         tileManager.rightBoundary.transform.position += new Vector3(30 * tileManager.areaCount, 0, 0);
     }

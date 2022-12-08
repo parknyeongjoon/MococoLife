@@ -9,7 +9,6 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     GameManager gameManager;
 
     [SerializeField] Image timerFG;
-    GameObject PLeftMoveIcon, PRightMoveIcon;
 
     [SerializeField] float cameraSpeed;
     bool canMove = true;//카메라가 움직일 수 있는가
@@ -32,8 +31,6 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         }
 
         yield return new WaitUntil(() => gameManager.players[gameManager.MyPlayerNum] != null);
-        PLeftMoveIcon = gameManager.players[gameManager.MyPlayerNum].transform.Find("LeftMoveIcon").gameObject;
-        PRightMoveIcon = gameManager.players[gameManager.MyPlayerNum].transform.Find("RightMoveIcon").gameObject;
 
         TileManager.Instance.isAreaVisited[0] = true;
         StartCoroutine(StartAreaTimer(0));//게임 시작 함수를 만들고 그 안에 포함시키기
@@ -92,23 +89,24 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         }
     }
 
-    [PunRPC] void SetMoveIcon(bool isMove, bool isRight)
+    [PunRPC] void SetMoveIcon(int index, bool isMove, bool isRight)//최적화하려면 어떤 행동할 지 결정해서 rpc를 보내는 게 더 좋을 거 같음
     {
+        PlayerInfo info = gameManager.players[index];
         if (isMove)//움직이려고 하면 아이콘 활성화
         {
-            if (isRight)
+            if (isRight && areaCount < TileManager.Instance.areaCount - 1)
             {
-                PRightMoveIcon.SetActive(true);
+                info.RAreaMoveIcon.SetActive(true);
             }
-            else
+            else if(!isRight && areaCount > 0)
             {
-                PLeftMoveIcon.SetActive(true);
+                info.LAreaMoveIcon.SetActive(true);
             }
         }
         else//안 움직이려고 하면 아이콘 비활성화
         {
-            PLeftMoveIcon.SetActive(false);
-            PRightMoveIcon.SetActive(false);
+            info.RAreaMoveIcon.SetActive(false);
+            info.LAreaMoveIcon.SetActive(false);
         }
     }
 

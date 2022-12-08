@@ -8,14 +8,20 @@ public class FrameGrenadeData : GrenadeData
     [SerializeField] int dmg_Count;
     [SerializeField] float dmg_Interval;
 
-    public override void Effect(Vector3 effectPos)
+    public override IEnumerator Effect(PlayerInfo info, Vector3 effectPos)
     {
         Collider2D[] targets = FindTarget(effectPos);
         int tS = targets.Length;
-
-        for (int i = 0; i < tS; i++)
+        if(tS > 0)
         {
-            targets[i].GetComponent<MonoBehaviour>().StartCoroutine(FrameGrenadeEffect(targets[i]));
+            info.State = State.Action;
+
+            yield return new WaitForSeconds(delay);
+            for (int i = 0; i < tS; i++)
+            {
+                targets[i].GetComponent<MonoBehaviour>().StartCoroutine(FrameGrenadeEffect(targets[i]));
+            }
+            info.State = State.Idle;
         }
     }
 

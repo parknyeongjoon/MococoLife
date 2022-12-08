@@ -9,17 +9,24 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
     public PlayerMove playerMove;
 
     [SerializeField] float hp = 100;
-    public bool canAtk;
+
+    public float canAtkTime;
 
     State state;
-    Slot hand = new Slot();
+    [SerializeField] Slot hand = new Slot();
     Slot[] inventory = new Slot[4];
-    public SpriteRenderer handImg;
 
-    public State State { get => state; set => state = value; }/// 이거도 보안 목적으로 set을 없애고 싶은데 방법 찾기
+    public State State { get => state; set => state = value; }///이거도 보안 목적으로 set을 없애고 싶음
     public Slot Hand { get => hand; }
     public float Hp { get; set; }
     public Slot[] Inventory { get => inventory; set => inventory = value; }
+
+    #region rpcVar
+
+    public GameObject LAreaMoveIcon, RAreaMoveIcon;
+    public SpriteRenderer handImg;
+
+    #endregion
 
     void Awake()
     {
@@ -29,7 +36,9 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
         {
             photonView.RPC("SetPlayers", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
         }
+
         hand.itemData = gameManager.itemDic["T_00"];
+
         for(int i = 0; i < 4; i++)
         {
             inventory[i] = new Slot();
@@ -41,18 +50,11 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
         gameManager.players[index] = this;
     }
 
-    [PunRPC] public void SetHand(int index, string code, int count)
+    [PunRPC] public void SetHand(int index, string code, int count)///이거 버그 일어날 거 같은데? - get만 넣어놔서 안 나는듯?
     {
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
         gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
-    }
-
-    public IEnumerator EatFood()
-    {
-        canAtk = true;
-        yield return new WaitForSeconds(3.0f);
-        canAtk = false;
     }
 
     public void Damage(Dmg_Type dmg_Type, float dmg)

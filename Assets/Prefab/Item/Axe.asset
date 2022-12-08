@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7fe151caa3af0a4f820f0b3f9e4188a, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 756315983, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  itemImg: {fileID: 0}
   tileImg: {fileID: 11400000, guid: 3c01bccb0fb93e043ae4e0241188f93c, type: 2}
   code: T_01
   Item_Type: 0
-  maxCount: 1
+  delay: 0.2
