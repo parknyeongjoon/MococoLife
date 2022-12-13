@@ -24,7 +24,6 @@ public class TileManager : MonoBehaviourPun
     public GameObject rightBoundary;
 
     public int areaCount;
-    public bool[] isAreaVisited = { false, };
     public TileInfo[][] tileInfos;
     public Tilemap terrainTileMap;
 
@@ -42,8 +41,6 @@ public class TileManager : MonoBehaviourPun
             }
         }
 
-        isAreaVisited = new bool[areaCount];
-
         instance = this;
     }
 
@@ -51,16 +48,11 @@ public class TileManager : MonoBehaviourPun
     {
         int[] tiles = new int[areaCount];
 
-        for (int i = 0; i < areaCount; i++)
+        for (int i = 1; i < areaCount; i++)
         {
             tiles[i] = Random.Range(0, areas.bossAreas.Count);
         }
 
         return tiles;
-    }
-
-    public void DestroyArea(int areaIndex)//area ÆÄ±«
-    {
-
     }
 }

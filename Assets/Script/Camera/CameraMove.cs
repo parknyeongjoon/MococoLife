@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-
+/// <summary>
+/// 카메라 앞으로 이동 시에만 보스가 따라가게
+/// </summary>
 public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 {
     GameManager gameManager;
 
     [SerializeField] Image timerFG;
+    [SerializeField] Image stopWatch;
 
     [SerializeField] float cameraSpeed;
     bool canMove = true;//카메라가 움직일 수 있는가
@@ -19,6 +22,8 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     int areaCount = 0;
     float[] areaTime;
     readonly float areaMaxTime = 30.0f;
+
+    Coroutine timerCo;
 
     IEnumerator Start()
     {
@@ -32,17 +37,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
         yield return new WaitUntil(() => gameManager.players[gameManager.MyPlayerNum] != null);
 
-        TileManager.Instance.isAreaVisited[0] = true;
-        StartCoroutine(StartAreaTimer(0));//게임 시작 함수를 만들고 그 안에 포함시키기
-    }
-
-    void Update()
-    {
-        timerFG.fillAmount = areaTime[areaCount] / areaMaxTime;
-        if(areaTime[areaCount] <= 0)//현재 area의 타이머가 다 됐다면 피 닳게 하기
-        {
-            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, 0.01f);
-        }
+        timerCo = StartCoroutine(StartAreaTimer(0));//게임 시작 함수를 만들고 그 안에 포함시키기
     }
 
     [PunRPC] void SetCameraMove(int index, bool isMove, bool isRight)
@@ -112,19 +107,16 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
     IEnumerator MoveCamera(bool isRight)//플레이어 모두가 맵의 가장 오른쪽에 있을 때 맵 이동
     {
+        StopCoroutine(timerCo);
         canMove = false;//움직이는 동안에는 다시 움직이기 못하게
 
         Vector3 cameraSpeedV = new Vector3(cameraSpeed, 0, 0);
 
         if (isRight && areaCount < TileManager.Instance.areaCount - 1)//오른쪽으로 이동하려할 때
         {
-            areaCount++;
+            areaTime[areaCount] = 0;//현재 지역의 시간을 0으로 만들고
+            areaCount++;//다음 지역으로 이동
 
-            if (!TileManager.Instance.isAreaVisited[areaCount])//아직 방문한 적이 없다면 타이머 시작하기
-            {
-                TileManager.Instance.isAreaVisited[areaCount] = true;
-                StartCoroutine(StartAreaTimer(areaCount));
-            }
             float destiny = transform.position.x + 30;
 
             while (transform.position.x < destiny)
@@ -145,18 +137,31 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
             }
         }
 
+        timerCo = StartCoroutine(StartAreaTimer(areaCount));
+
         yield return new WaitForSeconds(1.0f);//이동이 완료되고 1초 동안은 다시 못 움직이게
         canMove = true;
     }
 
     IEnumerator StartAreaTimer(int areaIndex)
     {
+        timerFG.fillAmount = areaTime[areaIndex] / areaMaxTime;
+        stopWatch.color = Color.white;
+
         while (areaTime[areaIndex] > 0)
         {
+            timerFG.fillAmount = areaTime[areaIndex] / areaMaxTime;
             areaTime[areaIndex] -= Time.deltaTime;
             yield return null;
         }
 
-        TileManager.Instance.DestroyArea(areaIndex);//시간이 초과되면 area 파괴하기
+        //시간이 초과되면 area 파괴하기
+        stopWatch.color = Color.red;
+
+        while (true)
+        {
+            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, 0.01f);
+            yield return null;
+        }
     }
 }

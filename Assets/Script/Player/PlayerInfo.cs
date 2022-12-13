@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerInfo : MonoBehaviourPun, IDamagable
+public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 {
     GameManager gameManager;
     public PlayerMove playerMove;
@@ -39,7 +39,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
 
         hand.itemData = gameManager.itemDic["T_00"];
 
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             inventory[i] = new Slot();
         }
@@ -63,5 +63,10 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable
         {
             hp -= dmg;
         }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        //hp, flipx µ¿±âÈ­
     }
 }

@@ -79,19 +79,19 @@ public class GameManager : MonoBehaviourPunCallbacks
             photonView.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
         }
         //플레이어 생성
-        PhotonNetwork.Instantiate("Player", new Vector3(4, 3 * MyPlayerNum + 1, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(9, 3 * MyPlayerNum + 1, 0), Quaternion.identity);
     }
 
-    [PunRPC] void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까?
+    [PunRPC] void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까? - setactive(false)나 destroy하려면 이래야 함
     {
-        for (int i = 0; i < tileManager.areaCount; i++)
+        for (int i = 1; i < tileManager.areaCount; i++)
         {
             GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
             temp.transform.position += new Vector3(30 * i, 0, 0);
         }
-        SetTileItem(2, 3, "T_01", 0);
+        SetTileItem(10, 3, "T_01", 0);
 
-        SetTileItem(2, 5, "T_02", 0);
+        SetTileItem(10, 5, "T_02", 0);
 
         tileManager.rightBoundary.transform.position += new Vector3(30 * tileManager.areaCount, 0, 0);
     }

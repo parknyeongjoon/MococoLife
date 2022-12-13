@@ -17,3 +17,4 @@ MonoBehaviour:
   code: T_00
   Item_Type: 0
   delay: 0.2
+  dmg: 1

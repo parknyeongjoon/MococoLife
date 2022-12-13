@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8022022070041507308}
   - component: {fileID: 6334292266584513179}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5588276795876758247}
   - component: {fileID: 7582768543779447846}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: LeftMoveIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 4760202650985259163}
   - component: {fileID: 8761067107015221304}
   - component: {fileID: 2448943883448636883}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: ToolCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3564408045281214120}
   - component: {fileID: 3712684359844379173}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: RightMoveIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -554,7 +554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerMove: {fileID: -9088937522415761824}
   hp: 100
-  canAtkTime: 0
+  canAtkTime: 1
   hand:
     itemData: {fileID: 0}
     itemCount: 0
