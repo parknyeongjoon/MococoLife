@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
  * 캐릭터 interactive 다시 손보기(해결)
  * BlackSmith 재료 넣는 기능 넣기(해결)
  * overlapPoint 쓰는 애들 physics2D.isTouchingLayers 써도 될 듯?
- * players 받아올 방법 생각하기
+ * players 받아올 방법 생각하기(해결)
  * 캐릭터 flipX 동기화하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
@@ -76,27 +76,27 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             //GameArea 제작
             int[] tiles = tileManager.AreaInitialize();
-            photonView.RPC("SetGameArea", RpcTarget.AllBufferedViaServer, tiles);
+            SetGameArea(tiles);
         }
         //플레이어 생성
         PhotonNetwork.Instantiate("Player", new Vector3(9, 3 * MyPlayerNum + 1, 0), Quaternion.identity);
     }
 
-    [PunRPC] void SetGameArea(int[] tiles)//photonview를 달아가면서까지 PhotonNetwork.Instantiate를 사용할 필요가 있을까? - setactive(false)나 destroy하려면 이래야 함
+    void SetGameArea(int[] tiles)
     {
         for (int i = 1; i < tileManager.areaCount; i++)
         {
-            GameObject temp = Instantiate(tileManager.areas.bossAreas[tiles[i]]);
-            temp.transform.position += new Vector3(30 * i, 0, 0);
+            Debug.Log(i);
+            GameObject temp = tileManager.areas.bossAreas[tiles[i]];
+            temp = PhotonNetwork.Instantiate(temp.name, temp.transform.position + new Vector3(30 * i, 0, 0), Quaternion.identity);
         }
-        SetTileItem(10, 3, "T_01", 0);
 
-        SetTileItem(10, 5, "T_02", 0);
-
-        tileManager.rightBoundary.transform.position += new Vector3(30 * tileManager.areaCount, 0, 0);
+        photonView.RPC("SetTileItem", RpcTarget.AllViaServer, 9, 3, "T_01", 0);
+        photonView.RPC("SetTileItem", RpcTarget.AllViaServer, 9, 5, "T_02", 0);
     }
 
-    [PunRPC] public void SetTileItem(int x, int y, string _to, int count)
+    [PunRPC]
+    public void SetTileItem(int x, int y, string _to, int count)
     {
         if (_to == "T_00" || itemDic[_to].Item_Type == Item_Type.BattleItem)//플레이어가 맨손이었거나 배템을 들고있었다면
         {

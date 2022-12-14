@@ -21,7 +21,6 @@ public class TileManager : MonoBehaviourPun
     GameManager gameManager;
 
     public AreaSO areas;
-    public GameObject rightBoundary;
 
     public int areaCount;
     public TileInfo[][] tileInfos;
@@ -42,6 +41,23 @@ public class TileManager : MonoBehaviourPun
         }
 
         instance = this;
+    }
+
+    void Start()
+    {
+        SetPhotonPool();
+    }
+
+    void SetPhotonPool()
+    {
+        DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
+        if(pool != null && areas != null)
+        {
+            foreach(GameObject area in areas.bossAreas)
+            {
+                pool.ResourceCache.Add(area.name, area);
+            }
+        }
     }
 
     public int[] AreaInitialize()

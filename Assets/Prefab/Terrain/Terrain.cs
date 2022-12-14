@@ -21,15 +21,8 @@ public class Terrain : MonoBehaviourPun, IDamagable
         //tileManager.tileInfos[tX][tY].isTerrain = true;
     }
 
-    public virtual void Damage(Dmg_Type _dmg_Type, float dmg)///얘도 RPC로 바꿔줘야함
+    public virtual void Damage(Dmg_Type dmg_Type, float dmg)
     {
-        if (dmg_Type == _dmg_Type)
-        {
-            hp -= dmg;
-            if (hp <= 0)
-            {
-                gameObject.SetActive(false);//동기화 되나 확인해보기
-            }
-        }
+
     }
 }

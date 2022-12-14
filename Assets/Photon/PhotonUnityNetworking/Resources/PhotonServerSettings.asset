@@ -67,6 +67,8 @@ MonoBehaviour:
   - AnimTrigger
   - HandAnim
   - Damage
+  - SetHP
+  - InstantArea
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

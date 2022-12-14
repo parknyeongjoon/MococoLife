@@ -9,7 +9,7 @@ public class Boss : MonoBehaviourPun, IDamagable, IPunObservable
 
     [SerializeField] float hp;
 
-    public float Hp { get => hp; }
+    public float Hp { get => hp; set => hp = value; }
 
     void Start()
     {
@@ -30,6 +30,13 @@ public class Boss : MonoBehaviourPun, IDamagable, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        //피 동기화
+        if (stream.IsWriting)//정보 보내기
+        {
+            stream.SendNext(hp);
+        }
+        else//정보 받기
+        {
+            hp = (float)stream.ReceiveNext();
+        }
     }
 }

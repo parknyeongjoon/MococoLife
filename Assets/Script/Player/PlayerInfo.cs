@@ -67,6 +67,14 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        //hp, flipx 동기화
+        if (stream.IsWriting)//정보 보내기
+        {
+            stream.SendNext(hp);
+        }
+        else//정보 받기
+        {
+            hp = (float)stream.ReceiveNext();
+            Debug.Log(hp);
+        }
     }
 }

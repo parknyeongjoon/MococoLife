@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ProductTerrain : Terrain
+public class ProductTerrain : Terrain, IDamagable
 {
     [SerializeField] ItemData productData;//积己拱
     [SerializeField] int productCount;
@@ -12,12 +12,20 @@ public class ProductTerrain : Terrain
     {
         if (dmg_Type == _dmg_Type)
         {
-            hp -= dmg;
+            photonView.RPC("SetHP", RpcTarget.AllBuffered, hp - dmg);
             if (hp <= 0)
             {
-                //product 积魂
-                SpawnProduct();
+                SpawnProduct();//product 积魂
             }
+        }
+    }
+
+    [PunRPC] void SetHP(float _hp)
+    {
+        hp = _hp;
+        if(hp <= 0 && PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
@@ -26,7 +34,6 @@ public class ProductTerrain : Terrain
         int tX = (int)transform.position.x;
         int tY = (int)transform.position.y;
 
-        GameManager.Instance.photonView.RPC("SetTileItem", Photon.Pun.RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
-        transform.position = new Vector3(-30, 0, 0);
+        GameManager.Instance.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
     }
 }
