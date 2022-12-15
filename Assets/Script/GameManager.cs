@@ -5,12 +5,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /*
- * Sword effect 만들기
+ * Sword effect 만들기(해결)
  * 캐릭터 interactive 다시 손보기(해결)
- * BlackSmith 재료 넣는 기능 넣기(해결)
- * overlapPoint 쓰는 애들 physics2D.isTouchingLayers 써도 될 듯?
+ * BlackSmith 재료 넣는 기능 넣기(해결) - 가시성 더 높이기
  * players 받아올 방법 생각하기(해결)
  * 캐릭터 flipX 동기화하기
+ * PNum 로비에서 사람이 나가질 거 대비하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -33,13 +33,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     [Header("Game")]
     public bool isPause;
 
-    public Boss boss;
+    public BossInfo boss;
 
     public float gameSpeed;
     public int difficulty;
 
     [Header("Data")]
-    private int myPlayerNum;///로비에서 사람이 나가질 거 대비하기
+    private int myPlayerNum;
     public PlayerInfo[] players = new PlayerInfo[4];
     public Dictionary<string, ItemData> itemDic = new Dictionary<string, ItemData>();
 
@@ -86,7 +86,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         for (int i = 1; i < tileManager.areaCount; i++)
         {
-            Debug.Log(i);
             GameObject temp = tileManager.areas.bossAreas[tiles[i]];
             temp = PhotonNetwork.Instantiate(temp.name, temp.transform.position + new Vector3(30 * i, 0, 0), Quaternion.identity);
         }

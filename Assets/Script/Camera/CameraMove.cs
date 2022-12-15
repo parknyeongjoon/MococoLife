@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Photon.Pun;
 /// <summary>
 /// 카메라 앞으로 이동 시에만 보스가 따라가게
+/// 타이머 시작 시간이 달라서 버그 발생 - master client가 all via server로 시작하기?
+/// 오른쪽으로 이동 후 왼쪽으로 갈 때 icon 안 뜸
 /// </summary>
 public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 {
@@ -160,8 +162,8 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
         while (true)
         {
-            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, 0.01f);
-            yield return null;
+            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, Time.deltaTime);
+            yield return new WaitForFixedUpdate();
         }
     }
 }

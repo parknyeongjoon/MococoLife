@@ -6,7 +6,7 @@ using Photon.Pun;
 public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 {
     GameManager gameManager;
-    public PlayerMove playerMove;
+    public PlayerBehaviour playerMove;
 
     [SerializeField] float hp = 100;
 
@@ -18,7 +18,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 
     public State State { get => state; set => state = value; }///이거도 보안 목적으로 set을 없애고 싶음
     public Slot Hand { get => hand; }
-    public float Hp { get; set; }
+    public float Hp { get => hp; }
     public Slot[] Inventory { get => inventory; set => inventory = value; }
 
     #region rpcVar
@@ -74,7 +74,6 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
         else//정보 받기
         {
             hp = (float)stream.ReceiveNext();
-            Debug.Log(hp);
         }
     }
 }

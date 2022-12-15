@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Boss : MonoBehaviourPun, IDamagable, IPunObservable
+public class BossInfo : MonoBehaviourPun, IDamagable, IPunObservable
 {
     PhotonView PV;
 
@@ -15,10 +15,6 @@ public class Boss : MonoBehaviourPun, IDamagable, IPunObservable
     {
         PV = photonView;
     }
-
-    #region Pattern
-
-    #endregion
 
     public void Damage(Dmg_Type dmg_Type, float dmg)
     {

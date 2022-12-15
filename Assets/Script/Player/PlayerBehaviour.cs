@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 ///키 입력 Dictionary<Keycode, Action>으로 넣어두고 실행하는 거 알아보기(최적화 및 가독성)
 ///useInventory는 다른데로 넘기기?
 ///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문)
-public class PlayerMove : MonoBehaviourPun
+public class PlayerBehaviour : MonoBehaviourPun
 {
     PhotonView PV;
     TileManager tileManager;
