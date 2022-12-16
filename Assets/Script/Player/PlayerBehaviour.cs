@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine.EventSystems;
 ///키 입력 Dictionary<Keycode, Action>으로 넣어두고 실행하는 거 알아보기(최적화 및 가독성)
 ///useInventory는 다른데로 넘기기?
-///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문)
+///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문) - OnTriggerStay로 BlackSmith에서 실행되도록 옮기기
 public class PlayerBehaviour : MonoBehaviourPun
 {
     PhotonView PV;
@@ -34,7 +34,7 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     void Update()
     {
-        if (PV.IsMine && info.State == State.Idle)
+        if (PV.IsMine && info.State == P_State.Idle)
         {
             Move();
             SetToolOffset();
@@ -56,40 +56,6 @@ public class PlayerBehaviour : MonoBehaviourPun
                 else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
                 {
                     UseInventory(inventory_Index);
-                }
-                else if (info.Hand.itemData.Item_Type == Item_Type.Ingredient)
-                {
-                    Collider2D isSmith = Physics2D.OverlapPoint(mousePos, 1 << LayerMask.NameToLayer("BlackSmith"));
-
-                    if (Physics2D.IsTouchingLayers(bodyCollider, 1 << LayerMask.NameToLayer("BlackSmith")) && isSmith)//BlackSmith�� ���� ���̰� ���콺 �����Ϳ� �������̽��� �ִٸ�
-                    {
-                        BlackSmith smith = isSmith.GetComponentInParent<BlackSmith>();
-                        if (smith.Create_State == Create_State.create)
-                        {
-                            int result = smith.PlusIngredient(info.Hand.itemData.code, info.Hand.itemCount);
-                            if(info.Hand.itemCount - result <= 0)
-                            {
-                                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
-                            }
-                            else
-                            {
-                                PV.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, info.Hand.itemData.code, info.Hand.itemCount - result);
-                            }
-                        }
-                    }
-                }
-            }
-            else if (Input.GetMouseButtonDown(1) && EventSystem.current.IsPointerOverGameObject() == false)//UI�� �ƴ� ���� ��Ŭ������ ��
-            {
-                Collider2D isSmith = Physics2D.OverlapPoint(mousePos, 1 << LayerMask.NameToLayer("BlackSmith"));
-                if (Physics2D.IsTouchingLayers(bodyCollider, 1 << LayerMask.NameToLayer("BlackSmith")) && isSmith)//BlackSmith�� ���� ���̰� ���콺 �����Ϳ� �������̽��� �ִٸ�
-                {
-                    BlackSmith smith = isSmith.GetComponentInParent<BlackSmith>();
-                    if (smith.Create_State == Create_State.idle) { smith.SetCreatePanel(); }//idle ���¶�� createPanel ����
-                    else if (smith.Create_State == Create_State.finish)//���� ������ �ϼ��ƴٸ� �κ��丮�� �ֱ�
-                    {
-                        smith.GetItem();
-                    }
                 }
             }
             //�κ��丮���� ������ �����ϱ�
@@ -185,7 +151,7 @@ public class PlayerBehaviour : MonoBehaviourPun
             moveDir.x = 0;
         }
 
-        if (info.State == State.Idle && moveDir != Vector3.zero)
+        if (info.State == P_State.Idle && moveDir != Vector3.zero)
         {
             transform.position += moveDir * 2 * Time.deltaTime;
             animator.SetBool("isMove", true);
@@ -198,7 +164,7 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     IEnumerator Dash()
     {
-        info.State = State.Dash;
+        info.State = P_State.Action;
 
         float time = 0.0f;
         PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "roll");
@@ -210,7 +176,7 @@ public class PlayerBehaviour : MonoBehaviourPun
             yield return null;
         }
 
-        info.State = State.Idle;
+        info.State = P_State.Idle;
 
         dashCool = 1.0f;
 

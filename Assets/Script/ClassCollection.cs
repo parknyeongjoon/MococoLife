@@ -2,15 +2,15 @@ using Photon.Pun;
 
 #region enum
 //player
-public enum State { Idle, Dash, Attack, Action, Stun, Dead };
+public enum P_State { Idle, Action, Stun, Dead };
 //BlackSmith
-public enum Create_State { idle, create, finish };
+public enum Create_State { Idle, Create, Finish };
 
-public enum Dmg_Type { None, Damage, Axe, Pickaxe, UnBreakable, KnockBack }
+public enum CC_Type { KnockBack, Stun }
 public enum Item_Type { Tool, BattleItem, Ingredient, Food }
 
-public enum Boss_Type { Baltan }
-public enum Boss_State { Idle, Atk, Skill, Stun };
+public enum Boss_Type { Crab }
+public enum Boss_State { Idle, Action, Pattern, Stun };
 
 #endregion
 
@@ -18,7 +18,7 @@ public enum Boss_State { Idle, Atk, Skill, Stun };
 
 public interface IDamagable
 {
-    void Damage(Dmg_Type dmg_Type, float dmg);
+    void Damage(float dmg);
 }
 
 #endregion

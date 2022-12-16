@@ -13,13 +13,13 @@ public class Pickaxe : ItemData
         {
             if (target.CompareTag("Rock"))
             {
-                info.State = State.Action;
+                info.State = P_State.Action;
                 info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "pickaxe");
                 Debug.Log("Ã¤±¤ Áß..");
 
                 yield return new WaitForSeconds(delay);
-                target.GetComponent<IDamagable>().Damage(Dmg_Type.Pickaxe, 1);
-                info.State = State.Idle;
+                target.GetComponent<IDamagable>().Damage(1);
+                info.State = P_State.Idle;
                 break;
             }
         }

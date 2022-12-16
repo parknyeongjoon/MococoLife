@@ -10,6 +10,7 @@ public class BlackSmith : MonoBehaviourPun
     PhotonView PV;
     GameManager gameManager;
 
+    [SerializeField] GameObject InteracitveIcon;
     [Header("CreatePanel")]
     [SerializeField] GameObject createPanel;
     [Header("NeedPanel")]
@@ -19,11 +20,61 @@ public class BlackSmith : MonoBehaviourPun
     [SerializeField] GameObject creatingPanel;
     [SerializeField] Image creatingItemImg, creatingP;
 
-    Create_State create_State = Create_State.idle;
+    Create_State create_State = Create_State.Idle;
     BattleItemData creatingItem;
     int curWood, curStone;
 
-    public Create_State Create_State { get => create_State; }
+    PlayerInfo targetInfo;
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            PlayerInfo info = collision.GetComponent<PlayerInfo>();
+            if (info.photonView.IsMine)
+            {
+                InteracitveIcon.SetActive(true);
+                targetInfo = info;
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        if (targetInfo != null && collision.gameObject == targetInfo.gameObject)
+        {
+            InteracitveIcon.SetActive(false);
+            targetInfo = null;
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0) && targetInfo != null)
+        {
+            if(create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)
+            {
+                int result = PlusIngredient(targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount);
+                Debug.Log(result);
+                if (targetInfo.Hand.itemCount - result <= 0)
+                {
+                    targetInfo.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
+                }
+                else
+                {
+                    targetInfo.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount - result);
+                }
+            }
+        }
+        else if (Input.GetMouseButtonDown(1) && targetInfo != null)
+        {
+            if (create_State == Create_State.Idle) { SetCreatePanel(); }//idle 상태면 createPanel 열기
+            else if (create_State == Create_State.Finish)//제작이 완료됐다면 우클릭한 캐릭터에게 주기
+            {
+                GetItem(targetInfo);
+            }
+        }
+    }
 
     void Start()
     {
@@ -42,7 +93,7 @@ public class BlackSmith : MonoBehaviourPun
 
     public void RPCSetNeedPanel(ItemData itemData)///지금은 인스펙터 창에서 하는데 itemData 넣어서 가능하게 하기
     {
-        if (Create_State == Create_State.idle)
+        if (create_State == Create_State.Idle)
         {
             PV.RPC("SetNeedPanel", RpcTarget.AllViaServer, itemData.code);
         }
@@ -50,7 +101,7 @@ public class BlackSmith : MonoBehaviourPun
 
     [PunRPC] void SetNeedPanel(string code)
     {
-        create_State = Create_State.create;
+        create_State = Create_State.Create;
         CloseCreatePanel();
         creatingItem = (BattleItemData)gameManager.itemDic[code];
         curWood = 0; curStone = 0;
@@ -123,43 +174,41 @@ public class BlackSmith : MonoBehaviourPun
         }
 
         creatingP.color = Color.green;
-        create_State = Create_State.finish;
+        create_State = Create_State.Finish;
     }
 
-    public void GetItem()//������� true �� ������� false
+    public void GetItem(PlayerInfo targetInfo)//������� true �� ������� false
     {
-        PlayerInfo info = gameManager.players[gameManager.MyPlayerNum];
-
         if(creatingItem.code == "BI_00")//음식이라면 바로 먹기
         {
-            creatingItem.Effect(info);
+            creatingItem.Effect(targetInfo);
             photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
             return;
         }
 
-        for (int i = 0; i < info.Inventory.Length; i++)
+        for (int i = 0; i < targetInfo.Inventory.Length; i++)
         {
-            if (info.Inventory[i].itemData == creatingItem)//�κ��丮�� ��ġ�� �������� �ִٸ� üũ�ϱ�
+            if (targetInfo.Inventory[i].itemData == creatingItem)//�κ��丮�� ��ġ�� �������� �ִٸ� üũ�ϱ�
             {
-                if (info.Inventory[i].itemCount >= creatingItem.maxCount)
+                if (targetInfo.Inventory[i].itemCount >= creatingItem.maxCount)
                 {
                     Debug.Log("더 이상 가질 수 없음.");
                     return;
                 }
                 else
                 {
-                    info.Inventory[i].itemCount++;
+                    targetInfo.Inventory[i].itemCount++;
                     photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
                     return;
                 }
             }
         }
-        for (int i = 0; i < info.Inventory.Length; i++)//�κ��丮�� ��ġ�� �������� ���ٸ� �� ĭ üũ�ϱ�
+        for (int i = 0; i < targetInfo.Inventory.Length; i++)//�κ��丮�� ��ġ�� �������� ���ٸ� �� ĭ üũ�ϱ�
         {
-            if (info.Inventory[i].itemData == null)
+            if (targetInfo.Inventory[i].itemData == null)
             {
-                info.Inventory[i].itemData = creatingItem;
-                info.Inventory[i].itemCount = 1;
+                targetInfo.Inventory[i].itemData = creatingItem;
+                targetInfo.Inventory[i].itemCount = 1;
                 photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
                 return;
             }
@@ -170,7 +219,7 @@ public class BlackSmith : MonoBehaviourPun
 
     [PunRPC] void PickUp()
     {
-        create_State = Create_State.idle;
+        create_State = Create_State.Idle;
         creatingItem = null;
         creatingPanel.SetActive(false);
     }

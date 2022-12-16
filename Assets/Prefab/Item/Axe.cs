@@ -13,13 +13,13 @@ public class Axe : ItemData
         {
             if (target.CompareTag("Tree"))
             {
-                info.State = State.Action;
+                info.State = P_State.Action;
                 info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "axe");
                 Debug.Log("¹ú¸ñ Áß..");
 
                 yield return new WaitForSeconds(delay);
-                target.GetComponent<IDamagable>().Damage(Dmg_Type.Axe, 1);
-                info.State = State.Idle;
+                target.GetComponent<IDamagable>().Damage(1);
+                info.State = P_State.Idle;
                 break;
             }
         }

@@ -11,12 +11,12 @@ public class Sword : ItemData
     {
         if(info.canAtkTime > 0)//공격 가능 시간이라면
         {
-            info.State = State.Action;
+            info.State = P_State.Action;
             info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "atk");
 
             yield return new WaitForSeconds(delay);
             detectTarget(effectPos);
-            info.State = State.Idle;
+            info.State = P_State.Idle;
         }
     }
 
@@ -25,7 +25,7 @@ public class Sword : ItemData
         Collider2D target = Physics2D.OverlapPoint(effectPos, 1 << LayerMask.NameToLayer("Boss"));
         if(target != null)//보스가 있다면 때리고 리턴
         {
-            target.GetComponent<IDamagable>().Damage(Dmg_Type.Damage, dmg);
+            target.GetComponent<IDamagable>().Damage(dmg);
             Debug.Log("보스 때림");
             return;
         }
@@ -33,7 +33,7 @@ public class Sword : ItemData
         if(target != null)
         {
             Debug.Log(target.name);
-            target.GetComponent<IDamagable>().Damage(Dmg_Type.KnockBack, 0);
+            target.GetComponent<IDamagable>().Damage(0);///넉백 기능 추가
             Debug.Log("유저 때림");
             return;
         }

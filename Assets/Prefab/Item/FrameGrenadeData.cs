@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "FrameGrenadeData", menuName = "SO/Item/FrameGrenadeData")]
 public class FrameGrenadeData : GrenadeData
 {
+    /*
     [SerializeField] int dmg_Count;
     [SerializeField] float dmg_Interval;
 
@@ -33,9 +34,10 @@ public class FrameGrenadeData : GrenadeData
         {
             for (int i = 0; i < dmg_Count; i++)
             {
-                damagable.Damage(dmg_Type, dmg);
+                damagable.Damage(dmg);
                 yield return new WaitForSeconds(dmg_Interval);
             }
         }
     }
+    */
 }

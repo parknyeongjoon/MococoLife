@@ -16,12 +16,9 @@ public class BossInfo : MonoBehaviourPun, IDamagable, IPunObservable
         PV = photonView;
     }
 
-    public void Damage(Dmg_Type dmg_Type, float dmg)
+    public void Damage(float dmg)
     {
-        if (dmg_Type == Dmg_Type.Damage)
-        {
-            hp -= dmg;
-        }
+        hp -= dmg;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

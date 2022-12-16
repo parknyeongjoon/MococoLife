@@ -8,22 +8,20 @@ public class ProductTerrain : Terrain, IDamagable
     [SerializeField] ItemData productData;//积己拱
     [SerializeField] int productCount;
 
-    public override void Damage(Dmg_Type _dmg_Type, float dmg)
+    public override void Damage(float dmg)
     {
-        if (dmg_Type == _dmg_Type)
+        photonView.RPC("SetHP", RpcTarget.AllBuffered, hp - dmg);
+        if (hp <= 0)
         {
-            photonView.RPC("SetHP", RpcTarget.AllBuffered, hp - dmg);
-            if (hp <= 0)
-            {
-                SpawnProduct();//product 积魂
-            }
+            SpawnProduct();//product 积魂
         }
     }
 
-    [PunRPC] void SetHP(float _hp)
+    [PunRPC]
+    void SetHP(float _hp)
     {
         hp = _hp;
-        if(hp <= 0 && PhotonNetwork.IsMasterClient)
+        if (hp <= 0 && PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.Destroy(gameObject);
         }

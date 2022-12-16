@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class Terrain : MonoBehaviourPun, IDamagable
 {
-    [SerializeField] protected Dmg_Type dmg_Type;
     [SerializeField] protected float hp;
     [SerializeField] GameObject interactiveIcon;
     protected TileManager tileManager;
@@ -21,7 +20,7 @@ public class Terrain : MonoBehaviourPun, IDamagable
         //tileManager.tileInfos[tX][tY].isTerrain = true;
     }
 
-    public virtual void Damage(Dmg_Type dmg_Type, float dmg)
+    public virtual void Damage(float dmg)
     {
 
     }

@@ -32,17 +32,21 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         gameManager = GameManager.Instance;
 
         areaTime = new float[TileManager.Instance.areaCount];
-        for(int i = 0; i < TileManager.Instance.areaCount; i++)
+        for (int i = 0; i < TileManager.Instance.areaCount; i++)
         {
             areaTime[i] = areaMaxTime;
         }
 
         yield return new WaitUntil(() => gameManager.players[gameManager.MyPlayerNum] != null);
 
-        timerCo = StartCoroutine(StartAreaTimer(0));//게임 시작 함수를 만들고 그 안에 포함시키기
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("RPCStartAreaTimer", RpcTarget.AllViaServer, 0);
+        }
     }
 
-    [PunRPC] void SetCameraMove(int index, bool isMove, bool isRight)
+    [PunRPC]
+    void SetCameraMove(int index, bool isMove, bool isRight)
     {
         if (isRight)//오른쪽으로 가는 거라면
         {
@@ -86,7 +90,8 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         }
     }
 
-    [PunRPC] void SetMoveIcon(int index, bool isMove, bool isRight)//최적화하려면 어떤 행동할 지 결정해서 rpc를 보내는 게 더 좋을 거 같음
+    [PunRPC]
+    void SetMoveIcon(int index, bool isMove, bool isRight)//최적화하려면 어떤 행동할 지 결정해서 rpc를 보내는 게 더 좋을 거 같음
     {
         PlayerInfo info = gameManager.players[index];
         if (isMove)//움직이려고 하면 아이콘 활성화
@@ -95,7 +100,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
             {
                 info.RAreaMoveIcon.SetActive(true);
             }
-            else if(!isRight && areaCount > 0)
+            else if (!isRight && areaCount > 0)
             {
                 info.LAreaMoveIcon.SetActive(true);
             }
@@ -139,10 +144,18 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
             }
         }
 
-        timerCo = StartCoroutine(StartAreaTimer(areaCount));
-
+        if (PhotonNetwork.IsMasterClient)
+        {
+            photonView.RPC("RPCStartAreaTimer", RpcTarget.AllViaServer, areaCount);
+        }
         yield return new WaitForSeconds(1.0f);//이동이 완료되고 1초 동안은 다시 못 움직이게
         canMove = true;
+    }
+
+    [PunRPC]
+    void RPCStartAreaTimer(int index)
+    {
+        timerCo = StartCoroutine(StartAreaTimer(index));
     }
 
     IEnumerator StartAreaTimer(int areaIndex)
@@ -162,7 +175,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
         while (true)
         {
-            gameManager.players[gameManager.MyPlayerNum].Damage(Dmg_Type.Damage, Time.deltaTime);
+            gameManager.players[gameManager.MyPlayerNum].Damage(Time.deltaTime);
             yield return new WaitForFixedUpdate();
         }
     }

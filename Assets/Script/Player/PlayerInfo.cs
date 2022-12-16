@@ -12,18 +12,18 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 
     public float canAtkTime;
 
-    State state;
+    P_State state;
     [SerializeField] Slot hand = new Slot();
     Slot[] inventory = new Slot[4];
 
-    public State State { get => state; set => state = value; }///이거도 보안 목적으로 set을 없애고 싶음
+    public P_State State { get => state; set => state = value; }
     public Slot Hand { get => hand; }
     public float Hp { get => hp; }
     public Slot[] Inventory { get => inventory; set => inventory = value; }
 
     #region rpcVar
 
-    public GameObject LAreaMoveIcon, RAreaMoveIcon;
+    public GameObject LAreaMoveIcon, RAreaMoveIcon, WarningIcon;
     public SpriteRenderer handImg;
 
     #endregion
@@ -45,24 +45,23 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
         }
     }
 
-    [PunRPC] void SetPlayers(int index)
+    [PunRPC]
+    void SetPlayers(int index)
     {
         gameManager.players[index] = this;
     }
 
-    [PunRPC] public void SetHand(int index, string code, int count)///이거 버그 일어날 거 같은데? - get만 넣어놔서 안 나는듯?
+    [PunRPC]
+    public void SetHand(int index, string code, int count)///이거 버그 일어날 거 같은데? - get만 넣어놔서 안 나는듯?
     {
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
         gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
     }
 
-    public void Damage(Dmg_Type dmg_Type, float dmg)
+    public void Damage(float dmg)
     {
-        if(dmg_Type == Dmg_Type.Damage)
-        {
-            hp -= dmg;
-        }
+        hp -= dmg;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
