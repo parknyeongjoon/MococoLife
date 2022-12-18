@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8970636316668361059}
   - component: {fileID: 3575407082619690338}
   - component: {fileID: -2630951182946879225}
+  - component: {fileID: 21359374281593257}
   m_Layer: 9
   m_Name: Crab
   m_TagString: Untagged
@@ -180,3 +181,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8baaa6f86df0d046840842c6d1a4af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  info: {fileID: 3575407082619690338}
+  PatternObject: {fileID: 3822876336808062564, guid: d199f6de89474144d99ac30138aee49f, type: 3}
+  paternPooler: {fileID: 21359374281593257}
+--- !u!114 &21359374281593257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8970636316668361087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ebaa2346dca5654db72ae05207c8c7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabList:
+  - {fileID: 3822876336808062564, guid: d199f6de89474144d99ac30138aee49f, type: 3}

@@ -7,6 +7,7 @@ using Photon.Pun;
 public class BossBehaviour : MonoBehaviourPun
 {
     [SerializeField] BossInfo info;
+    [SerializeField] Pooler paternPooler;
 
     List<string> randPattern;
 
@@ -24,9 +25,15 @@ public class BossBehaviour : MonoBehaviourPun
     {
         while (true)
         {
-            //photonView.RPC("AttackAround", RpcTarget.AllViaServer);
-            yield return new WaitForSeconds(2.0f);
+            StartCoroutine(StarfishBomb());
+            yield return new WaitForSeconds(7f);
         }
+    }
+
+    [PunRPC]
+    void Think()
+    {
+
     }
 
     [PunRPC]
@@ -40,6 +47,18 @@ public class BossBehaviour : MonoBehaviourPun
             {
                 target.GetComponent<IDamagable>().Damage(10);
             }
+        }
+    }
+
+    IEnumerator StarfishBomb()
+    {
+        float randX, randY;
+        for(int i = 0; i < 5; i++)
+        {
+            randX = Random.Range(5.0f, 10.0f);
+            randY = Random.Range(3.0f, 11.0f);
+            paternPooler.Get("StarfishBomb", new Vector3(randX, randY));
+            yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
         }
     }
 

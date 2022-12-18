@@ -71,6 +71,14 @@ MonoBehaviour:
   - InstantArea
   - AttackAround
   - RPCStartAreaTimer
+  - StarFishBomb
+  - Think
+  - StarfishBomb
+  - RPCStarfishBomb
+  - RPCAddPool
+  - RPCSetObject
+  - Get
+  - ActiveObject
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
