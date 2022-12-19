@@ -22,6 +22,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] GameObject[] PHP_GO;
     [SerializeField] Image[] PHP_FG;
+    [SerializeField] GameObject BHP_GO;
+    [SerializeField] Image BHP_FG;
 
     IEnumerator Start()
     {
@@ -40,16 +42,28 @@ public class UIManager : MonoBehaviour
         {
             if (gameManager.players[i] != null)
             {
-                StartCoroutine(UpdateHPBar(i));
+                StartCoroutine(UpdatePHPBar(i));
             }
         }
+
+        gameManager.boss = GameObject.Find("Boss").GetComponent<BossInfo>();//바꾸기 - GameManager에서 photonnetwork.instantiate할 때 할당하기
+        StartCoroutine(UpdateBHPBar());
     }
 
-    IEnumerator UpdateHPBar(int index)
+    IEnumerator UpdatePHPBar(int index)
     {
         while (true)
         {
             PHP_FG[index].fillAmount = gameManager.players[index].Hp / 100;
+            yield return null;
+        }
+    }
+
+    IEnumerator UpdateBHPBar()
+    {
+        while (true)
+        {
+            BHP_FG.fillAmount = gameManager.boss.Hp / 200;//수치 변경 및 스크립트에 저장;
             yield return null;
         }
     }
