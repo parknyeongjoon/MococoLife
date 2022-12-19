@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 /// <summary>
-/// 카메라 앞으로 이동 시에만 보스가 따라가게
-/// 타이머 시작 시간이 달라서 버그 발생 - master client가 all via server로 시작하기?
-/// 오른쪽으로 이동 후 왼쪽으로 갈 때 icon 안 뜸
+/// 카메라 앞으로 이동 시에만 보스가 따라가게(보류)
+/// 타이머 시작 시간이 달라서 버그 발생 - master client가 all via server로 시작하기?(해결)
+/// 오른쪽으로 이동 후 왼쪽으로 갈 때 icon 안 뜸(해결)
 /// </summary>
-public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
+public class AreaMove : MonoBehaviourPun//카메라를 이동해주는 함수
 {
     GameManager gameManager;
 
@@ -17,15 +17,18 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
     [SerializeField] float cameraSpeed;
     bool canMove = true;//카메라가 움직일 수 있는가
+    bool isMove = false;//카메라가 움직이는 중인지
 
-    bool[] leftCameraMove = new bool[4];
-    bool[] rightCameraMove = new bool[4];
+    bool[] leftAreaMove = new bool[4];
+    bool[] rightAreaMove = new bool[4];
 
     int areaCount = 0;
     float[] areaTime;
     readonly float areaMaxTime = 30.0f;
 
     Coroutine timerCo;
+
+    public bool IsMove { get => isMove; }
 
     IEnumerator Start()
     {
@@ -46,18 +49,18 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     }
 
     [PunRPC]
-    void SetCameraMove(int index, bool isMove, bool isRight)
+    void SetCameraMove(int index, bool _isMove, bool isRight)
     {
         if (isRight)//오른쪽으로 가는 거라면
         {
-            rightCameraMove[index] = isMove;
+            rightAreaMove[index] = _isMove;
 
-            if (isMove)
+            if (_isMove)
             {
                 int count = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (rightCameraMove[i])
+                    if (rightAreaMove[i])
                     {
                         count++;
                         if (canMove && count >= PhotonNetwork.CurrentRoom.PlayerCount)
@@ -70,14 +73,14 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
         }
         else//왼쪽으로 가는 거라면
         {
-            leftCameraMove[index] = isMove;
+            leftAreaMove[index] = _isMove;
 
-            if (isMove)
+            if (_isMove)
             {
                 int count = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (leftCameraMove[i])
+                    if (leftAreaMove[i])
                     {
                         count++;
                         if (canMove && count >= PhotonNetwork.CurrentRoom.PlayerCount)
@@ -91,10 +94,10 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     }
 
     [PunRPC]
-    void SetMoveIcon(int index, bool isMove, bool isRight)//최적화하려면 어떤 행동할 지 결정해서 rpc를 보내는 게 더 좋을 거 같음
+    void SetMoveIcon(int index, bool _isMove, bool isRight)//최적화하려면 어떤 행동할 지 결정해서 rpc를 보내는 게 더 좋을 거 같음
     {
         PlayerInfo info = gameManager.players[index];
-        if (isMove)//움직이려고 하면 아이콘 활성화
+        if (_isMove)//움직이려고 하면 아이콘 활성화
         {
             if (isRight && areaCount < TileManager.Instance.areaCount - 1)
             {
@@ -116,6 +119,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
     {
         StopCoroutine(timerCo);
         canMove = false;//움직이는 동안에는 다시 움직이기 못하게
+        isMove = true;
 
         Vector3 cameraSpeedV = new Vector3(cameraSpeed, 0, 0);
 
@@ -149,6 +153,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
             photonView.RPC("RPCStartAreaTimer", RpcTarget.AllViaServer, areaCount);
         }
         yield return new WaitForSeconds(1.0f);//이동이 완료되고 1초 동안은 다시 못 움직이게
+        isMove = false;
         canMove = true;
     }
 
@@ -160,6 +165,7 @@ public class CameraMove : MonoBehaviourPun//카메라를 이동해주는 함수
 
     IEnumerator StartAreaTimer(int areaIndex)
     {
+        areaCount = areaIndex;
         timerFG.fillAmount = areaTime[areaIndex] / areaMaxTime;
         stopWatch.color = Color.white;
 

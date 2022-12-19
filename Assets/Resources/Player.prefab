@@ -623,6 +623,12 @@ MonoBehaviour:
   - Type: 9
     SynchronizeType: 0
     Name: pickaxe
+  - Type: 9
+    SynchronizeType: 0
+    Name: death
+  - Type: 9
+    SynchronizeType: 0
+    Name: resurrection
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -638,11 +644,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 277c7391833137b46ae8461a6fcfb2c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMove: {fileID: -9088937522415761824}
   hp: 100
   canAtkTime: 1
   hand:
     itemData: {fileID: 0}
+    itemCount: 0
+  inventory:
+  - itemData: {fileID: 0}
+    itemCount: 0
+  - itemData: {fileID: 0}
+    itemCount: 0
+  - itemData: {fileID: 0}
+    itemCount: 0
+  - itemData: {fileID: 0}
     itemCount: 0
   LAreaMoveIcon: {fileID: 3115087823413748588}
   RAreaMoveIcon: {fileID: 7345858849286229301}

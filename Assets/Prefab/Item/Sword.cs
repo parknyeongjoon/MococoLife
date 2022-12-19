@@ -7,7 +7,13 @@ using Photon.Pun;
 public class Sword : ItemData
 {
     [SerializeField] float dmg;
-    public override IEnumerator Effect(PlayerInfo info, Vector3 effectPos)
+
+    public override void Effect(PlayerInfo info, Vector3 effectPos)
+    {
+        info.StartCoroutine(IEEffect(info, effectPos));
+    }
+
+    public IEnumerator IEEffect(PlayerInfo info, Vector3 effectPos)
     {
         if(info.canAtkTime > 0)//공격 가능 시간이라면
         {

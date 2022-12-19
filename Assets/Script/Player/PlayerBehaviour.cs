@@ -252,7 +252,7 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     void UseItem(ItemData useItem, Vector3 usePos)
     {
-        StartCoroutine(useItem.Effect(info, usePos));
+        useItem.Effect(info, usePos);
     }
 
     #endregion

@@ -5,7 +5,7 @@ using Photon.Pun;
 
 public class CameraMoveTrigger : MonoBehaviour
 {
-    [SerializeField] CameraMove cameraMove;
+    [SerializeField] AreaMove cameraMove;
     [SerializeField] bool isRight;
 
     void OnTriggerEnter2D(Collider2D collision)

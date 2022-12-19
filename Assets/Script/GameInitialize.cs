@@ -6,7 +6,10 @@ using UnityEngine.SceneManagement;
 public class GameInitialize : MonoBehaviour
 {
     GameManager gameManager;
+    Pooler pooler;
+
     [SerializeField] List<ItemData> itemList;
+    [SerializeField] List<GameObject> initPrefabs;
 
     IEnumerator Start()
     {
@@ -17,6 +20,10 @@ public class GameInitialize : MonoBehaviour
         {
             gameManager.itemDic.Add(itemList[i].code, itemList[i]);
         }
+
+        yield return new WaitUntil(() => Pooler.Instance != null);
+        pooler = Pooler.Instance;
+        pooler.SetPhotonPool(initPrefabs);
 
         SceneManager.LoadScene("MainTitle");
     }

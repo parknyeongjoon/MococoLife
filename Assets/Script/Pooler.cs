@@ -2,39 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
+/// <summary>
+/// 싱글톤으로 하는 게 더 좋을 듯
+/// </summary>
 public class Pooler : MonoBehaviourPun
 {
-    [SerializeField] GameObject[] prefabList;
-    Dictionary<string, List<GameObject>> pools;
-
-    void Start()
+    static Pooler instance;
+    public static Pooler Instance
     {
-        if(photonView == null)
+        get
         {
-            gameObject.AddComponent<PhotonView>();
-        }
-
-        SetPhotonPool();
-
-        pools = new Dictionary<string, List<GameObject>>();
-
-        int pS = prefabList.Length;
-        for (int i = 0; i < pS; i++)
-        {
-            pools.Add(prefabList[i].name, new List<GameObject>());
-            pools[prefabList[i].name].Add(prefabList[i]);
+            if (!instance)
+            {
+                return null;
+            }
+            return instance;
         }
     }
 
-    void SetPhotonPool()
+    Dictionary<string, List<GameObject>> pools = new Dictionary<string, List<GameObject>>();
+
+    void Awake()
+    {
+        instance = this;
+        DontDestroyOnLoad(this);
+    }
+
+    public void SetPhotonPool(List<GameObject> updateObjects)
     {
         DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-        if (pool != null && prefabList != null)
+        if (pool != null && updateObjects != null)
         {
-            foreach (GameObject prefab in prefabList)
+            foreach (GameObject prefab in updateObjects)
             {
                 pool.ResourceCache.Add(prefab.name, prefab);
+                if (!pools.ContainsKey(prefab.name))
+                {
+                    pools.Add(prefab.name, new List<GameObject>());
+                    pools[prefab.name].Add(prefab);
+                }
             }
         }
     }

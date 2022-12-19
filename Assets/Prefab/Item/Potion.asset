@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1e7e61265ac81f4f9e9b14a49fb82d3, type: 3}
-  m_Name: Food
+  m_Script: {fileID: 11500000, guid: 2fb00b98b255a0047978098a12086e48, type: 3}
+  m_Name: Potion
   m_EditorClassIdentifier: 
-  itemImg: {fileID: -1956143337, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  itemImg: {fileID: 70410474, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
   tileImg: {fileID: 0}
-  code: BI_00
-  Item_Type: 3
+  code: BI_06
+  Item_Type: 1
   delay: 0
-  needWood: 4
-  needStone: 4
+  needWood: 3
+  needStone: 3
   needTime: 1
-  maxCount: 0
-  foodTime: 5
+  maxCount: 3
+  heal: 20

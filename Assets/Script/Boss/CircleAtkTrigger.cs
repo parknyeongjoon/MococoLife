@@ -13,7 +13,7 @@ public class CircleAtkTrigger : MonoBehaviour
     [SerializeField] float dmg;
 
     [SerializeField] CircleCollider2D trigger;
-    [SerializeField] Transform circle, circleTimer;
+    [SerializeField] Transform circleTimer;
 
     void OnTriggerEnter2D(Collider2D collision)
     {

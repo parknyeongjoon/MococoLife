@@ -6,7 +6,7 @@ using Photon.Pun;
 public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 {
     GameManager gameManager;
-    public PlayerBehaviour playerMove;
+    Pooler pooler;
 
     [SerializeField] float hp = 100;
 
@@ -14,7 +14,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 
     P_State state;
     [SerializeField] Slot hand = new Slot();
-    Slot[] inventory = new Slot[4];
+    [SerializeField] Slot[] inventory = new Slot[4];
 
     public P_State State { get => state; set => state = value; }
     public Slot Hand { get => hand; }
@@ -24,6 +24,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
     #region rpcVar
 
     public GameObject LAreaMoveIcon, RAreaMoveIcon, WarningIcon;
+    GameObject grave;
     public SpriteRenderer handImg;
 
     #endregion
@@ -31,6 +32,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
     void Awake()
     {
         gameManager = GameManager.Instance;
+        pooler = Pooler.Instance;
 
         if (photonView.IsMine)
         {
@@ -61,7 +63,49 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 
     public void Damage(float dmg)
     {
-        hp -= dmg;
+        if(state != P_State.TimePause && state != P_State.Dead)
+        {
+            hp -= dmg;
+            if (hp <= 0 && state != P_State.Dead)
+            {
+                StartCoroutine(Die());
+            }
+        }
+    }
+
+    public void Heal(float heal)
+    {
+        if(state != P_State.Dead)
+        {
+            hp += heal;
+            if(hp > 100)
+            {
+                hp = 100;
+            }
+        }
+    }
+
+    IEnumerator Die()
+    {
+        state = P_State.Dead;
+        photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
+
+        int randIndex = Random.Range(0, 5);
+        Vector3 desPos = transform.position;
+        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));
+        while (grave.transform.position.y >= desPos.y)
+        {
+            grave.transform.position -= new Vector3(0, Time.deltaTime * 5);
+            yield return null;
+        }
+    }
+
+    public void Resurrection(Vector3 spawnPos)
+    {
+        hp = 20.0f;
+        transform.position = spawnPos;
+        state = P_State.Idle;
+        photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "resurrection");
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

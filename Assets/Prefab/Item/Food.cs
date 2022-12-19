@@ -7,7 +7,7 @@ public class Food : BattleItemData
 {
     [SerializeField] float foodTime;
 
-    public override void Effect(PlayerInfo info)
+    public override void Effect(PlayerInfo info, Vector3 effectPos)
     {
         if (info.canAtkTime > 0)//음식을 먹은 상태라면 시간 추가
         {

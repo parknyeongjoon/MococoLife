@@ -3,18 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
-
+/// <summary>
+/// 카메라 이동 중에는 보스 패턴 안 되게
+/// </summary>
 public class BossBehaviour : MonoBehaviourPun
 {
     [SerializeField] BossInfo info;
-    [SerializeField] Pooler paternPooler;
+    [SerializeField] List<GameObject> patternList;
+    Pooler pooler;
+    AreaMove areaMove;
 
-    List<string> randPattern;
+    Boss_State boss_State = Boss_State.Idle;
 
     void Start()
     {
         if (PhotonNetwork.IsMasterClient)//마스터 클라이언트에서만 실행을 하고 다른 곳에 rpc로 넘기기
         {
+            pooler = Pooler.Instance;
+            areaMove = Camera.main.GetComponent<AreaMove>();
+
+            pooler.SetPhotonPool(patternList);
+
             StartCoroutine(StartBoss());
         }
     }
@@ -25,29 +34,25 @@ public class BossBehaviour : MonoBehaviourPun
     {
         while (true)
         {
-            StartCoroutine(StarfishBomb());
-            yield return new WaitForSeconds(7f);
+            Think();
+            yield return new WaitForSeconds(5f);
         }
     }
 
     [PunRPC]
     void Think()
     {
-
+        if(boss_State == Boss_State.Idle && !areaMove.IsMove)//보스가 공격을 할 수 있고 카메라가 이동 중이 아니라면
+        {
+            int randIndex = Random.Range(0, patternList.Count);
+            StartCoroutine(patternList[randIndex].name);
+        }
     }
 
-    [PunRPC]
-    void AttackAround()
+    IEnumerator AttackAround()
     {
-        Debug.Log("AttackAround");
-        Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, 10, 1 << LayerMask.NameToLayer("Player"));
-        foreach (Collider2D target in targets)
-        {
-            if (target.GetComponent<PhotonView>().IsMine)
-            {
-                target.GetComponent<IDamagable>().Damage(10);
-            }
-        }
+        yield return null;
+        pooler.Get("AttackAround", transform.position);
     }
 
     IEnumerator StarfishBomb()
@@ -56,8 +61,8 @@ public class BossBehaviour : MonoBehaviourPun
         for(int i = 0; i < 5; i++)
         {
             randX = Random.Range(5.0f, 10.0f);
-            randY = Random.Range(3.0f, 11.0f);
-            paternPooler.Get("StarfishBomb", new Vector3(randX, randY));
+            randY = Random.Range(-4.0f, 4.0f);
+            pooler.Get("StarfishBomb", new Vector3(transform.position.x + randX, transform.position.y + randY));
             yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
         }
     }

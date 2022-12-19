@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class BlackSmith : MonoBehaviourPun
 {
+    //지우기
+    public void SkipIngredient()
+    {
+        PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
+    }
+
     PhotonView PV;
     GameManager gameManager;
 
@@ -44,6 +50,10 @@ public class BlackSmith : MonoBehaviourPun
         if (targetInfo != null && collision.gameObject == targetInfo.gameObject)
         {
             InteracitveIcon.SetActive(false);
+            if(createPanel.activeSelf == true)
+            {
+                createPanel.SetActive(false);
+            }
             targetInfo = null;
         }
     }
@@ -52,7 +62,7 @@ public class BlackSmith : MonoBehaviourPun
     {
         if (Input.GetMouseButtonDown(0) && targetInfo != null)
         {
-            if(create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)
+            if (create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)
             {
                 int result = PlusIngredient(targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount);
                 Debug.Log(result);
@@ -181,8 +191,14 @@ public class BlackSmith : MonoBehaviourPun
     {
         if(creatingItem.code == "BI_00")//음식이라면 바로 먹기
         {
-            creatingItem.Effect(targetInfo);
+            creatingItem.Effect(targetInfo, Vector3.zero);
             photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
+            return;
+        }
+        else if(creatingItem.code == "BI_07")//엘릭서라면 바로 누구 살릴지 결정 창 띄우기
+        {
+            Debug.Log("엘릭서");
+            //photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
             return;
         }
 
@@ -190,9 +206,10 @@ public class BlackSmith : MonoBehaviourPun
         {
             if (targetInfo.Inventory[i].itemData == creatingItem)//�κ��丮�� ��ġ�� �������� �ִٸ� üũ�ϱ�
             {
+                Debug.Log(targetInfo.Inventory[i].itemData.name);
                 if (targetInfo.Inventory[i].itemCount >= creatingItem.maxCount)
                 {
-                    Debug.Log("더 이상 가질 수 없음.");
+                    Debug.Log("더 이상 가질 수 없음");
                     return;
                 }
                 else
@@ -203,6 +220,7 @@ public class BlackSmith : MonoBehaviourPun
                 }
             }
         }
+        Debug.Log("왜 여기 실행됨?");
         for (int i = 0; i < targetInfo.Inventory.Length; i++)//�κ��丮�� ��ġ�� �������� ���ٸ� �� ĭ üũ�ϱ�
         {
             if (targetInfo.Inventory[i].itemData == null)

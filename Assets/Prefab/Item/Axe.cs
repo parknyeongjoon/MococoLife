@@ -6,7 +6,12 @@ using Photon.Pun;
 [CreateAssetMenu(fileName = "Axe", menuName = "SO/Item/Axe")]
 public class Axe : ItemData
 {
-    public override IEnumerator Effect(PlayerInfo info, Vector3 effectPos)
+    public override void Effect(PlayerInfo info, Vector3 effectPos)
+    {
+        info.StartCoroutine(IEEffect(info, effectPos));
+    }
+
+    IEnumerator IEEffect(PlayerInfo info, Vector3 effectPos)
     {
         Collider2D[] targets = Physics2D.OverlapPointAll(effectPos, 1 << LayerMask.NameToLayer("Terrain"));
         foreach (Collider2D target in targets)

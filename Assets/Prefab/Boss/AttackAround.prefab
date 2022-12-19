@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 387279140032014381}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3822876336808062491}
@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: -8989061812666636529}
   - component: {fileID: 327018889700575770}
   m_Layer: 0
-  m_Name: StarfishBomb
+  m_Name: AttackAround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,7 +113,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3822876336808062564}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 7, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -137,7 +137,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 5
 --- !u!212 &3822876336808062565
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -179,7 +179,7 @@ SpriteRenderer:
   m_SortingLayerID: 502086917
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1735377778, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -187,7 +187,7 @@ SpriteRenderer:
   m_Size: {x: 3.16, y: 3.19}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4279150956370559304
@@ -202,8 +202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f66aa4776854340a80fbb85842114b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atkDelay: 4
-  dmg: 100
+  atkDelay: 3
+  dmg: 200
   trigger: {fileID: 3822876336808062490}
   circleTimer: {fileID: 4981589780806463126}
 --- !u!114 &-8989061812666636529
@@ -271,7 +271,7 @@ Transform:
   m_GameObject: {fileID: 5183815352911461257}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -2}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 10, y: 10, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3822876336808062491}
