@@ -416,6 +416,7 @@ GameObject:
   - component: {fileID: -2456109709928854290}
   - component: {fileID: 4049425027954537499}
   - component: {fileID: -9088937522415761824}
+  - component: {fileID: 9167459198657180889}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -644,6 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 277c7391833137b46ae8461a6fcfb2c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myUI: {fileID: 0}
   hp: 100
   canAtkTime: 1
   hand:
@@ -679,3 +681,21 @@ MonoBehaviour:
   bodyCollider: {fileID: 9105171412229398791}
   toolCollider: {fileID: 8761067107015221304}
   spriteRenderer: {fileID: 9105171412229398793}
+--- !u!114 &9167459198657180889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105171412229398794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5597b03e9cad5c548809db7c126693a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP_GO: {fileID: 3722797678605782046, guid: 2c05534e56f11bd4eb26764375853d77, type: 3}
+  HP_FG: {fileID: 0}
+  grave: {fileID: 0}
+  inventoryImg: []
+  inventoryTxt: []
+  index: 0

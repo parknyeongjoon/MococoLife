@@ -216,11 +216,12 @@ public class BlackSmith : MonoBehaviourPun
                 {
                     targetInfo.Inventory[i].itemCount++;
                     photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
+                    targetInfo.photonView.RPC("SetInventoryIcon", RpcTarget.AllViaServer, i, targetInfo.Inventory[i].itemData.code, targetInfo.Inventory[i].itemCount);
                     return;
                 }
             }
         }
-        Debug.Log("왜 여기 실행됨?");
+
         for (int i = 0; i < targetInfo.Inventory.Length; i++)//�κ��丮�� ��ġ�� �������� ���ٸ� �� ĭ üũ�ϱ�
         {
             if (targetInfo.Inventory[i].itemData == null)
@@ -228,6 +229,7 @@ public class BlackSmith : MonoBehaviourPun
                 targetInfo.Inventory[i].itemData = creatingItem;
                 targetInfo.Inventory[i].itemCount = 1;
                 photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
+                targetInfo.photonView.RPC("SetInventoryIcon", RpcTarget.AllViaServer, i, targetInfo.Inventory[i].itemData.code, targetInfo.Inventory[i].itemCount);
                 return;
             }
         }

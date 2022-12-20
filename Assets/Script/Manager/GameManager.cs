@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
  * 캐릭터 interactive 다시 손보기(해결)
  * BlackSmith 재료 넣는 기능 넣기(해결) - 가시성 더 높이기
  * players 받아올 방법 생각하기(해결)
- * 캐릭터 flipX 동기화하기
+ * 캐릭터 flipX 동기화하기(해결)
  * PNum 로비에서 사람이 나가질 거 대비하기
  */
 public class GameManager : MonoBehaviourPunCallbacks

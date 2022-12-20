@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
 /// <summary>
-/// 카메라 이동 중에는 보스 패턴 안 되게
+/// 카메라 이동 중에는 보스 패턴 안 되게(해결)
 /// </summary>
 public class BossBehaviour : MonoBehaviourPun
 {
@@ -17,12 +17,12 @@ public class BossBehaviour : MonoBehaviourPun
 
     void Start()
     {
+        pooler = Pooler.Instance;
+        pooler.SetPhotonPool(patternList);
+
         if (PhotonNetwork.IsMasterClient)//마스터 클라이언트에서만 실행을 하고 다른 곳에 rpc로 넘기기
         {
-            pooler = Pooler.Instance;
             areaMove = Camera.main.GetComponent<AreaMove>();
-
-            pooler.SetPhotonPool(patternList);
 
             StartCoroutine(StartBoss());
         }
@@ -58,7 +58,7 @@ public class BossBehaviour : MonoBehaviourPun
     IEnumerator StarfishBomb()
     {
         float randX, randY;
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 10; i++)
         {
             randX = Random.Range(3.5f, 7.0f);
             randY = Random.Range(-4.0f, 4.0f);

@@ -6,6 +6,7 @@ using Photon.Pun;
 public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
 {
     GameManager gameManager;
+    public PUI myUI;
     Pooler pooler;
 
     [SerializeField] float hp = 100;
@@ -54,7 +55,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
     }
 
     [PunRPC]
-    public void SetHand(int index, string code, int count)///이거 버그 일어날 거 같은데? - get만 넣어놔서 안 나는듯?
+    public void SetHand(int index, string code, int count)///한 번 손보기
     {
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
@@ -89,10 +90,11 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
     {
         state = P_State.Dead;
         photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
+        photonView.RPC("SetGraveIcon", RpcTarget.AllViaServer, true);
 
         int randIndex = Random.Range(0, 5);
         Vector3 desPos = transform.position;
-        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));
+        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));///마스터 클라이언트가 만든 무덤이 동기화가 안 됨
         while (grave.transform.position.y >= desPos.y)
         {
             grave.transform.position -= new Vector3(0, Time.deltaTime * 5);
@@ -106,7 +108,21 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
         transform.position = spawnPos;
         state = P_State.Idle;
         photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "resurrection");
+        photonView.RPC("SetGraveIcon", RpcTarget.AllViaServer, false);
     }
+
+    [PunRPC]
+    void SetGraveIcon(bool isActive)
+    {
+        myUI.SetGraveIcon(isActive);
+    }
+
+    [PunRPC]
+    void SetInventoryIcon(int index, string code, int count)
+    {
+        myUI.InventoryUpdate(index, code, count);
+    }
+
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

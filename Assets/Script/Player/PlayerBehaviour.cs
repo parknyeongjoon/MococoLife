@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine.EventSystems;
 ///키 입력 Dictionary<Keycode, Action>으로 넣어두고 실행하는 거 알아보기(최적화 및 가독성)
 ///useInventory는 다른데로 넘기기?
-///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문) - OnTriggerStay로 BlackSmith에서 실행되도록 옮기기
+///다른 스미스의 공간에 있어도 스미스 오픈이 됨(isTouching때문) - OnTriggerStay로 BlackSmith에서 실행되도록 옮기기(해결)
 public class PlayerBehaviour : MonoBehaviourPun
 {
     PhotonView PV;
@@ -242,6 +242,7 @@ public class PlayerBehaviour : MonoBehaviourPun
         {
             UseItem(info.Inventory[index].itemData, transform.position + effectPos);
             info.Inventory[index].itemCount--;
+            PV.RPC("SetInventoryIcon", RpcTarget.AllViaServer, index, info.Inventory[index].itemData.code, info.Inventory[index].itemCount);
             if (info.Inventory[index].itemCount <= 0)
             {
                 info.Inventory[index].itemData = null;
