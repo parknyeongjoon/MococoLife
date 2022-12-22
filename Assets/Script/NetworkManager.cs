@@ -7,11 +7,11 @@ using Photon.Realtime;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    private string gameVersion = "1";
+    private string gameVersion = "0";
 
-    public Text connectStateText;
+    [SerializeField] Text connectStateText;
 
-    private void Start()
+    void Start()
     {
         if (PhotonNetwork.IsConnected)
         {

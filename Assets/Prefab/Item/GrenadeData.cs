@@ -5,26 +5,34 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GrenadeData", menuName = "SO/Item/GrenadeData")]
 public class GrenadeData : BattleItemData
 {
-    [SerializeField] protected Dmg_Type dmg_Type;
+    /*
     [SerializeField] protected float dmg;
 
-    public override void Effect(Vector2Int effectPos)
+    public override IEnumerator Effect(PlayerInfo info, Vector3 effectPos)
     {
         Collider2D[] targets = FindTarget(effectPos);
 
         int tS = targets.Length;
-        for (int i = 0; i < tS; i++)
+        if(tS > 0)
         {
-            IDamagable damagable = targets[i].GetComponent<IDamagable>();
-            if(damagable != null)
+            info.State = State.Action;
+
+            yield return new WaitForSeconds(delay);
+            for (int i = 0; i < tS; i++)
             {
-                damagable.Damage(dmg_Type, dmg);
+                IDamagable damagable = targets[i].GetComponent<IDamagable>();
+                if (damagable != null)
+                {
+                    damagable.Damage(dmg);
+                }
             }
+            info.State = State.Idle;
         }
     }
 
-    protected Collider2D[] FindTarget(Vector2Int effectPos)
+    protected Collider2D[] FindTarget(Vector3 effectPos)
     {
         return Physics2D.OverlapBoxAll(effectPos, new Vector2(0.5f, 0.5f), 0, 1 << LayerMask.NameToLayer("Terrain"));
     }
+*/
 }

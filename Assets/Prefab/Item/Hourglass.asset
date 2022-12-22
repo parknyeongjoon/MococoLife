@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce0c2ecc3cf2a74092729b7d0f59e02, type: 3}
+  m_Name: Hourglass
+  m_EditorClassIdentifier: 
+  itemImg: {fileID: 1465276681, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  tileImg: {fileID: 0}
+  code: BI_05
+  Item_Type: 1
+  delay: 3
+  needWood: 1
+  needStone: 1
+  needTime: 1
+  maxCount: 1

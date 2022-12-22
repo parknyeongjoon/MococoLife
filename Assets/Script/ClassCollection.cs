@@ -1,8 +1,16 @@
+using Photon.Pun;
+
 #region enum
+//player
+public enum P_State { Idle, Action, Stun, TimePause, Dead };
+//BlackSmith
+public enum Create_State { Idle, Create, Finish };
 
-public enum Dmg_Type { None, Hammer, Axe, Pickaxe, UnBreakable, Damage, Stagger, Hit, Destruction }
+public enum CC_Type { KnockBack, Stun }
+public enum Item_Type { Tool, BattleItem, Ingredient, Food, Elixir }
 
-public enum Boss { Baltan }
+public enum Boss_Type { Crab }
+public enum Boss_State { Idle, Action, Pattern, Stun };
 
 #endregion
 
@@ -10,7 +18,18 @@ public enum Boss { Baltan }
 
 public interface IDamagable
 {
-    void Damage(Dmg_Type dmg_Type, float dmg);
+    void Damage(float dmg);
+}
+
+#endregion
+
+#region class
+
+[System.Serializable]
+public class Slot
+{
+    public ItemData itemData = null;
+    public int itemCount = 0;
 }
 
 #endregion

@@ -8,9 +8,5 @@ public class BattleItemData : ItemData
     public int needWood;
     public int needStone;
     public float needTime;
-
-    public override void Effect(Vector2Int effectPos)
-    {
-        
-    }
+    public int maxCount;
 }

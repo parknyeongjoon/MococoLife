@@ -1,45 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class ProductTerrain : Terrain
+public class ProductTerrain : Terrain, IDamagable
 {
-    PoolManager poolManager;
-
     [SerializeField] ItemData productData;//생성물
     [SerializeField] int productCount;
-    int remainProduct;
-    float productHP;
 
-    void Start()
+    public override void Damage(float dmg)
     {
-        remainProduct = productCount - 1;
-        productHP = hp / productCount * remainProduct;
-        poolManager = PoolManager.Instance;
+        photonView.RPC("SetHP", RpcTarget.AllBuffered, hp - dmg);
+        if (hp <= 0)
+        {
+            SpawnProduct();//product 생산
+        }
     }
 
-    public override void Damage(Dmg_Type _dmg_Type, float dmg)
+    [PunRPC]
+    void SetHP(float _hp)
     {
-        if (dmg_Type == _dmg_Type)
+        hp = _hp;
+        if (hp <= 0 && PhotonNetwork.IsMasterClient)
         {
-            hp -= dmg;
-            if(hp < productHP)
-            {
-                //product 생산
-                remainProduct -= 1;
-                productHP = hp / productCount * remainProduct;
-                SpawnProduct();
-
-                if (hp <= 0)
-                {
-                    gameObject.SetActive(false);//동기화 되나 확인해보기
-                }
-            }
+            PhotonNetwork.Destroy(gameObject);
         }
     }
 
     void SpawnProduct()//생성할 위치 계산해서 생성물 생성
     {
-        poolManager.Get(productData.code, transform.position - new Vector3(-1, 0, 0));
+        int tX = (int)transform.position.x;
+        int tY = (int)transform.position.y;
+
+        GameManager.Instance.photonView.RPC("SetTileItem", RpcTarget.AllViaServer, tX, tY, productData.code, productCount);
     }
 }

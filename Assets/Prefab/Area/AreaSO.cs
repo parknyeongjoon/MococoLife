@@ -5,6 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AreaSO", menuName = "SO/AreaSO")]
 public class AreaSO : ScriptableObject
 {
-    public Boss boss;
+    public BossInfo boss;
     public List<GameObject> bossAreas;
 }

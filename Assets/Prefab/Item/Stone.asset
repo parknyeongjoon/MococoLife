@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c0c1f51eb28b4e9bef21707e8f96f, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ec16af185420d54daa3aaf5fac733a8, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 21300000, guid: 1d326a632dd2a2e48852f547109d77a6, type: 3}
-  prefab: {fileID: 5351507849936655072, guid: 996e57e914efe6741b68818c3c13c79d, type: 3}
+  itemImg: {fileID: -132287597, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
+  tileImg: {fileID: 11400000, guid: 79daf4ae589a96b4bb67ec55f47b4607, type: 2}
   code: I_01
+  Item_Type: 2
   maxCount: 3

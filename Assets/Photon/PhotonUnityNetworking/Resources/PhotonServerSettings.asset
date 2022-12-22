@@ -43,6 +43,46 @@ MonoBehaviour:
   - SetGameArea
   - SetNeedPanel
   - testIngredientPlus
+  - UpdatePlayerText
+  - Ready
+  - ChangeTile
+  - Interactive
+  - RPCSetSlots
+  - RPCSetTileSlot
+  - RPCInteractive
+  - SetHandImg
+  - PlusIngredient
+  - SetHand
+  - ChangeHand
+  - SetTileItem
+  - DashAnim
+  - RPCPlusIngredient
+  - SetPlayers
+  - SetCameraMoveTrue
+  - SetCameraMove
+  - ObjectActive
+  - Flip
+  - DestroyArea
+  - SetMoveIcon
+  - AnimTrigger
+  - HandAnim
+  - Damage
+  - SetHP
+  - InstantArea
+  - AttackAround
+  - RPCStartAreaTimer
+  - StarFishBomb
+  - Think
+  - StarfishBomb
+  - RPCStarfishBomb
+  - RPCAddPool
+  - RPCSetObject
+  - Get
+  - ActiveObject
+  - RPCDie
+  - RPCSetGraveIcon
+  - SetGraveIcon
+  - SetInventoryIcon
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

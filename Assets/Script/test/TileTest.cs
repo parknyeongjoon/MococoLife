@@ -8,10 +8,6 @@ public class TileTest : MonoBehaviour
 {
     public Tilemap tilemap;
 
-    //마우스가 타일 위에 위치할 때만 작업할 것이기 때문에 onMouseOver를 사용했습니다.
-
-    //가능하면 기즈모로 하는것도 좋을것 같네요.
-
     void Start()
     {
         try
@@ -38,8 +34,6 @@ public class TileTest : MonoBehaviour
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Debug.DrawRay(ray.origin, ray.direction * 10, Color.blue, 3.5f);
-
-
 
             RaycastHit2D hit = Physics2D.Raycast(ray.origin, Vector3.zero);
 
