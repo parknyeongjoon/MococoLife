@@ -5,9 +5,10 @@ using Photon.Pun;
 public enum P_State { Idle, Action, Stun, TimePause, Dead };
 //BlackSmith
 public enum Create_State { Idle, Create, Finish };
-
-public enum CC_Type { KnockBack, Stun }
 public enum Item_Type { Tool, BattleItem, Ingredient, Food, Elixir }
+
+public enum Dmg_Type { None, UnBreakable, Damage, Stagger, Hit, Destruction }
+public enum CC_Type { KnockBack, Stun }
 
 public enum Boss_Type { Crab }
 public enum Boss_State { Idle, Action, Pattern, Stun };
