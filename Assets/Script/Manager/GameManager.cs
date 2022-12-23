@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
  * players 받아올 방법 생각하기(해결)
  * 캐릭터 flipX 동기화하기(해결)
  * PNum 로비에서 사람이 나가질 거 대비하기
+ * 목재랑 석재 갯수 표현하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
