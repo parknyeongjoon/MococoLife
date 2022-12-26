@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SetTileItem(int x, int y, string _to, int count)
+    public void SetTileItem(int x, int y, string _to, int count)//rpc까지 실행하는 함수를 따로 만들기
     {
         if (_to == "T_00" || itemDic[_to].Item_Type == Item_Type.BattleItem)//플레이어가 맨손이었거나 배템을 들고있었다면
         {

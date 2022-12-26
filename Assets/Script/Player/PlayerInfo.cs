@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
+public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
 {
     GameManager gameManager;
     public PUI myUI;
@@ -55,11 +55,11 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
     }
 
     [PunRPC]
-    public void SetHand(int index, string code, int count)///한 번 손보기
+    public void SetHand(int index, string code, int count)
     {
         Hand.itemData = gameManager.itemDic[code];
         Hand.itemCount = count;
-        gameManager.players[index].handImg.sprite = gameManager.itemDic[code].itemImg;
+        handImg.sprite = gameManager.itemDic[code].itemImg;
     }
 
     public void Damage(float dmg)
@@ -84,6 +84,45 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable
                 hp = 100;
             }
         }
+    }
+
+    public void KnockBack(Vector3 knockDir, float dis)
+    {
+        StartCoroutine(KnockBackTimer(knockDir, dis));
+    }
+
+    public void Stun(float stunTime)
+    {
+        StartCoroutine(StunTimer(stunTime));
+    }
+
+    IEnumerator KnockBackTimer(Vector3 knockDir, float dis)
+    {
+        float time = 0;
+        state = P_State.Stun;
+
+        while (time < 0.1f)
+        {
+            time += Time.deltaTime;
+            transform.position += knockDir * dis;
+            yield return null;
+        }
+
+        state = P_State.Idle;
+    }
+
+    IEnumerator StunTimer(float stunTime)
+    {
+        float time = 0;
+        state = P_State.Stun;
+
+        while (time < stunTime)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        state = P_State.Idle;
     }
 
     IEnumerator Die()
