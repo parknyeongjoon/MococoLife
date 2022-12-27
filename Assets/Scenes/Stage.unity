@@ -1214,6 +1214,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SmithGrid
       objectReference: {fileID: 0}
+    - target: {fileID: 8988665975979587606, guid: 1719fe455e25e3444b2c0ae29f801d24, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8988665975979587608, guid: 1719fe455e25e3444b2c0ae29f801d24, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1257,6 +1261,10 @@ PrefabInstance:
     - target: {fileID: 8988665975979587608, guid: 1719fe455e25e3444b2c0ae29f801d24, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8988665975979587609, guid: 1719fe455e25e3444b2c0ae29f801d24, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1719fe455e25e3444b2c0ae29f801d24, type: 3}
@@ -1731,9 +1739,9 @@ MonoBehaviour:
   m_RefResolutionY: 1080
   m_UpscaleRT: 0
   m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
+  m_CropFrameX: 1
+  m_CropFrameY: 1
+  m_StretchFill: 1
 --- !u!114 &1488022230
 MonoBehaviour:
   m_ObjectHideFlags: 0
