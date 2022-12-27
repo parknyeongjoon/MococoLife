@@ -118,5 +118,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
+    [PunRPC]
+    public void Ping(int type, Vector3 pos)
+    {
+        Instantiate(Resources.Load<GameObject>("Ping/" + type.ToString()), new Vector3(pos.x, pos.y, 0f), Quaternion.identity);
+    }
+
     #endregion
 }
