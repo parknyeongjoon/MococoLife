@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class BlackSmith : MonoBehaviourPun
 {
+    /// <summary>
+    /// Resurrection 안 되는 게 다른 playerInfo의 state가 동기화가 안 되서 dead로 설정이 안 되어있어서 그럼
+    /// </summary>
     //지우기
     public void SkipIngredient()
     {
@@ -65,7 +68,7 @@ public class BlackSmith : MonoBehaviourPun
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && targetInfo != null)
+        if (Input.GetKeyDown(KeyCode.F) && targetInfo != null && targetInfo.State == P_State.Idle)
         {
             if (create_State == Create_State.Idle) { SetCreatePanel(); }//idle 상태면 createPanel 열기
             else if(create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)//재료 조달중이고 손에 든 게 재료라면
@@ -80,7 +83,7 @@ public class BlackSmith : MonoBehaviourPun
                     targetInfo.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount - result);
                 }
             }
-            else if (create_State == Create_State.Finish)//제작이 완료됐다면 우클릭한 캐릭터에게 주기
+            else if (create_State == Create_State.Finish)//제작이 완료됐다면 상호작용한 캐릭터에게 주기
             {
                 GetItem(targetInfo);
             }
@@ -242,7 +245,11 @@ public class BlackSmith : MonoBehaviourPun
 
     public void ElixirBtn(int index)
     {
-        if(gameManager.players[index] != null && gameManager.players[index].State == P_State.Dead)
+        if(gameManager.players[index] != null)
+        {
+            Debug.Log(gameManager.players[index].State + index);
+        }
+        if (gameManager.players[index] != null && gameManager.players[index].State == P_State.Dead)
         {
             photonView.RPC("UseElixir", RpcTarget.AllViaServer, index, transform.position + new Vector3(0, 3, 0));
             photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����

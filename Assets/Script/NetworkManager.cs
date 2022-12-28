@@ -36,6 +36,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    public void CreateRoom()
+    {
+
+    }
+
+    public void FindRoom()
+    {
+
+    }
+
     public void QuickMatching()
     {
         if (PhotonNetwork.IsConnected)

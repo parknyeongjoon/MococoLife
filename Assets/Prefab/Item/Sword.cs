@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-
+/// <summary>
+/// 공격하면 일정확률로 41줄 null reference 뜨면서 캐릭터 멈춰버림 - 해결?(자식 오브젝트 중 player layer 가지는 오브젝트가 있었어서 그랬던 듯)
+/// </summary>
 [CreateAssetMenu(fileName = "Sword", menuName = "SO/Item/Sword")]
 public class Sword : ItemData
 {
@@ -38,7 +40,7 @@ public class Sword : ItemData
         target = Physics2D.OverlapPoint(effectPos, 1 << LayerMask.NameToLayer("Player"));//보스를 못 때렸다면 유저탐색 유저끼리 팀킬 가능
         if(target != null)
         {
-            target.GetComponent<ICC>().KnockBack(Vector3.Normalize(target.transform.position - info.transform.position), 0.05f);//넉백
+            target.GetComponent<ICC>().KnockBack(Vector3.Normalize(target.transform.position - info.transform.position), 0.1f);//넉백
             Debug.Log("유저 때림");
             return;
         }

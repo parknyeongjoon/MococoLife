@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 /// <summary>
-/// 싱글톤으로 하는 게 더 좋을 듯
+/// 지금은 Photon.Instantiate만 있으니 그냥 Instantiate도 추가하기
 /// </summary>
 public class Pooler : MonoBehaviourPun
 {
@@ -36,6 +36,7 @@ public class Pooler : MonoBehaviourPun
             foreach (GameObject prefab in updateObjects)
             {
                 pool.ResourceCache.Add(prefab.name, prefab);
+
                 if (!pools.ContainsKey(prefab.name))
                 {
                     pools.Add(prefab.name, new List<GameObject>());

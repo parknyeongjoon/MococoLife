@@ -61,10 +61,11 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         Hand.itemCount = count;
         handImg.sprite = gameManager.itemDic[code].itemImg;
     }
+    #region interface
 
     public void Damage(float dmg)
     {
-        if(state != P_State.TimePause && state != P_State.Dead)
+        if (state != P_State.TimePause && state != P_State.Dead)
         {
             hp -= dmg;
             if (hp <= 0 && state != P_State.Dead)
@@ -76,10 +77,10 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
 
     public void Heal(float heal)
     {
-        if(state != P_State.Dead)
+        if (state != P_State.Dead)
         {
             hp += heal;
-            if(hp > 100)
+            if (hp > 100)
             {
                 hp = 100;
             }
@@ -88,12 +89,15 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
 
     public void KnockBack(Vector3 knockDir, float dis)
     {
-        StartCoroutine(KnockBackTimer(knockDir, dis));
+        photonView.RPC("RPCKnockBack", RpcTarget.AllViaServer, knockDir, dis);
     }
 
-    public void Stun(float stunTime)
+    [PunRPC] void RPCKnockBack(Vector3 knockDir, float dis)
     {
-        StartCoroutine(StunTimer(stunTime));
+        if (photonView.IsMine)
+        {
+            StartCoroutine(KnockBackTimer(knockDir, dis));
+        }
     }
 
     IEnumerator KnockBackTimer(Vector3 knockDir, float dis)
@@ -111,6 +115,19 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         state = P_State.Idle;
     }
 
+    public void Stun(float stunTime)
+    {
+        photonView.RPC("RPCStun", RpcTarget.AllViaServer, stunTime);
+    }
+
+    [PunRPC] void RPCStun(float stunTime)
+    {
+        if (photonView.IsMine)
+        {
+            StartCoroutine(StunTimer(stunTime));
+        }
+    }
+
     IEnumerator StunTimer(float stunTime)
     {
         float time = 0;
@@ -124,6 +141,8 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
 
         state = P_State.Idle;
     }
+
+    #endregion
 
     IEnumerator Die()
     {
@@ -168,10 +187,12 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         if (stream.IsWriting)//정보 보내기
         {
             stream.SendNext(hp);
+            stream.SendNext(state);
         }
         else//정보 받기
         {
             hp = (float)stream.ReceiveNext();
+            state = (P_State)stream.ReceiveNext();
         }
     }
 }

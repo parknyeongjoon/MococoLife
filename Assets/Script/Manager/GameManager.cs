@@ -12,6 +12,11 @@ using UnityEngine.SceneManagement;
  * 캐릭터 flipX 동기화하기(해결)
  * PNum 로비에서 사람이 나가질 거 대비하기
  * 목재랑 석재 갯수 표현하기
+ * Option 만들기
+ * 게임 오버 클리어 만들기
+ * 빠른 매칭이랑 방 만들기(비밀번호 혹은 초대?) 기능 만들기
+ * 플레이어 스킨 만들기(혹은 유저끼리 구별 가능하게 만들기)
+ * 모든 플레이어가 로딩이 끝나면 게임 초기화를 하고 동시에 시작하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -64,6 +69,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             StartCoroutine(StageInitialize());
         }
+    }
+
+    public void GameClear()
+    {
+
+    }
+
+    public void GameOver()
+    {
+
     }
 
     #region Tiles
