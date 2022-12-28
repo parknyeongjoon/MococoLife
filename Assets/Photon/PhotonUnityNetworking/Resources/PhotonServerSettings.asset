@@ -83,14 +83,7 @@ MonoBehaviour:
   - RPCSetGraveIcon
   - SetGraveIcon
   - SetInventoryIcon
-<<<<<<< Updated upstream
-  - UseElixir
-=======
   - Ping
-  - UseElixir
-  - RPCKnockBack
-  - RPCStun
->>>>>>> Stashed changes
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

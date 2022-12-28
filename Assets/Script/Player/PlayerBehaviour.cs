@@ -49,13 +49,16 @@ public class PlayerBehaviour : MonoBehaviourPun
             }
             else if (Input.GetMouseButtonDown(0) && EventSystem.current.IsPointerOverGameObject() == false)//UI�� �ƴ� ���� ��Ŭ������ ��
             {
-                if (info.Hand.itemData.Item_Type == Item_Type.Tool)
+                if (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl))
                 {
-                    UseItem(info.Hand.itemData, transform.position + effectPos);
-                }
-                else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
-                {
-                    UseInventory(inventory_Index);
+                    if (info.Hand.itemData.Item_Type == Item_Type.Tool)
+                    {
+                        UseItem(info.Hand.itemData, transform.position + effectPos);
+                    }
+                    else if (info.Hand.itemData.Item_Type == Item_Type.BattleItem)
+                    {
+                        UseInventory(inventory_Index);
+                    }
                 }
             }
             //�κ��丮���� ������ �����ϱ�
@@ -74,6 +77,20 @@ public class PlayerBehaviour : MonoBehaviourPun
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
                 SetItem(3);
+            }
+        }
+        if (PV.IsMine)
+        {
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    GameManager.Instance.photonView.RPC("Ping", RpcTarget.AllViaServer, 1, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                }
+                else if (Input.GetMouseButtonDown(1))
+                {
+                    GameManager.Instance.photonView.RPC("Ping", RpcTarget.AllViaServer, 2, Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                }
             }
         }
     }
