@@ -19,6 +19,6 @@ MonoBehaviour:
   delay: 0
   needWood: 4
   needStone: 4
-  needTime: 1
+  needTime: 10
   maxCount: 0
   foodTime: 5

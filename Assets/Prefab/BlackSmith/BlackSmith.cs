@@ -15,6 +15,7 @@ public class BlackSmith : MonoBehaviourPun
 
     PhotonView PV;
     GameManager gameManager;
+    [SerializeField] Animator animator;
 
     [SerializeField] GameObject InteracitveIcon;
     [Header("CreatePanel")]
@@ -23,7 +24,7 @@ public class BlackSmith : MonoBehaviourPun
     [SerializeField] GameObject needPanel;
     [SerializeField] TMP_Text needWoodText, needStoneText;
     [Header("CreatingPanel")]
-    [SerializeField] GameObject creatingPanel;
+    [SerializeField] GameObject creatingPanel, resurrectionPanel;
     [SerializeField] Image creatingItemImg, creatingP;
 
     Create_State create_State = Create_State.Idle;
@@ -54,18 +55,22 @@ public class BlackSmith : MonoBehaviourPun
             {
                 createPanel.SetActive(false);
             }
+            if(resurrectionPanel.activeSelf == true)
+            {
+                resurrectionPanel.SetActive(false);
+            }
             targetInfo = null;
         }
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && targetInfo != null)
+        if (Input.GetKeyDown(KeyCode.F) && targetInfo != null)
         {
-            if (create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)
+            if (create_State == Create_State.Idle) { SetCreatePanel(); }//idle 상태면 createPanel 열기
+            else if(create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)//재료 조달중이고 손에 든 게 재료라면
             {
                 int result = PlusIngredient(targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount);
-                Debug.Log(result);
                 if (targetInfo.Hand.itemCount - result <= 0)
                 {
                     targetInfo.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, "T_00", 0);
@@ -75,10 +80,6 @@ public class BlackSmith : MonoBehaviourPun
                     targetInfo.photonView.RPC("SetHand", RpcTarget.AllViaServer, gameManager.MyPlayerNum, targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount - result);
                 }
             }
-        }
-        else if (Input.GetMouseButtonDown(1) && targetInfo != null)
-        {
-            if (create_State == Create_State.Idle) { SetCreatePanel(); }//idle 상태면 createPanel 열기
             else if (create_State == Create_State.Finish)//제작이 완료됐다면 우클릭한 캐릭터에게 주기
             {
                 GetItem(targetInfo);
@@ -166,8 +167,10 @@ public class BlackSmith : MonoBehaviourPun
     [PunRPC] void SetCreatingPanel()
     {
         needPanel.SetActive(false);
+        resurrectionPanel.SetActive(false);
         creatingItemImg.sprite = creatingItem.itemImg;
         creatingPanel.SetActive(true);
+        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "StartCreate");
         StartCoroutine(CreatingTimer());
     }
 
@@ -184,6 +187,7 @@ public class BlackSmith : MonoBehaviourPun
         }
 
         creatingP.color = Color.green;
+        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "EndCreate");
         create_State = Create_State.Finish;
     }
 
@@ -197,8 +201,7 @@ public class BlackSmith : MonoBehaviourPun
         }
         else if(creatingItem.code == "BI_07")//엘릭서라면 바로 누구 살릴지 결정 창 띄우기
         {
-            Debug.Log("엘릭서");
-            //photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
+            resurrectionPanel.SetActive(true);
             return;
         }
 
@@ -237,10 +240,30 @@ public class BlackSmith : MonoBehaviourPun
         return;
     }
 
+    public void ElixirBtn(int index)
+    {
+        if(gameManager.players[index] != null && gameManager.players[index].State == P_State.Dead)
+        {
+            photonView.RPC("UseElixir", RpcTarget.AllViaServer, index, transform.position + new Vector3(0, 3, 0));
+            photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
+        }
+    }
+
+    [PunRPC] void UseElixir(int index, Vector3 spawnPos)
+    {
+        gameManager.players[index].Resurrection(spawnPos);
+    }
+
     [PunRPC] void PickUp()
     {
         create_State = Create_State.Idle;
         creatingItem = null;
         creatingPanel.SetActive(false);
+    }
+
+    [PunRPC]
+    void AnimTrigger(string trigger)//animtaion trigger 실행하기 - photonanimationview에서 하기에는 최적화 이슈
+    {
+        animator.SetTrigger(trigger);
     }
 }

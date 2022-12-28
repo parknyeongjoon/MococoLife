@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
  * players 받아올 방법 생각하기(해결)
  * 캐릭터 flipX 동기화하기(해결)
  * PNum 로비에서 사람이 나가질 거 대비하기
+ * 목재랑 석재 갯수 표현하기
  */
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -95,7 +96,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    public void SetTileItem(int x, int y, string _to, int count)
+    public void SetTileItem(int x, int y, string _to, int count)//rpc까지 실행하는 함수를 따로 만들기
     {
         if (_to == "T_00" || itemDic[_to].Item_Type == Item_Type.BattleItem)//플레이어가 맨손이었거나 배템을 들고있었다면
         {

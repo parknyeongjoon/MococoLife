@@ -1,4 +1,6 @@
 using Photon.Pun;
+using System.Collections;
+using UnityEngine;
 
 #region enum
 //player
@@ -20,6 +22,13 @@ public enum Boss_State { Idle, Action, Pattern, Stun };
 public interface IDamagable
 {
     void Damage(float dmg);
+}
+
+public interface ICC
+{
+    void KnockBack(Vector3 knockDir, float dis);
+
+    void Stun(float stunTime);
 }
 
 #endregion

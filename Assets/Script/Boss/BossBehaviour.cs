@@ -58,12 +58,12 @@ public class BossBehaviour : MonoBehaviourPun
     IEnumerator StarfishBomb()
     {
         float randX, randY;
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 20; i++)
         {
-            randX = Random.Range(3.5f, 7.0f);
+            randX = Random.Range(3.5f, 30f);
             randY = Random.Range(-4.0f, 4.0f);
             pooler.Get("StarfishBomb", new Vector3(transform.position.x + randX, transform.position.y + randY));
-            yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
+            yield return new WaitForSeconds(Random.Range(0.1f, 0.2f));
         }
     }
 
