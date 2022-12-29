@@ -95,6 +95,19 @@ public class PlayerBehaviour : MonoBehaviourPun
         }
     }
 
+    void FixedUpdate()
+    {
+        if (info.State == P_State.Idle && moveDir != Vector3.zero)
+        {
+            transform.position += moveDir * 2 * Time.deltaTime;
+            animator.SetBool("isMove", true);
+        }
+        else if (moveDir == Vector3.zero)
+        {
+            animator.SetBool("isMove", false);
+        }
+    }
+
     void SetItem(int index)
     {
         if(info.Inventory[index].itemData != null)
@@ -166,16 +179,6 @@ public class PlayerBehaviour : MonoBehaviourPun
         else
         {
             moveDir.x = 0;
-        }
-
-        if (info.State == P_State.Idle && moveDir != Vector3.zero)
-        {
-            transform.position += moveDir * 2 * Time.deltaTime;
-            animator.SetBool("isMove", true);
-        }
-        else if (moveDir == Vector3.zero)
-        {
-            animator.SetBool("isMove", false);
         }
     }
 
