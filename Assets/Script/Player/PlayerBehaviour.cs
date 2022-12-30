@@ -198,7 +198,7 @@ public class PlayerBehaviour : MonoBehaviourPun
 
         info.State = P_State.Idle;
 
-        dashCool = 1.0f;
+        dashCool = 0.5f;
 
         while(dashCool > 0)
         {

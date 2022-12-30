@@ -10,11 +10,7 @@ public class ProductTerrain : Terrain, IDamagable
 
     public override void Damage(float dmg)
     {
-        photonView.RPC("SetHP", RpcTarget.AllBuffered, hp - dmg);
-        if (hp <= 0)
-        {
-            SpawnProduct();//product »ý»ê
-        }
+        photonView.RPC("SetHP", RpcTarget.AllViaServer, hp - dmg);
     }
 
     [PunRPC]
@@ -23,6 +19,7 @@ public class ProductTerrain : Terrain, IDamagable
         hp = _hp;
         if (hp <= 0 && PhotonNetwork.IsMasterClient)
         {
+            SpawnProduct();
             PhotonNetwork.Destroy(gameObject);
         }
     }
