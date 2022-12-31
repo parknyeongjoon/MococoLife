@@ -44,10 +44,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region RoomManager
     [Header("RoomManager")]
     [SerializeField] GameObject roomPanel;
-    [SerializeField] GameObject createPanel, roomGrid, roomPrefab;
+    [SerializeField] GameObject createPanel, joinPanel, roomGrid, roomPrefab;
 
-    [SerializeField] TMP_InputField userName;
-    [SerializeField] TMP_InputField roomName;
+    [SerializeField] TMP_InputField userName, roomName, joinRoomName;
     [SerializeField] Toggle isSecretRoom;
 
     Dictionary<string, GameObject> roomDic = new Dictionary<string, GameObject>();
@@ -60,6 +59,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void SetCreatePanel(bool isOpen)
     {
         createPanel.SetActive(isOpen);
+    }
+
+    public void SetJoinPanel(bool isOpen)
+    {
+        joinPanel.SetActive(isOpen);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -128,6 +132,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             connectStateText.text = "Fail to connect server...";
             PhotonNetwork.ConnectUsingSettings();
+        }
+    }
+
+    public void JoinRoom()
+    {
+        if (roomDic.ContainsKey(joinRoomName.text))
+        {
+            PhotonNetwork.JoinRoom(joinRoomName.text);
+        }
+        else
+        {
+            Debug.Log("없는 방임");
         }
     }
 

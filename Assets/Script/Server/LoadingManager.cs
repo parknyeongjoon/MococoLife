@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 
 public class LoadingManager : MonoBehaviourPun
 {
@@ -11,9 +12,8 @@ public class LoadingManager : MonoBehaviourPun
 
     private float timeCount = 0f;
 
-    public Text playerText;
-    public Text loadingText;
-    public GameObject loadingObject;
+    [SerializeField] TMP_Text roomName, playerText, loadingText;
+    [SerializeField] GameObject loadingObject;
 
     bool[] isReady = new bool[4];
     [SerializeField] Image[] readyImg = new Image[4];
@@ -24,7 +24,8 @@ public class LoadingManager : MonoBehaviourPun
 
         gameManager.SetMyPlayerNum(PhotonNetwork.PlayerList.Length - 1);//겹치지 않게 체크하는 거 추가해주기
 
-        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum);
+        roomName.text = PhotonNetwork.CurrentRoom.Name;
+        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum, true);
     }
 
     private void Update()
@@ -32,15 +33,15 @@ public class LoadingManager : MonoBehaviourPun
         if (timeCount <= 1.5f) timeCount += Time.deltaTime;
         if (timeCount <= 0.5f)
         {
-            loadingText.text = "플레이어를 기다리는중.";
+            loadingText.text = "Waiting for players.";
         }
         else if (timeCount <= 1f)
         {
-            loadingText.text = "플레이어를 기다리는중..";
+            loadingText.text = "Waiting for players..";
         }
         else if (timeCount <= 1.5f)
         {
-            loadingText.text = "플레이어를 기다리는중...";
+            loadingText.text = "Waiting for players...";
         }
         else
         {
@@ -79,9 +80,18 @@ public class LoadingManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    void UpdatePlayerText(int index)
+    void UpdatePlayerText(int index, bool isOnline)
     {
         playerText.text = PhotonNetwork.PlayerList.Length.ToString() + " / 4";
-        readyImg[index].color = Color.red;
+        if (isOnline) { readyImg[index].color = Color.red; }
+        else { readyImg[index].color = Color.white; }
+    }
+
+    public void QuitRoom()
+    {
+        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum, false);
+        isReady[gameManager.MyPlayerNum] = false;
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("MainTitle");
     }
 }
