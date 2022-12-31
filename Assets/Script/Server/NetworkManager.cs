@@ -76,11 +76,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 Destroy(temp);
                 roomDic.Remove(temp.name);
             }
-            else if(!room.IsOpen || !room.IsVisible)
-            {
-                Debug.Log("비밀방 버튼");
-                continue;
-            }
             else//room is create or change
             {
                 if (!roomDic.ContainsKey(room.Name))//create the room
@@ -101,14 +96,22 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         string tempName;
-        if (string.IsNullOrEmpty(roomName.text)) { tempName = "Room_" + Random.Range(0, 1000).ToString(); }
-        else { tempName = roomName.text; }
+
+        if (string.IsNullOrEmpty(roomName.text)) { tempName = RandomRoomName(); }
+        else
+        {
+            if (roomDic.ContainsKey(roomName.text))//if room name is duplicate
+            {
+                Debug.Log("room name duplicate");
+                return;
+            }
+            tempName = roomName.text;
+        }
 
         RoomOptions RO = new RoomOptions();
         RO.IsOpen = true;
-        if (isSecretRoom.isOn) { Debug.Log("비밀방 생성"); RO.IsVisible = false; }//isSecret room => caanot random matching and see in room list
+        if (isSecretRoom.isOn) { RO.IsVisible = false; }//isSecret room => caanot random matching and see in room list
         else { RO.IsVisible = true; }
-        RO.IsVisible = true;
         RO.MaxPlayers = 4;
 
         PhotonNetwork.CreateRoom(tempName, RO);
@@ -130,6 +133,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        Debug.Log(PhotonNetwork.CurrentRoom.Name);
+        Debug.Log(PhotonNetwork.CurrentRoom.IsVisible);
         //setting nickname
         if (string.IsNullOrEmpty(userName.text))
         {
@@ -146,7 +151,21 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        PhotonNetwork.CreateRoom("Room_" + Random.Range(0, 1000), new RoomOptions { IsOpen = true, IsVisible = true, MaxPlayers = 4 }); ;
+        string temp = RandomRoomName();
+        PhotonNetwork.CreateRoom(temp, new RoomOptions { IsOpen = true, IsVisible = true, MaxPlayers = 4 }); ;
+    }
+
+    string RandomRoomName()
+    {
+        string temp;
+
+        do
+        {
+            temp = "Room_" + Random.Range(0, 1000);
+        }
+        while (roomDic.ContainsKey(temp));
+
+        return temp;
     }
 
     #endregion
