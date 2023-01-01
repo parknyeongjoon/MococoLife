@@ -76,9 +76,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             if (room.RemovedFromList)//room is delete
             {
-                roomDic.TryGetValue(room.Name, out temp);
-                roomDic.Remove(temp.name);
-                Destroy(temp);
+                if (roomDic.TryGetValue(room.Name, out temp))
+                {
+                    roomDic.Remove(temp.name);
+                    Destroy(temp);
+                }
             }
             else//room is create or change
             {
