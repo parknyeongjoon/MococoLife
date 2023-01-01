@@ -15,7 +15,7 @@ public class PlayerBehaviour : MonoBehaviourPun
     [SerializeField] PlayerInfo info;
     [SerializeField] Animator animator;
     [SerializeField] Collider2D bodyCollider, toolCollider;
-    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] bool isFliped;
 
     Vector3 moveDir;
     Vector3 effectPos;
@@ -163,7 +163,7 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
-            if (spriteRenderer.flipX == false)
+            if (isFliped == false)
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -171,7 +171,7 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
-            if (spriteRenderer.flipX == true)
+            if (isFliped == true)
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -287,7 +287,15 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     [PunRPC] void Flip()///포톤 변수 동기화하기?
     {
-        spriteRenderer.flipX = !spriteRenderer.flipX;
+        isFliped = !isFliped;
+        if (isFliped)
+        {
+            transform.eulerAngles = new Vector3(0f, 180f, 0f);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+        }
     }
 
     #endregion
