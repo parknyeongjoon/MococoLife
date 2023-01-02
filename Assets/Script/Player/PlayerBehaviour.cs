@@ -14,13 +14,8 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     [SerializeField] PlayerInfo info;
     [SerializeField] Animator animator;
-<<<<<<< Updated upstream
-    [SerializeField] Collider2D bodyCollider, toolCollider;
-    [SerializeField] SpriteRenderer spriteRenderer;
-=======
     [SerializeField] Collider2D toolCollider;
     [SerializeField] bool isFliped;
->>>>>>> Stashed changes
 
     Vector3 moveDir = new Vector3(0, 0, 0);
     Vector3 effectPos;
@@ -168,11 +163,8 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
-<<<<<<< Updated upstream
-            if (spriteRenderer.flipX == false)
-=======
+
             if (isFliped == false && info.State == P_State.Idle)
->>>>>>> Stashed changes
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -180,11 +172,8 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
-<<<<<<< Updated upstream
-            if (spriteRenderer.flipX == true)
-=======
+
             if (isFliped == true && info.State == P_State.Idle)
->>>>>>> Stashed changes
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -300,7 +289,15 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     [PunRPC] void Flip()///포톤 변수 동기화하기?
     {
-        spriteRenderer.flipX = !spriteRenderer.flipX;
+        isFliped = !isFliped;
+        if (isFliped)
+        {
+            transform.eulerAngles = new Vector3(0f, 180f, 0f);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+        }
     }
 
     #endregion
