@@ -1557,6 +1557,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myUI: {fileID: 0}
   hp: 100
+  bodyCollider: {fileID: 1217430516600513772}
+  triggerCollider: {fileID: 243173803927931201}
   canAtkTime: 1
   hand:
     itemData: {fileID: 0}
@@ -1588,7 +1590,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   info: {fileID: 243173803927931210}
   animator: {fileID: 148490919485464663}
-  bodyCollider: {fileID: 1217430516600513772}
   toolCollider: {fileID: 1217430515882757542}
   isFliped: 0
 --- !u!114 &243173803927931208
