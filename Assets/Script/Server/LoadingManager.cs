@@ -72,7 +72,6 @@ public class LoadingManager : MonoBehaviourPun
                 if (isReady[i] == false) break;
                 if (i == PhotonNetwork.PlayerList.Length - 1)
                 {
-                    PhotonNetwork.CurrentRoom.IsOpen = false;
                     PhotonNetwork.LoadLevel("Stage");
                 }
             }

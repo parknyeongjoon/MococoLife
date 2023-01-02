@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     TileManager tileManager;
 
     [Header("Game")]
-    public bool isPause;
+    public bool isPause = false;
 
     public BossInfo boss;
 
@@ -65,25 +65,38 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)//Scene이 호출될 때 실행되는 함수
     {
-        if (scene.name == "Stage")
+        if(scene.name == "Loading")
         {
-            StartCoroutine(StageInitialize());
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+            isPause = false;
+            Time.timeScale = 1;
             Pooler.Instance.ClearPools();
+        }
+        else if (scene.name == "Stage")
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            StartCoroutine(StageInitialize());
         }
     }
 
     [PunRPC] void GameClear()
     {
-        Debug.Log("Game Clear");
-        Time.timeScale = 0;
-        UIManager.Instance.SetClearPanel(true);
+        if(isPause == false)
+        {
+            Debug.Log("Game Clear");
+            isPause = true;
+            UIManager.Instance.SetClearPanel(true);
+        }
     }
 
     [PunRPC] void GameOver()
     {
-        Debug.Log("GameOver");
-        Time.timeScale = 0;
-        UIManager.Instance.SetOverPanel(true);
+        if(isPause == false)
+        {
+            Debug.Log("GameOver");
+            isPause = true;
+            UIManager.Instance.SetOverPanel(true);
+        }
     }
 
     #region Tiles

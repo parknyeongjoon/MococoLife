@@ -71,7 +71,9 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
             hp -= dmg;
             if (hp <= 0 && state != P_State.Dead)
             {
-                StartCoroutine(Die());
+                photonView.RPC("DeadEvent", RpcTarget.AllViaServer);
+                photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
+                StartCoroutine(GetGrave());
             }
         }
     }
@@ -147,30 +149,14 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
 
     #endregion
 
-    IEnumerator Die()
+    [PunRPC]
+    void DeadEvent()///UnityEvent?
     {
         state = P_State.Dead;
 
+        myUI.SetGraveIcon(true);
+
         bodyCollider.gameObject.SetActive(false);
-        triggerCollider.gameObject.SetActive(false);
-
-        photonView.RPC("SendDeadEvent", RpcTarget.AllViaServer);
-        photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
-
-        int randIndex = Random.Range(0, 5);
-        Vector3 desPos = transform.position;
-        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));
-        while (grave.transform.position.y >= desPos.y)
-        {
-            grave.transform.position -= new Vector3(0, Time.deltaTime * 5);
-            yield return null;
-        }
-    }
-
-    [PunRPC]
-    void SendDeadEvent()
-    {
-        myUI.SetGraveIcon(true);///UnityEvent·Î »©³»±â?
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -183,9 +169,30 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         }
     }
 
+    IEnumerator GetGrave()
+    {
+        int randIndex = Random.Range(0, 5);
+        Vector3 desPos = transform.position;
+        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));
+        while (grave.transform.position.y >= desPos.y)
+        {
+            grave.transform.position -= new Vector3(0, Time.deltaTime * 5);
+            yield return null;
+        }
+    }
+
     public void Resurrection(Vector3 spawnPos)
     {
+        photonView.RPC("ResurrectionEvent", RpcTarget.AllViaServer, spawnPos);
+        photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "resurrection");
+    }
+
+    [PunRPC]
+    void ResurrectionEvent(Vector3 spawnPos)///UnityEvent?
+    {
         hp = 20.0f;
+
+        myUI.SetGraveIcon(false);
 
         bodyCollider.gameObject.SetActive(true);
         triggerCollider.gameObject.SetActive(true);
@@ -193,15 +200,6 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         transform.position = spawnPos;
 
         state = P_State.Idle;
-
-        photonView.RPC("SendResurrectionEvent", RpcTarget.AllViaServer, gameManager.MyPlayerNum);
-        photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "resurrection");
-    }
-
-    [PunRPC]
-    void SendResurrectionEvent(int index)
-    {
-        myUI.SetGraveIcon(false);///UnityEvent·Î »©³»±â?
     }
 
     [PunRPC]
