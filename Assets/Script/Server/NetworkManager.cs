@@ -18,10 +18,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Start()
     {
         //PhotonNetwork.AutomaticallySyncScene = true;
-        Debug.Log("네트워크 스타트");
+
         if (PhotonNetwork.IsConnected)
         {
-            connectStateText.text = "Online";
+            connectStateText.text = "Connect";
         }
         else
         {
@@ -33,7 +33,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        connectStateText.text = "Online";
+        connectStateText.text = "Connect";
         PhotonNetwork.JoinLobby();
     }
 
@@ -42,6 +42,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         connectStateText.text = "Fail to connect server...";
         Debug.Log("OnDisconnected");
         PhotonNetwork.ConnectUsingSettings();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        connectStateText.text = "Join Lobby";
     }
 
     #region RoomManager
@@ -56,7 +61,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void SetRoomPanel(bool isOpen)
     {
-        roomPanel.SetActive(isOpen);
+        if (PhotonNetwork.InLobby)
+        {
+            roomPanel.SetActive(isOpen);
+        }
     }
 
     public void SetCreatePanel(bool isOpen)

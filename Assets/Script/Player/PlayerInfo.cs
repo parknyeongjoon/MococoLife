@@ -75,6 +75,10 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
                 photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
                 StartCoroutine(GetGrave());
             }
+            else
+            {
+                photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "hit");
+            }
         }
     }
 

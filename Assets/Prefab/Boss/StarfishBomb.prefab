@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atkDelay: 4
-  dmg: 100
+  dmg: 50
   trigger: {fileID: 3822876336808062490}
   circleTimer: {fileID: 4981589780806463126}
 --- !u!114 &-8989061812666636529

@@ -19,7 +19,7 @@ public class Pickaxe : ItemData
             if (target.CompareTag("Rock"))
             {
                 info.State = P_State.Action;
-                info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "pickaxe");
+                info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "atk");
                 Debug.Log("Ã¤±¤ Áß..");
 
                 yield return new WaitForSeconds(delay);

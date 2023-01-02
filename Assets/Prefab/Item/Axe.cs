@@ -19,7 +19,7 @@ public class Axe : ItemData
             if (target.CompareTag("Tree"))
             {
                 info.State = P_State.Action;
-                info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "axe");
+                info.photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "atk");
                 Debug.Log("¹ú¸ñ Áß..");
 
                 yield return new WaitForSeconds(delay);
