@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class UIManager : MonoBehaviour
+public class UIManager : MonoBehaviourPunCallbacks
 {
-    UnityEvent InventoryEvent;
-
     static UIManager instance;
     public static UIManager Instance
     {
@@ -28,6 +28,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject BHP_GO;
     [SerializeField] Image BHP_FG;
 
+    [SerializeField] GameObject GameClearPanel, GameOverPanel;
+
+    void Awake()
+    {
+        instance = this;
+    }
+
     IEnumerator Start()
     {
         yield return new WaitForSeconds(0.5f);//게임 시작 함수 만들어주기
@@ -42,7 +49,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        gameManager.boss = GameObject.Find("Boss").GetComponent<BossInfo>();//바꾸기 - GameManager에서 photonnetwork.instantiate할 때 할당하기
+        gameManager.boss = GameObject.Find("Boss").GetComponent<BossInfo>();///임시 - GameManager에서 photonnetwork.instantiate할 때 할당하기
         StartCoroutine(UpdateBHPBar());
     }
 
@@ -54,4 +61,36 @@ public class UIManager : MonoBehaviour
             yield return null;
         }
     }
+
+    public void SetClearPanel(bool isOpen)
+    {
+        GameClearPanel.SetActive(isOpen);
+    }
+
+    public void SetOverPanel(bool isOpen)
+    {
+        GameOverPanel.SetActive(isOpen);
+    }
+
+    public void RetryBtn()
+    {
+        PhotonNetwork.LoadLevel("Loading");
+    }
+
+    public void QuitBtn()
+    {
+        PhotonNetwork.LeaveRoom();
+        
+        Debug.Log("방나가기");
+    }
+
+    #region network
+
+    public override void OnLeftRoom()
+    {
+        Debug.Log("LeftRoom");
+        PhotonNetwork.LoadLevel("MainTitle");
+    }
+
+    #endregion
 }

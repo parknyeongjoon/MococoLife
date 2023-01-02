@@ -14,10 +14,15 @@ public class PlayerBehaviour : MonoBehaviourPun
 
     [SerializeField] PlayerInfo info;
     [SerializeField] Animator animator;
+<<<<<<< Updated upstream
     [SerializeField] Collider2D bodyCollider, toolCollider;
     [SerializeField] SpriteRenderer spriteRenderer;
+=======
+    [SerializeField] Collider2D toolCollider;
+    [SerializeField] bool isFliped;
+>>>>>>> Stashed changes
 
-    Vector3 moveDir;
+    Vector3 moveDir = new Vector3(0, 0, 0);
     Vector3 effectPos;
     Vector3 mousePos;
 
@@ -39,7 +44,7 @@ public class PlayerBehaviour : MonoBehaviourPun
             Move();
             SetToolOffset();
 
-            if (Input.GetKeyDown(KeyCode.Space) && moveDir != Vector3.zero && dashCool <= 0)
+            if (Input.GetMouseButtonDown(1) && moveDir != Vector3.zero && dashCool <= 0)
             {
                 StartCoroutine(Dash());
             }
@@ -163,7 +168,11 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.A))
         {
             moveDir.x = -1;
+<<<<<<< Updated upstream
             if (spriteRenderer.flipX == false)
+=======
+            if (isFliped == false && info.State == P_State.Idle)
+>>>>>>> Stashed changes
             {
                 PV.RPC("Flip", RpcTarget.All);
             }
@@ -171,7 +180,11 @@ public class PlayerBehaviour : MonoBehaviourPun
         else if (Input.GetKey(KeyCode.D))
         {
             moveDir.x = 1;
+<<<<<<< Updated upstream
             if (spriteRenderer.flipX == true)
+=======
+            if (isFliped == true && info.State == P_State.Idle)
+>>>>>>> Stashed changes
             {
                 PV.RPC("Flip", RpcTarget.All);
             }

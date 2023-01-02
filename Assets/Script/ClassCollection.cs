@@ -13,7 +13,7 @@ public enum Dmg_Type { None, UnBreakable, Damage, Stagger, Hit, Destruction }
 public enum CC_Type { KnockBack, Stun }
 
 public enum Boss_Type { Crab }
-public enum Boss_State { Idle, Action, Pattern, Stun };
+public enum Boss_State { Idle, Action, Pattern, Immune, Stun, Dead };
 
 #endregion
 

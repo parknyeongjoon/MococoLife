@@ -10,6 +10,7 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
     Pooler pooler;
 
     [SerializeField] float hp = 100;
+    [SerializeField] Collider2D bodyCollider, triggerCollider;
 
     public float canAtkTime;
 
@@ -92,7 +93,8 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         photonView.RPC("RPCKnockBack", RpcTarget.AllViaServer, knockDir, dis);
     }
 
-    [PunRPC] void RPCKnockBack(Vector3 knockDir, float dis)
+    [PunRPC]
+    void RPCKnockBack(Vector3 knockDir, float dis)
     {
         if (photonView.IsMine)
         {
@@ -120,7 +122,8 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         photonView.RPC("RPCStun", RpcTarget.AllViaServer, stunTime);
     }
 
-    [PunRPC] void RPCStun(float stunTime)
+    [PunRPC]
+    void RPCStun(float stunTime)
     {
         if (photonView.IsMine)
         {
@@ -147,12 +150,16 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
     IEnumerator Die()
     {
         state = P_State.Dead;
+
+        bodyCollider.gameObject.SetActive(false);
+        triggerCollider.gameObject.SetActive(false);
+
+        photonView.RPC("SendDeadEvent", RpcTarget.AllViaServer);
         photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
-        photonView.RPC("SetGraveIcon", RpcTarget.AllViaServer, true);
 
         int randIndex = Random.Range(0, 5);
         Vector3 desPos = transform.position;
-        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));///마스터 클라이언트가 만든 무덤이 동기화가 안 됨
+        grave = pooler.Get("Grave_" + randIndex, desPos + new Vector3(0, 10, 0));
         while (grave.transform.position.y >= desPos.y)
         {
             grave.transform.position -= new Vector3(0, Time.deltaTime * 5);
@@ -160,19 +167,41 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         }
     }
 
+    [PunRPC]
+    void SendDeadEvent()
+    {
+        myUI.SetGraveIcon(true);///UnityEvent로 빼내기?
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+            {
+                if (gameManager.players[i] != null && gameManager.players[i].state != P_State.Dead) { return; }
+            }
+
+            gameManager.photonView.RPC("GameOver", RpcTarget.AllViaServer);
+        }
+    }
+
     public void Resurrection(Vector3 spawnPos)
     {
         hp = 20.0f;
+
+        bodyCollider.gameObject.SetActive(true);
+        triggerCollider.gameObject.SetActive(true);
+
         transform.position = spawnPos;
+
         state = P_State.Idle;
+
+        photonView.RPC("SendResurrectionEvent", RpcTarget.AllViaServer, gameManager.MyPlayerNum);
         photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "resurrection");
-        photonView.RPC("SetGraveIcon", RpcTarget.AllViaServer, false);
     }
 
     [PunRPC]
-    void SetGraveIcon(bool isActive)
+    void SendResurrectionEvent(int index)
     {
-        myUI.SetGraveIcon(isActive);
+        myUI.SetGraveIcon(false);///UnityEvent로 빼내기?
     }
 
     [PunRPC]
@@ -180,7 +209,6 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
     {
         myUI.InventoryUpdate(index, code, count);
     }
-
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

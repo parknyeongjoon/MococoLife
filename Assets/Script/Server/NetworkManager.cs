@@ -17,6 +17,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        //PhotonNetwork.AutomaticallySyncScene = true;
+        Debug.Log("네트워크 스타트");
         if (PhotonNetwork.IsConnected)
         {
             connectStateText.text = "Online";
@@ -38,6 +40,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         connectStateText.text = "Fail to connect server...";
+        Debug.Log("OnDisconnected");
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -68,8 +71,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        Debug.Log("Room Update");
-
         GameObject temp = null;
 
         foreach (RoomInfo room in roomList)
@@ -149,8 +150,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log(PhotonNetwork.CurrentRoom.Name);
-        Debug.Log(PhotonNetwork.CurrentRoom.IsVisible);
         //setting nickname
         if (string.IsNullOrEmpty(userName.text))
         {

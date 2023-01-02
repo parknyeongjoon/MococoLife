@@ -35,7 +35,10 @@ public class Pooler : MonoBehaviourPun
         {
             foreach (GameObject prefab in updateObjects)
             {
-                pool.ResourceCache.Add(prefab.name, prefab);
+                if (!pool.ResourceCache.ContainsKey(prefab.name))
+                {
+                    pool.ResourceCache.Add(prefab.name, prefab);
+                }
 
                 if (!pools.ContainsKey(prefab.name))
                 {
@@ -43,6 +46,16 @@ public class Pooler : MonoBehaviourPun
                     pools[prefab.name].Add(prefab);
                 }
             }
+        }
+    }
+
+    public void ClearPools()
+    {
+        foreach(var list in pools.Values)
+        {
+            GameObject temp = list[0];
+            list.Clear();
+            list.Add(temp);
         }
     }
 

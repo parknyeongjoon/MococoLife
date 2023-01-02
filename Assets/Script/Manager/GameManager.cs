@@ -68,17 +68,22 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (scene.name == "Stage")
         {
             StartCoroutine(StageInitialize());
+            Pooler.Instance.ClearPools();
         }
     }
 
-    public void GameClear()
+    [PunRPC] void GameClear()
     {
-
+        Debug.Log("Game Clear");
+        Time.timeScale = 0;
+        UIManager.Instance.SetClearPanel(true);
     }
 
-    public void GameOver()
+    [PunRPC] void GameOver()
     {
-
+        Debug.Log("GameOver");
+        Time.timeScale = 0;
+        UIManager.Instance.SetOverPanel(true);
     }
 
     #region Tiles
@@ -106,8 +111,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             temp = PhotonNetwork.Instantiate(temp.name, temp.transform.position + new Vector3(30 * i, 0, 0), Quaternion.identity);
         }
 
-        photonView.RPC("SetTileItem", RpcTarget.AllViaServer, 9, 3, "T_01", 0);
-        photonView.RPC("SetTileItem", RpcTarget.AllViaServer, 9, 5, "T_02", 0);
+        photonView.RPC("SetTileItem", RpcTarget.All, 9, 3, "T_01", 0);
+        photonView.RPC("SetTileItem", RpcTarget.All, 9, 5, "T_02", 0);
     }
 
     [PunRPC]
@@ -134,11 +139,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
+    #endregion
+
     [PunRPC]
     public void Ping(int type, Vector3 pos)
     {
         Instantiate(Resources.Load<GameObject>("Ping/" + type.ToString()), new Vector3(pos.x, pos.y, 0f), Quaternion.identity);
     }
-
-    #endregion
 }

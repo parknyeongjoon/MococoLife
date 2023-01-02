@@ -60,7 +60,7 @@ public class AreaMove : MonoBehaviourPun//카메라를 이동해주는 함수
                 int count = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (rightAreaMove[i])
+                    if (rightAreaMove[i] || (gameManager.players[i] != null && gameManager.players[i].State == P_State.Dead))
                     {
                         count++;
                         if (canMove && count >= PhotonNetwork.CurrentRoom.PlayerCount)
@@ -80,7 +80,7 @@ public class AreaMove : MonoBehaviourPun//카메라를 이동해주는 함수
                 int count = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (leftAreaMove[i])
+                    if (leftAreaMove[i] || (gameManager.players[i] != null && gameManager.players[i].State == P_State.Dead))
                     {
                         count++;
                         if (canMove && count >= PhotonNetwork.CurrentRoom.PlayerCount)

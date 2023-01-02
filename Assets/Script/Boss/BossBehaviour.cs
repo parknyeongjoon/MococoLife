@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
-/// <summary>
-/// 카메라 이동 중에는 보스 패턴 안 되게(해결)
-/// </summary>
+
 public class BossBehaviour : MonoBehaviourPun
 {
     [SerializeField] BossInfo info;
     [SerializeField] List<GameObject> patternList;
     Pooler pooler;
     AreaMove areaMove;
-
-    Boss_State boss_State = Boss_State.Idle;
 
     void Start()
     {
@@ -42,7 +38,7 @@ public class BossBehaviour : MonoBehaviourPun
     [PunRPC]
     void Think()
     {
-        if(boss_State == Boss_State.Idle && !areaMove.IsMove)//보스가 공격을 할 수 있고 카메라가 이동 중이 아니라면
+        if(info.State == Boss_State.Idle && !areaMove.IsMove)//보스가 공격을 할 수 있고 카메라가 이동 중이 아니라면
         {
             int randIndex = Random.Range(0, patternList.Count);
             StartCoroutine(patternList[randIndex].name);

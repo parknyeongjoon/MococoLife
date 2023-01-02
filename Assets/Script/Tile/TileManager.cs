@@ -45,19 +45,7 @@ public class TileManager : MonoBehaviourPun
 
     void Start()
     {
-        SetPhotonPool();
-    }
-
-    void SetPhotonPool()
-    {
-        DefaultPool pool = PhotonNetwork.PrefabPool as DefaultPool;
-        if(pool != null && areas != null)
-        {
-            foreach(GameObject area in areas.bossAreas)
-            {
-                pool.ResourceCache.Add(area.name, area);
-            }
-        }
+        Pooler.Instance.SetPhotonPool(areas.bossAreas);
     }
 
     public int[] AreaInitialize()

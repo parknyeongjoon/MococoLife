@@ -7,10 +7,6 @@ using UnityEngine.UI;
 
 public class BlackSmith : MonoBehaviourPun
 {
-    /// <summary>
-    /// Resurrection 안 되는 게 다른 playerInfo의 state가 동기화가 안 되서 dead로 설정이 안 되어있어서 그럼
-    /// </summary>
-    //지우기
     public void SkipIngredient()
     {
         PV.RPC("SetCreatingPanel", RpcTarget.AllViaServer);
