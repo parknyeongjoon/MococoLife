@@ -6,7 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 
-public class LoadingManager : MonoBehaviourPun
+public class LoadingManager : MonoBehaviourPunCallbacks
 {
     GameManager gameManager;
 
@@ -21,11 +21,9 @@ public class LoadingManager : MonoBehaviourPun
     private void Start()
     {
         gameManager = GameManager.Instance;
-
-        gameManager.SetMyPlayerNum(PhotonNetwork.PlayerList.Length - 1);//겹치지 않게 체크하는 거 추가해주기
-
         roomName.text = PhotonNetwork.CurrentRoom.Name;
-        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum, true);
+
+        UpdatePlayerList();
     }
 
     private void Update()
@@ -48,6 +46,36 @@ public class LoadingManager : MonoBehaviourPun
             timeCount = 0f;
         }
         loadingObject.transform.eulerAngles += new Vector3(0f, 0f, 0.1f);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        UpdatePlayerList();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        UpdatePlayerList();
+    }
+
+    private void UpdatePlayerList()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (i < PhotonNetwork.PlayerList.Length)
+            {
+                if (PhotonNetwork.PlayerList[i] == PhotonNetwork.LocalPlayer)
+                {
+                    gameManager.SetMyPlayerNum(i);
+                }
+                UpdatePlayerText(i, true);
+            }
+            else
+            {
+                UpdatePlayerText(i, false);
+            }
+            isReady[i] = false;
+        }
     }
 
     public void ReadyBtn()
@@ -78,7 +106,6 @@ public class LoadingManager : MonoBehaviourPun
         }
     }
 
-    [PunRPC]
     void UpdatePlayerText(int index, bool isOnline)
     {
         playerText.text = PhotonNetwork.PlayerList.Length.ToString() + " / 4";
@@ -88,8 +115,6 @@ public class LoadingManager : MonoBehaviourPun
 
     public void QuitRoom()
     {
-        photonView.RPC("UpdatePlayerText", RpcTarget.AllBufferedViaServer, gameManager.MyPlayerNum, false);
-        isReady[gameManager.MyPlayerNum] = false;
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LoadLevel("MainTitle");
     }
