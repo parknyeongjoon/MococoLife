@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7fe151caa3af0a4f820f0b3f9e4188a, type: 3}
-  m_Name: Axe
+  m_Script: {fileID: 11500000, guid: ce169155a0df15f42a86d0563e4313a7, type: 3}
+  m_Name: ForestSO
   m_EditorClassIdentifier: 
-  itemImg: {fileID: 21300000, guid: 0a7790c41cd1a7d488159eaad4aa7219, type: 3}
-  tileImg: {fileID: 11400000, guid: 3c01bccb0fb93e043ae4e0241188f93c, type: 2}
-  code: T_01
-  Item_Type: 0
-  delay: 0.2
+  boss: {fileID: 0}
+  bossAreas:
+  - {fileID: 2721326839823850482, guid: 8b10dbf7e73c4bd4fab4819768ad8833, type: 3}

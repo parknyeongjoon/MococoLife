@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 012cd1d530582e44bbc70225c68949fb, type: 3}
   m_Name: Pickaxe
   m_EditorClassIdentifier: Assembly-CSharp::PickAxe
-  itemImg: {fileID: 0}
+  itemImg: {fileID: 778353465, guid: 962d981984b9b5f42a476857b219f9d6, type: 3}
   tileImg: {fileID: 11400000, guid: c9a7cbbe81f56f14b8bfb667113c716a, type: 2}
   code: T_02
   Item_Type: 0

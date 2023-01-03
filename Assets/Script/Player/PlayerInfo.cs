@@ -69,13 +69,13 @@ public class PlayerInfo : MonoBehaviourPun, IDamagable, IPunObservable, ICC
         if (state != P_State.TimePause && state != P_State.Dead)
         {
             hp -= dmg;
-            if (hp <= 0 && state != P_State.Dead)
+            if (hp <= 0)
             {
                 photonView.RPC("DeadEvent", RpcTarget.AllViaServer);
                 photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "death");
                 StartCoroutine(GetGrave());
             }
-            else
+            else if(dmg > 10)
             {
                 photonView.RPC("AnimTrigger", RpcTarget.AllViaServer, "hit");
             }

@@ -49,7 +49,7 @@ public class UIManager : MonoBehaviourPunCallbacks
             }
         }
 
-        gameManager.boss = GameObject.Find("Boss").GetComponent<BossInfo>();///임시 - GameManager에서 photonnetwork.instantiate할 때 할당하기
+        gameManager.boss = GameObject.Find("TreeBoss").GetComponent<BossInfo>();///임시 - GameManager에서 photonnetwork.instantiate할 때 할당하기
         StartCoroutine(UpdateBHPBar());
     }
 

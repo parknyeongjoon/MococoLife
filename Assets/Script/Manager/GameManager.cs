@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             SetGameArea(tiles);
         }
         //플레이어 생성
-        PhotonNetwork.Instantiate("Player", new Vector3(9, 3 * MyPlayerNum + 1, 0), Quaternion.identity);
+        PhotonNetwork.Instantiate("Player", new Vector3(9, 2 * MyPlayerNum + 2, 0), Quaternion.identity);
     }
 
     void SetGameArea(int[] tiles)
@@ -121,11 +121,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         for (int i = 1; i < tileManager.areaCount; i++)
         {
             GameObject temp = tileManager.areas.bossAreas[tiles[i]];
-            temp = PhotonNetwork.Instantiate(temp.name, temp.transform.position + new Vector3(30 * i, 0, 0), Quaternion.identity);
+            temp = PhotonNetwork.Instantiate(temp.name, temp.transform.position + new Vector3(39 * i, 0, 0), Quaternion.identity);
         }
 
-        photonView.RPC("SetTileItem", RpcTarget.All, 9, 3, "T_01", 0);
-        photonView.RPC("SetTileItem", RpcTarget.All, 9, 5, "T_02", 0);
+        photonView.RPC("SetTileItem", RpcTarget.All, 11, 6, "T_01", 0);
+        photonView.RPC("SetTileItem", RpcTarget.All, 11, 3, "T_02", 0);
     }
 
     [PunRPC]

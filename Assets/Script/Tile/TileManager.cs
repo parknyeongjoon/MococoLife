@@ -30,22 +30,19 @@ public class TileManager : MonoBehaviourPun
     {
         gameManager = GameManager.Instance;
 
-        tileInfos = new TileInfo[30 * areaCount][];
-        for (int i = 0; i < 30 * areaCount; i++)
+        tileInfos = new TileInfo[39 * areaCount][];
+        for (int i = 0; i < 39 * areaCount; i++)
         {
             tileInfos[i] = new TileInfo[14];
-            for(int j = 0; j < 14; j++)
+            for(int j = 0; j < 12; j++)
             {
                 tileInfos[i][j] = new TileInfo();
             }
         }
 
-        instance = this;
-    }
-
-    void Start()
-    {
         Pooler.Instance.SetPhotonPool(areas.bossAreas);
+
+        instance = this;
     }
 
     public int[] AreaInitialize()

@@ -1530,16 +1530,16 @@ MonoBehaviour:
     Name: atk
   - Type: 9
     SynchronizeType: 0
-    Name: axe
-  - Type: 9
-    SynchronizeType: 0
-    Name: pickaxe
-  - Type: 9
-    SynchronizeType: 0
     Name: death
   - Type: 9
     SynchronizeType: 0
     Name: resurrection
+  - Type: 9
+    SynchronizeType: 0
+    Name: throw
+  - Type: 9
+    SynchronizeType: 0
+    Name: hit
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
