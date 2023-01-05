@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingOrder: 0
-  applySpriterZOrder: 0
+  applySpriterZOrder: 1
 --- !u!1 &4830887960958129848
 GameObject:
   m_ObjectHideFlags: 0

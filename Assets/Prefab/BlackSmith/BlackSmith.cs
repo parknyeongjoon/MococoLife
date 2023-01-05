@@ -15,6 +15,7 @@ public class BlackSmith : MonoBehaviourPun
     PhotonView PV;
     GameManager gameManager;
     [SerializeField] Animator animator;
+    [SerializeField] Transform cart, wheel;
 
     [SerializeField] GameObject InteracitveIcon;
     [Header("CreatePanel")]
@@ -50,11 +51,11 @@ public class BlackSmith : MonoBehaviourPun
         if (targetInfo != null && collision.gameObject == targetInfo.gameObject)
         {
             InteracitveIcon.SetActive(false);
-            if(createPanel.activeSelf == true)
+            if (createPanel.activeSelf == true)
             {
                 createPanel.SetActive(false);
             }
-            if(resurrectionPanel.activeSelf == true)
+            if (resurrectionPanel.activeSelf == true)
             {
                 resurrectionPanel.SetActive(false);
             }
@@ -67,7 +68,7 @@ public class BlackSmith : MonoBehaviourPun
         if (Input.GetKeyDown(KeyCode.F) && targetInfo != null && targetInfo.State == P_State.Idle)
         {
             if (create_State == Create_State.Idle) { SetCreatePanel(); }//idle 상태면 createPanel 열기
-            else if(create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)//재료 조달중이고 손에 든 게 재료라면
+            else if (create_State == Create_State.Create && targetInfo.Hand.itemData.Item_Type == Item_Type.Ingredient)//재료 조달중이고 손에 든 게 재료라면
             {
                 int result = PlusIngredient(targetInfo.Hand.itemData.code, targetInfo.Hand.itemCount);
                 if (targetInfo.Hand.itemCount - result <= 0)
@@ -109,7 +110,8 @@ public class BlackSmith : MonoBehaviourPun
         }
     }
 
-    [PunRPC] void SetNeedPanel(string code)
+    [PunRPC]
+    void SetNeedPanel(string code)
     {
         create_State = Create_State.Create;
         CloseCreatePanel();
@@ -145,7 +147,8 @@ public class BlackSmith : MonoBehaviourPun
         return result;
     }
 
-    [PunRPC] void RPCPlusIngredient(int _wood, int _stone)
+    [PunRPC]
+    void RPCPlusIngredient(int _wood, int _stone)
     {
         curWood = _wood; curStone = _stone;
 
@@ -163,14 +166,62 @@ public class BlackSmith : MonoBehaviourPun
         createPanel.SetActive(false);
     }
 
-    [PunRPC] void SetCreatingPanel()
+    [PunRPC]
+    void SetCreatingPanel()
     {
         needPanel.SetActive(false);
         resurrectionPanel.SetActive(false);
         creatingItemImg.sprite = creatingItem.itemImg;
         creatingPanel.SetActive(true);
-        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "StartCreate");
+        StartCoroutine(CreatingEvent());
         StartCoroutine(CreatingTimer());
+    }
+
+    IEnumerator CreatingEvent()
+    {
+        float cartRota = 0;
+        while (cartRota > -7)
+        {
+            cartRota -= Time.deltaTime * 10;
+            cart.transform.rotation = Quaternion.Euler(0, 0, cartRota);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        animator.SetBool("isWalk", true);
+
+        float startPos = transform.position.x;
+        float wheelRota = 0;
+
+        while (cart.position.x < 40)
+        {
+            cart.position += new Vector3(Time.deltaTime * 10, 0);
+            wheelRota -= Time.deltaTime * 100;
+            wheel.rotation = Quaternion.Euler(0, 0, wheelRota);
+
+            yield return null;
+        }
+
+        cart.rotation = Quaternion.Euler(0, 180, cartRota);
+
+        while (cart.position.x >= startPos)
+        {
+            cart.position -= new Vector3(Time.deltaTime * 10, 0);
+            wheelRota -= Time.deltaTime * 100;
+            wheel.rotation = Quaternion.Euler(0, 0, wheelRota);
+            yield return null;
+        }
+
+        cart.rotation = Quaternion.Euler(0, 0, cartRota);
+        animator.SetBool("isWalk", false);
+
+        while (cartRota <= 0)
+        {
+            cartRota += Time.deltaTime * 10;
+            cart.transform.rotation = Quaternion.Euler(0, 0, cartRota);
+            yield return null;
+        }
     }
 
     IEnumerator CreatingTimer()
@@ -186,19 +237,19 @@ public class BlackSmith : MonoBehaviourPun
         }
 
         creatingP.color = Color.green;
-        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "EndCreate");
+        PV.RPC("AnimTrigger", RpcTarget.AllViaServer, "EndCreate");///고쳐야함
         create_State = Create_State.Finish;
     }
 
     public void GetItem(PlayerInfo targetInfo)//������� true �� ������� false
     {
-        if(creatingItem.code == "BI_00")//음식이라면 바로 먹기
+        if (creatingItem.code == "BI_00")//음식이라면 바로 먹기
         {
             creatingItem.Effect(targetInfo, Vector3.zero);
             photonView.RPC("PickUp", RpcTarget.AllViaServer);//�������� ����ٸ� PickUp����
             return;
         }
-        else if(creatingItem.code == "BI_07")//엘릭서라면 바로 누구 살릴지 결정 창 띄우기
+        else if (creatingItem.code == "BI_07")//엘릭서라면 바로 누구 살릴지 결정 창 띄우기
         {
             resurrectionPanel.SetActive(true);
             return;
@@ -241,7 +292,7 @@ public class BlackSmith : MonoBehaviourPun
 
     public void ElixirBtn(int index)
     {
-        if(gameManager.players[index] != null)
+        if (gameManager.players[index] != null)
         {
             Debug.Log(gameManager.players[index].State + index);
         }
@@ -252,12 +303,14 @@ public class BlackSmith : MonoBehaviourPun
         }
     }
 
-    [PunRPC] void UseElixir(int index, Vector3 spawnPos)
+    [PunRPC]
+    void UseElixir(int index, Vector3 spawnPos)
     {
         gameManager.players[index].Resurrection(spawnPos);
     }
 
-    [PunRPC] void PickUp()
+    [PunRPC]
+    void PickUp()
     {
         create_State = Create_State.Idle;
         creatingItem = null;

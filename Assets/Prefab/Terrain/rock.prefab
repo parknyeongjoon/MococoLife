@@ -186,7 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 5
   interactiveIcon: {fileID: 1909326561838379760}
-  productData: {fileID: 0}
+  productData: {fileID: 11400000, guid: fc725cecb9869b4469b8f9f9edfe57e6, type: 2}
   productCount: 5
 --- !u!61 &2471129442122531214
 BoxCollider2D:
